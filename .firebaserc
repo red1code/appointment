@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "appointment-d19b2": {
+      "hosting": {
+        "appointment": [
+          "appointment-d19b2"
+        ]
+      }
+    }
+  }
+}

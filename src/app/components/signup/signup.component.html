@@ -1,0 +1,25 @@
+<h2>Sign Up</h2>
+<form [formGroup]="signupForm" (ngSubmit)="signup()">
+    <div>
+        <label for="displayName">Full Name</label> <br>
+        <input autocomplete="off" formControlName="displayName" type="text" placeholder="Display Name">
+    </div>
+
+    <div>
+        <label for="email">Email</label> <br>
+        <input formControlName="email" type="email" placeholder="Email">
+    </div>
+
+    <div>
+        <label for="password">Password</label> <br>
+        <input autocomplete="off" formControlName="password" type="password" placeholder="Password">
+    </div>
+
+    <div *ngIf="firebaseErrorMessage != ''" class="error-style">
+        <span>{{ firebaseErrorMessage }}</span>
+    </div>
+
+    <div>
+        <button>Signup</button>
+    </div>
+</form>

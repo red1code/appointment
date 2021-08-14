@@ -1,0 +1,24 @@
+footer {
+    background-color: #3f51b5;
+    color: #ffffff;
+    text-align: center;
+    font-size: 1em;
+    padding: 15px 0px;
+}
+.footer-text {
+    width: fit-content;
+    margin: 0 auto;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+.footer-text a {
+    text-decoration: none;
+    color: #ffffff;
+}
+.footer-text a:hover {
+    background-color: #ffffff;
+    color: #3f51b5;
+    transition: 0.5s;
+    border-radius: 3px;
+    padding: 5px;
+}

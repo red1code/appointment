@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="img">
+    list des patients
+  </div>
+  
+  <div class="component">
+    <div class="container">
+
+      <form [formGroup]="newPatient" (ngSubmit)="submitForm()">
+        <h2>Prendre un rendez-vous avec le médecin</h2>
+        <div>
+          <label for="fullName">Nom Du Patient</label> <br>
+          <input type="text" formControlName="fullName" [(ngModel)]="name">
+        </div>
+
+        <div>
+          <label for="phoneNumber">Numéro De Téléphone</label> <br>
+          <input type="tel" formControlName="phoneNumber">
+        </div>
+        <div>
+          <button [disabled]="newPatient.invalid">Submit</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
