@@ -38,7 +38,7 @@ export class AuthService {
           return { isValid: false, message: error.message };
       });
   }
-
+ 
   signupUser(user: any): Promise<any> {
     return this.afAuth.createUserWithEmailAndPassword(user.email, user.password)
       .then((result) => {

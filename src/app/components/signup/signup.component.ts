@@ -33,7 +33,7 @@ export class SignupComponent implements OnInit {
       'password': new FormControl('', Validators.required)
     });
   }
-
+ 
   signup() {
     if (this.signupForm.invalid)       // if there's an error in the form, don't submit it
       return;

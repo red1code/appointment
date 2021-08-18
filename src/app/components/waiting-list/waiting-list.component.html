@@ -10,16 +10,17 @@
         <h2>Prendre un rendez-vous avec le médecin</h2>
         <div>
           <label for="fullName">Nom Du Patient</label> <br>
-          <input type="text" formControlName="fullName" [(ngModel)]="name">
+          <input type="text" name="fullName" [formControl]="name">
         </div>
 
         <div>
           <label for="phoneNumber">Numéro De Téléphone</label> <br>
-          <input type="tel" formControlName="phoneNumber">
+          <input type="text" name="phoneNumber" [formControl]="phone">
         </div>
         <div>
-          <button [disabled]="newPatient.invalid">Submit</button>
+          <button>Submit</button>
         </div>
+        <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
       </form>
 
     </div>

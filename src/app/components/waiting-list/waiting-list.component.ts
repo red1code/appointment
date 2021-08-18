@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Patient } from 'src/app/models/patient';
 import { Observable } from 'rxjs';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-waiting-list',
@@ -13,59 +14,34 @@ import { Observable } from 'rxjs';
 })
 export class WaitingListComponent implements OnInit {
 
-  newPatient: FormGroup;
+  newPatient!: FormGroup;
   firebaseErrorMessage: string;
-  name!: string;
-  phone!: string;
-  // patientsList = getObservable(this.store.collection('patientsList'));
+  name = new FormControl('');
+  phone = new FormControl('');
 
   constructor(private authService: AuthService, private fireStore: AngularFirestore) {
-    this.newPatient = new FormGroup({
-      fullName: new FormControl('', Validators.required),
-      phoneNumber: new FormControl('', Validators.required),
-    });
     this.firebaseErrorMessage = '';
   }
 
 
   ngOnInit(): void {
+    this.newPatient = new FormGroup({
+      'fullName': new FormControl('', Validators.required),
+      'phoneNumber': new FormControl('', Validators.required),
+    });
   }
 
   submitForm() {
-    if (this.newPatient.invalid) return;
-    this.authService.addPatient(this.name, this.phone).then(
-      (result) => {
-        if (result == null) {
-          this.name = '';
-          this.phone = '';
-        }
-      }
-    );
-    
+    // if (this.newPatient.invalid) return;
+    this.fireStore.doc('/patientsList/' + this.name.value).set({
+      name: this.name.value,
+      phone: this.phone.value
+    }).then(() => {
+      this.name.setValue('');
+      this.phone.setValue('');
+    }).catch(err => {
+      this.firebaseErrorMessage = err;
+    })
   }
 
 }
-
-
-
-/*
-
-import { AngularFirestore } from 'angularfire2/firestore';
-
-constructor(private fireStore: AngularFirestore) {}
-
-DocID = const docID = firebase.firestore().collection('products').doc(doc).doc().id;
-this.fireStore.collection('products').doc(this.docid).set(
-  {
-    docID,
-    productName,
-    productDescription,
-    addedAt,
-    uploadedBy,
-    imageURL,
-    price,
-    status
-  }
-);
-
-*/
