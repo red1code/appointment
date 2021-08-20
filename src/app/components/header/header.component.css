@@ -1,11 +1,12 @@
 nav {
     background-color: #3f51b5;
     color: #ffffff;
-    padding: 15px 0;
+    padding: 15px 7px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
     vertical-align: middle;
     box-shadow: 0 0 5px 0 #000;
     position: -webkit-sticky;
@@ -18,7 +19,6 @@ nav {
     font-size: 1.5em;
     margin: 0 20px;
     width: fit-content;
-    padding: 5px;
 }
 .title a, .title a:hover {
     cursor: pointer;
@@ -27,7 +27,6 @@ nav {
     text-decoration: none;
 }
 .navigation {
-    margin-top: 3px;
     margin-right: 20px;
     width: fit-content;
     height: fit-content;
@@ -53,18 +52,19 @@ nav {
 }
 .usr-log {
     width: fit-content;
-    margin-top: 5px;
     cursor: zoom-out;
 }
 .usr-log p {
     width: fit-content;
     color: #6e84ff;
+    height: fit-content;
 }
 .logout-btn {
     color: #ffffff;
     background-color: #000;
     font-weight: 600;
-    padding: 5px 11px;
+    font-size: 1.1em;
+    padding: 7px 13px;
     border-radius: 15px;
     border-style: none;
     margin-left: 15px;

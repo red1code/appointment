@@ -6,7 +6,7 @@
   <div class="component">
     <div class="container">
 
-      <form [formGroup]="newPatient" (ngSubmit)="submitForm()">
+      <form (ngSubmit)="submitForm()">
         <h2>Prendre un rendez-vous avec le médecin</h2>
         <div>
           <label for="fullName">Nom Du Patient</label> <br>
@@ -18,9 +18,11 @@
           <input type="text" name="phoneNumber" [formControl]="phone">
         </div>
         <div>
-          <button>Submit</button>
+          <button type="submit" [disabled]="!(name.valid && phone.valid)">Submit</button>
         </div>
         <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
+
+        <div>{{ name.value }}</div>
       </form>
 
     </div>
