@@ -14,6 +14,10 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { WaitingListComponent } from './components/waiting-list/waiting-list.component';
 import { HomeComponent } from './components/home/home.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './services/auth.guard';
+import { ListService } from './services/list.service';
+import { DatabaseService } from './services/database.service';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -50,7 +54,12 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    AuthGuard,
+    ListService,
+    DatabaseService   
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

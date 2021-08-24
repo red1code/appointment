@@ -3,8 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Patient } from 'src/app/models/patient';
 import { Observable } from 'rxjs';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-waiting-list',
@@ -13,28 +13,36 @@ import { Observable } from 'rxjs';
 })
 export class WaitingListComponent implements OnInit {
 
+  form = new FormGroup({
+    fullName: new FormControl('', Validators.required),
+    phoneNumber: new FormControl('', Validators.required)
+  });
+
   firebaseErrorMessage: string;
+  patientsList: any;
 
-  name = new FormControl('', Validators.required);
-  phone = new FormControl('', Validators.required);
-
-  constructor(private authService: AuthService, private fireStore: AngularFirestore) {
+  constructor(private authService: AuthService, 
+              private fireStore: AngularFirestore,
+              private dbService: DatabaseService) {
     this.firebaseErrorMessage = '';
   }
 
-
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getPatientsList();
+  }
 
   submitForm() {
-    this.fireStore.doc('/patientsList/' + this.name.value).set({
-      name: this.name.value,
-      phone: this.phone.value
-    }).then(() => {
-      this.name.setValue('');
-      this.phone.setValue('');
-    }).catch(err => {
-      this.firebaseErrorMessage = err;
+    if (this.form.invalid) return;
+    let data = this.form.value;
+    this.dbService.createPatientsList(data).then(res => {});
+  }
+
+  getPatientsList = () => {
+    return this.dbService.getPatientsList().subscribe(res => {
+      this.patientsList = res;
     })
   }
+
+  deletePatient = (data:any) => this.dbService.deletePatient(data);
 
 }

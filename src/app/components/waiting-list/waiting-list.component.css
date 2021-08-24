@@ -4,7 +4,18 @@
     flex-wrap: wrap;
     margin: 9px 9px 25px 9px;
 }
-.component {
+.list-container {
+    flex: auto;
+    width: 700px;
+    min-width: 300px;
+    margin: 7px 11px;
+    border-radius: 3px;
+    color: black;
+    background-color: #fff;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.3);
+}
+
+.form-container {
     flex: auto;
     min-width: 300px;
     margin: 7px 11px;
@@ -13,34 +24,20 @@
     border-radius: 3px;
     box-shadow: 0 3px 5px 0 rgba(0,0,0,0.3);
 }
-.img {
-    flex: auto;
-    width: 700px;
-    min-width: 300px;
-    margin: 7px 11px;
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0 3px 5px 0 rgba(0,0,0,0.3);
-}
-.img img {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-}
-form h2 {
-    text-align: center;
-}
-form {
+.submit-form {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
-form div {
+.submit-form h2 {
+    text-align: center;
+}
+.submit-form div {
     margin: 15px auto;
 }
-form div input {
+.submit-form div input {
     width: 100%;
 }
-form div button {
+.submit-form div button {
     width: 100%;
 }
