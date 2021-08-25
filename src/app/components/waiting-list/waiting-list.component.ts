@@ -34,7 +34,9 @@ export class WaitingListComponent implements OnInit {
   submitForm() {
     if (this.form.invalid) return;
     let data = this.form.value;
-    this.dbService.createPatientsList(data).then(res => {});
+    this.dbService.createPatientsList(data).then(res => {
+      this.form.reset();
+    });
   }
 
   getPatientsList = () => {

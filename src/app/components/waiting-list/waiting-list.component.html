@@ -1,13 +1,4 @@
 <div class="container">
-  <div class="list-container">
-    <tr *ngFor="let patient of patientsList">
-      <td>Nom de patient : {{ patient.payload.doc.data().fullName }},</td>
-      <td>Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</td>
-      <td (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i>
-      </td>
-    </tr>
-  </div>
-
   <div class="form-container">
     <form (ngSubmit)="submitForm()" [formGroup]="form" class="submit-form">
       <h2>Prendre un rendez-vous avec le médecin</h2>
@@ -28,5 +19,14 @@
 
       <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
     </form>
+  </div>
+
+  <div class="list-container">
+    <tr *ngFor="let patient of patientsList">
+      <td>Nom de patient : {{ patient.payload.doc.data().fullName }}, </td>
+      <td> - Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</td>
+      <td (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i>
+      </td>
+    </tr>
   </div>
 </div>
