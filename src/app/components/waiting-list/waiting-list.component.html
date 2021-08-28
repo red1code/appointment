@@ -1,32 +1,35 @@
-<div class="container">
-  <div class="form-container">
-    <form (ngSubmit)="submitForm()" [formGroup]="form" class="submit-form">
-      <h2>Prendre un rendez-vous avec le médecin</h2>
+<div class="container-fluid">
+  <div class="row align-items-center justify-content-center no-gutters">
+    <div class="col-md-4">
+      <form (ngSubmit)="submitForm()" [formGroup]="form" class="submit-form">
+        <h2>Prendre un rendez-vous avec le médecin</h2>
 
-      <div>
-        <label for="fullName">Nom Du Patient</label> <br>
-        <input type="text" formControlName="fullName">
-      </div>
+        <div>
+          <label for="fullName">Nom Du Patient</label> <br>
+          <input type="text" formControlName="fullName">
+        </div>
 
-      <div>
-        <label for="phoneNumber">Numéro De Téléphone</label> <br>
-        <input type="tel" formControlName="phoneNumber">
-      </div>
+        <div>
+          <label for="phoneNumber">Numéro De Téléphone</label> <br>
+          <input type="tel" formControlName="phoneNumber">
+        </div>
 
-      <div>
-        <button type="submit" [disabled]="this.form.invalid">Submit</button>
-      </div>
+        <div>
+          <button type="submit" [disabled]="this.form.invalid">Submit</button>
+        </div>
 
-      <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
-    </form>
-  </div>
+        <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
+      </form>
+    </div>
 
-  <div class="list-container">
-    <tr *ngFor="let patient of patientsList">
-      <td>Nom de patient : {{ patient.payload.doc.data().fullName }}, </td>
-      <td> - Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</td>
-      <td (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i>
-      </td>
-    </tr>
+    <div class="col-md-8">
+      <tr *ngFor="let patient of patientsList">
+        <td>Nom de patient : {{ patient.payload.doc.data().fullName }}, </td>
+        <td> - Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</td>
+        <td (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i>
+        </td>
+      </tr>
+      <h1 *ngIf="patientsList.length === 0" style="opacity: 0.3; text-align: center;">List Empty</h1>
+    </div>
   </div>
 </div>
