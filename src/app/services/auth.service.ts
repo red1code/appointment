@@ -44,11 +44,8 @@ export class AuthService {
       .then((result) => {
         let emailLower = user.email.toLowerCase();
         this.aFstore.doc('/users/' + emailLower).set({
-          accountType: 'endUser',
-          displayName: user.displayName,
-          displayName_lower: user.displayName.toLowerCase(),
+          fullName: user.displayName,
           email: user.email,
-          email_lower: emailLower
         });
         // result.user.sendEmailVerification();                 // immediately send the user a verification email
 
@@ -122,6 +119,10 @@ export class AuthService {
         patientPhoneNumber: phone
       }
     )
+  }
+
+  getUsersList() {
+    return this.aFstore.collection('users').snapshotChanges();
   }
 
 }

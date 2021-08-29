@@ -30,3 +30,20 @@
 .submit-form div button {
     width: 100%;
 }
+.list-container {
+    display: flex;
+    flex-direction: row;
+}
+.list-container div {
+    margin: 3px 0;
+    padding: 5px 11px;
+}
+.editPat, .deletePat {
+    width: fit-content;
+}
+.patTel {
+    width: fit-content;
+}
+.patName {
+    width: 35%;
+}

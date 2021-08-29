@@ -3,32 +3,28 @@
     <div class="col-md-4">
       <form (ngSubmit)="submitForm()" [formGroup]="form" class="submit-form">
         <h2>Prendre un rendez-vous avec le médecin</h2>
-
         <div>
           <label for="fullName">Nom Du Patient</label> <br>
           <input type="text" formControlName="fullName">
         </div>
-
         <div>
           <label for="phoneNumber">Numéro De Téléphone</label> <br>
           <input type="tel" formControlName="phoneNumber">
         </div>
-
         <div>
           <button type="submit" [disabled]="this.form.invalid">Submit</button>
         </div>
-
         <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
       </form>
     </div>
 
     <div class="col-md-8">
-      <tr *ngFor="let patient of patientsList">
-        <td>Nom de patient : {{ patient.payload.doc.data().fullName }}, </td>
-        <td> - Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</td>
-        <td (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i>
-        </td>
-      </tr>
+      <div *ngFor="let patient of patientsList" class="list-container">
+        <div class="patName">Nom de patient : {{ patient.payload.doc.data().fullName }}</div>
+        <div class="patTel">Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</div>
+        <div class="editPat" (click)="editInfo(patient)"><i class="fas fa-edit"></i></div>
+        <div class="deletePat" (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i></div>
+      </div>
       <h1 *ngIf="patientsList.length === 0" style="opacity: 0.3; text-align: center;">List Empty</h1>
     </div>
   </div>

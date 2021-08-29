@@ -3,8 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { DatabaseService } from 'src/app/services/database.service';
+import { MatDialog }from '@angular/material/dialog';
 
 @Component({
   selector: 'app-waiting-list',
@@ -13,17 +13,18 @@ import { DatabaseService } from 'src/app/services/database.service';
 })
 export class WaitingListComponent implements OnInit {
 
+  firebaseErrorMessage: string;
+  patientsList: any;
+
   form = new FormGroup({
     fullName: new FormControl('', Validators.required),
     phoneNumber: new FormControl('', Validators.required)
   });
 
-  firebaseErrorMessage: string;
-  patientsList: any;
-
   constructor(private authService: AuthService, 
               private fireStore: AngularFirestore,
-              private dbService: DatabaseService) {
+              private dbService: DatabaseService,
+              private dialog: MatDialog) {
     this.firebaseErrorMessage = '';
   }
 
@@ -46,5 +47,15 @@ export class WaitingListComponent implements OnInit {
   }
 
   deletePatient = (data:any) => this.dbService.deletePatient(data);
+
+  editInfo = (patient:any) => {
+    let formEdited = this.form = new FormGroup({
+      fullName: new FormControl(patient.payload.doc.data().fullName, Validators.required),
+      phoneNumber: new FormControl(patient.payload.doc.data().phoneNumber, Validators.required)
+    });
+    if (formEdited.invalid) return;
+    let data = formEdited.value;
+    this.fireStore.collection("patientsList").doc(patient.payload.doc.id).update(data);
+  }
 
 }

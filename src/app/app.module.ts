@@ -22,11 +22,15 @@ import { DatabaseService } from './services/database.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -47,12 +51,16 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatDialogModule,
+    MatCardModule,
+    MatInputModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireDatabaseModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ],
   providers: [
     AuthService,
