@@ -1,23 +1,19 @@
 <div class="container-fluid">
     <h2>Log In</h2>
     <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
-
         <div>
             <label for="email">Email</label> <br>
             <input formControlName="email" type="email" placeholder="Email">
         </div>
-
         <div>
             <label for="password">Password</label> <br>
             <input autocomplete="off" formControlName="password" type="password" placeholder="Password">
         </div>
-
         <div *ngIf="firebaseErrorMessage != ''" class="error-style">
             <span>{{ firebaseErrorMessage }}</span>
         </div>
-
         <div>
-            <button>Log In</button>
+            <button class="btn btn-primary">Log In</button>
         </div>
     </form>
 </div>

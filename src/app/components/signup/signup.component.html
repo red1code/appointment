@@ -5,23 +5,19 @@
             <label for="displayName">Full Name</label> <br>
             <input autocomplete="off" formControlName="displayName" type="text" placeholder="Display Name">
         </div>
-
         <div>
             <label for="email">Email</label> <br>
             <input formControlName="email" type="email" placeholder="Email">
         </div>
-
         <div>
             <label for="password">Password</label> <br>
             <input autocomplete="off" formControlName="password" type="password" placeholder="Password">
         </div>
-
         <div *ngIf="firebaseErrorMessage != ''" class="error-style">
             <span>{{ firebaseErrorMessage }}</span>
         </div>
-
         <div>
-            <button>Signup</button>
+            <button class="btn btn-primary">Signup</button>
         </div>
     </form>
 </div>
