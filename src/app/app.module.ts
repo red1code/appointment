@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+ 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { HeaderComponent } from './components/header/header.component';
-import { environment } from 'src/environments/environment';
+import { environment } from '../environments/environment';
 import { ForgotPswComponent } from './components/forgot-psw/forgot-psw.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { WaitingListComponent } from './components/waiting-list/waiting-list.component';
