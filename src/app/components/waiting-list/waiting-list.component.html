@@ -20,8 +20,8 @@
 
     <div class="col-md-8">
       <div *ngFor="let patient of patientsList" class="list-container">
-        <div class="patName">Nom de patient : {{ patient.payload.doc.data().fullName }}</div>
-        <div class="patTel">Tel de patient : {{ patient.payload.doc.data().phoneNumber }}</div>
+        <div class="patName">Nom de patient: {{ patient.payload.doc.data().fullName }}</div>
+        <div class="patTel">Téléphone: {{ patient.payload.doc.data().phoneNumber }}</div>
         <div class="editPat" (click)="editInfo(patient)"><i class="fas fa-edit"></i></div>
         <div class="deletePat" (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i></div>
       </div>
