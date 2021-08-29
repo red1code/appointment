@@ -25,6 +25,7 @@ export class WaitingListComponent implements OnInit {
               private fireStore: AngularFirestore,
               private dbService: DatabaseService,
               private dialog: MatDialog) {
+                
     this.firebaseErrorMessage = '';
   }
 

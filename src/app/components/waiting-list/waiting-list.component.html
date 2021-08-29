@@ -12,7 +12,7 @@
           <input type="tel" formControlName="phoneNumber">
         </div>
         <div>
-          <button type="submit" [disabled]="this.form.invalid">Submit</button>
+          <button class="btn btn-primary" type="submit" [disabled]="this.form.invalid">Submit</button>
         </div>
         <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div>
       </form>
