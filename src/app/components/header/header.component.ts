@@ -10,14 +10,15 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HeaderComponent implements OnInit {
 
-  userName:any;
+  user: any;
+  info: any;
 
   constructor(public afAuth: AngularFireAuth,
               private afStore: AngularFirestore,
               private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.getUserName();
+    this.getUser();
   }
 
   logOut() {
@@ -30,11 +31,11 @@ export class HeaderComponent implements OnInit {
   //   })
   // }
 
-  getUserName = () => {
+  getUser = () => {
     this.afAuth.onAuthStateChanged((user) => {
       if (user) {
         this.afStore.collection('users').doc(user.uid).get().subscribe((doc:any) => {
-          this.userName = user.email;
+          this.user = user.email;
         })
       }
     });

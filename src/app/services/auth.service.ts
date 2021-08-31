@@ -41,13 +41,13 @@ export class AuthService {
  
   signupUser(user: any): Promise<any> {
     return this.afAuth.createUserWithEmailAndPassword(user.email, user.password)
-      .then((result) => {
+      .then((result:any) => {
         let emailLower = user.email.toLowerCase();
         this.aFstore.doc('/users/' + emailLower).set({
           fullName: user.displayName,
           email: user.email,
         });
-        // result.user.sendEmailVerification();                 // immediately send the user a verification email
+        result.user.sendEmailVerification();                 // immediately send the user a verification email
 
       }).catch((error):any => {
         console.log('Auth Service: signup error', error);

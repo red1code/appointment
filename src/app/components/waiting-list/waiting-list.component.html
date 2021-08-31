@@ -2,7 +2,7 @@
   <div class="row align-items-center justify-content-center no-gutters">
     <div class="col-md-4">
       <form (ngSubmit)="submitForm()" [formGroup]="form" class="submit-form">
-        <h2>Prendre un rendez-vous avec le médecin</h2>
+        <h2>Prendre un rendez-vous!</h2>
         <div>
           <label for="fullName">Nom Du Patient</label> <br>
           <input type="text" formControlName="fullName">
@@ -19,13 +19,59 @@
     </div>
 
     <div class="col-md-8">
-      <div *ngFor="let patient of patientsList" class="list-container">
-        <div class="patName">Nom de patient: {{ patient.payload.doc.data().fullName }}</div>
-        <div class="patTel">Téléphone: {{ patient.payload.doc.data().phoneNumber }}</div>
-        <div class="editPat" (click)="editInfo(patient)"><i class="fas fa-edit"></i></div>
-        <div class="deletePat" (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i></div>
-      </div>
-      <h1 *ngIf="patientsList.length === 0" style="opacity: 0.3; text-align: center;">List Empty</h1>
+      <table *ngIf="patientsList.length != 0" class="table">
+        <thead>
+          <th>Full Name</th>
+          <th>Phone Number</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let patient of patientsList">
+            <td>{{ patient.payload.doc.data().fullName }}</td>
+            <td>{{ patient.payload.doc.data().phoneNumber }}</td>
+            <td (click)="show = true"><i class="fas fa-edit"></i></td>
+            <td (click)="deletePatient(patient)"><i class="fas fa-trash-alt"></i></td>
+          </tr>
+        </tbody>
+      </table>
+      <h1 *ngIf="patientsList.length === 0" style="opacity: 0.3; text-align: center;">Empty List</h1>
     </div>
   </div>
 </div>
+
+<!-- popup form here -->
+<div *ngIf="show" class="popup-form">
+
+  <form (ngSubmit)="updateForm()" [formGroup]="formEdited" class="submit-form">
+    <div style="font-size: 21px; padding: 5px; width: fit-content; float: right; cursor: pointer;" (click)="show=false"
+      title="Close Form">&times;</div>
+    <h2>Update infos</h2>
+    <div>
+      <label for="fullName2">Update name</label> <br>
+      <input type="text" formControlName="fullName2">
+    </div>
+    <div>
+      <label for="phoneNumber2">Update phone number</label> <br>
+      <input type="tel" formControlName="phoneNumber2">
+    </div>
+    <div>
+      <button class="btn btn-primary" type="submit" [disabled]="this.formEdited.invalid">Update</button>
+    </div>
+    <!-- <div *ngIf="firebaseErrorMessage != ''">{{ firebaseErrorMessage }}</div> -->
+  </form>
+</div>
+
+
+
+<!-- 
+  <div *ngFor="let patient of patientsList" class="list-container">
+        <div class="patName">Nom de patient: {{ patient.payload.doc.data().fullName }}</div>
+        <div class="patTel">Téléphone: {{ patient.payload.doc.data().phoneNumber }}</div>
+        <div *ngIf="userEmail === fUserEmail" class="editPat" (click)="show = true">
+          <i class="fas fa-edit"></i>
+        </div>
+        <div *ngIf="userEmail === fUserEmail" class="deletePat" (click)="deletePatient(patient)">
+          <i class="fas fa-trash-alt"></i>
+        </div>
+      </div>
+      <h1 *ngIf="patientsList.length === 0" style="opacity: 0.3; text-align: center;">Empty List</h1>
+ -->

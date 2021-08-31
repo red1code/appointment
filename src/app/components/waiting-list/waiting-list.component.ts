@@ -15,30 +15,58 @@ export class WaitingListComponent implements OnInit {
 
   firebaseErrorMessage: string;
   patientsList: any;
+  show: boolean;
+  userEmail: any;
+  fUserEmail: any;
+  carrier: any;
 
   form = new FormGroup({
     fullName: new FormControl('', Validators.required),
     phoneNumber: new FormControl('', Validators.required)
   });
 
+  formEdited!: FormGroup;
+
   constructor(private authService: AuthService, 
               private fireStore: AngularFirestore,
               private dbService: DatabaseService,
+              public afAuth: AngularFireAuth,
               private dialog: MatDialog) {
                 
     this.firebaseErrorMessage = '';
+    this.show = false;
   }
 
   ngOnInit(): void {
     this.getPatientsList();
+    this.getAuthEmail();
+    this.getFstoreEmail();
   }
 
-  submitForm() {
+  getAuthEmail = () => {
+    this.afAuth.onAuthStateChanged((user) => {
+      if (user) {
+        this.userEmail = user.email;
+      }
+    })
+  }
+
+  getFstoreEmail() {
+    this.afAuth.onAuthStateChanged((user) => {
+      if (user) {
+        this.fireStore.collection('patientsList').doc(user.uid).get().subscribe(() => {
+          this.fUserEmail = user.email;
+        })
+      }
+    })
+  }
+
+  submitForm = () => {
     if (this.form.invalid) return;
     let data = this.form.value;
-    this.dbService.createPatientsList(data).then(res => {
-      this.form.reset();
-    });
+    this.dbService.createPatientsList(data);
+    this.form.reset();
+    
   }
 
   getPatientsList = () => {
@@ -50,13 +78,40 @@ export class WaitingListComponent implements OnInit {
   deletePatient = (data:any) => this.dbService.deletePatient(data);
 
   editInfo = (patient:any) => {
-    let formEdited = this.form = new FormGroup({
-      fullName: new FormControl(patient.payload.doc.data().fullName, Validators.required),
-      phoneNumber: new FormControl(patient.payload.doc.data().phoneNumber, Validators.required)
+    this.show = true;
+    this.formEdited = new FormGroup({
+      fullName2: new FormControl(patient.payload.doc.data().fullName, Validators.required),
+      phoneNumber2: new FormControl(patient.payload.doc.data().phoneNumber, Validators.required)
     });
-    if (formEdited.invalid) return;
-    let data = formEdited.value;
-    this.fireStore.collection("patientsList").doc(patient.payload.doc.id).update(data);
+    this.carrier = patient;
+  }
+
+  updateForm = () => {
+    if (this.formEdited.invalid) return;
+    if (!this.formEdited.valueChanges) return;
+    let data = this.formEdited.value;
+    this.fireStore.collection("patientsList").doc(data.payload.doc.id).update({
+      fullName: data.fullName2,
+      phoneNumber: data.phoneNumber2
+    }).then(() => {
+      this.formEdited.reset();
+      this.show = false;
+    }); 
   }
 
 }
+
+
+
+
+
+/*
+
+formEdited = new FormGroup({
+    fullName2: new FormControl(patient.payload.doc.data().fullName, Validators.required),
+    phoneNumber2: new FormControl(patient.payload.doc.data().phoneNumber, Validators.required)
+  });
+
+*/
+
+// this.fireStore.collection("patientsList").doc(patient.payload.doc.id).update(data);

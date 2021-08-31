@@ -1,14 +1,23 @@
+.top-heading {
+    background-color: #ffffff;
+    color: #3f51b5;
+    padding-top: 7px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
 nav {
     background-color: #3f51b5;
     color: #ffffff;
-    padding: 15px 7px;
+    height: 50px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     vertical-align: middle;
-    box-shadow: 0 0 5px 0 #000;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
@@ -17,7 +26,7 @@ nav {
 .title {
     font-family: sans-serif;
     font-size: 1.5em;
-    margin: 0 20px;
+    margin: 0 auto;
     width: fit-content;
 }
 .title a, .title a:hover {
@@ -27,28 +36,35 @@ nav {
     text-decoration: none;
 }
 .navigation {
-    margin-right: 20px;
+    margin-left: 11px;
     width: fit-content;
     height: fit-content;
     vertical-align: middle;
 
 }
-.navigation a {
+.navigation a, .auth a {
     color: white;
     font-size: 1.2em;
-    padding: 7px 13px;
+    padding: 7px 15px;
     border-radius: 3px;
     text-decoration: none;
     cursor: pointer;
     width: fit-content;
     height: fit-content;
-    margin-right: 5px;
+    margin: 0 5px;
 
 }
-.navigation a:hover {
+.navigation a:hover, .auth a:hover {
     color: #3f51b5;
     background: #ffffff;
     transition: 0.5s;
+}
+.auth {
+    margin-right: 11px;
+    width: fit-content;
+    height: fit-content;
+    vertical-align: middle;
+
 }
 .usr-log {
     width: fit-content;
@@ -56,26 +72,25 @@ nav {
 }
 .usr-log p {
     width: fit-content;
-    color: #ffffff;
+    color: #3f51b5;
     height: fit-content;
     opacity: 0.7;
 }
 .logout-btn {
-    color: #3f51b5;
+    color: #fff;
     font-weight: 600;
     font-size: 1.1em;
-    padding: 7px 13px;
+    padding: 7px 15px;
     border-radius: 15px;
     border-style: none;
     margin-left: 15px;
-    border: 0.5px solid #fff;
-    border-radius: 5px;
+    border: 1px solid #fff;
+    border-radius: 3px;
     box-shadow: 0 0 2px 0 #000;
 }
 .logout-btn:hover {
-    color: #ffffff;
-    background-color: #3f51b5;
-    border-color: #fff;
+    color: #3f51b5;
+    background-color: #fff;
     transition: 0.5s;
 }
 .active {
@@ -83,28 +98,34 @@ nav {
     color: #3f51b5 !important;
 }
 
-@media only screen and (max-width: 600px){
+@media only screen and (max-width: 600px) {
     nav {
         display: block;
-        padding: 9px 0;
+        height: fit-content;
+        padding: 5px 0;
     }
     .title {
-        display: block;
-        margin: 0 auto;
+        display: none;
+        /* margin: 0 auto;
         text-align: center;
         width: 100%;
-        padding-bottom: 9px;
-        border-bottom: 0.5px solid #ffffff;
+        padding: 7px 0;
+        margin: 5px auto;
+        border-top: 0.5px solid #ffffff;
+        border-bottom: 0.5px solid #ffffff; */
     }
     .usr-log {
-        margin: 0 auto 5px auto;
+        margin: 0 auto;
     }
     .navigation {
-        margin: 9px auto 0 auto;        
+        margin: 3px auto 25px auto;        
     }
-    .navigation a {
+    .auth {
+        margin: 25px auto 3px auto;
+    }
+    .navigation a, .auth a {
         display: block;
-        margin: 3px auto;
+        margin: 5px auto;
     }
     .logout-btn {
         display: block;
@@ -112,9 +133,24 @@ nav {
     }
 }
 
-
-/* mat-toolbar {
+@media only screen and (max-width: 400px) {
+    .top-heading {
+        height: fit-content;
+        text-align: center;
+        padding-top: 3;
+        padding-bottom: 0px;
+    } 
+    .usr-log p span {
+        display: block;
     
-    background-color: #3f51b5;
-    color: #fff;
-} */
+    }
+}
+
+
+
+/*
+    
+background-color: #3f51b5;
+color: #fff;
+
+*/

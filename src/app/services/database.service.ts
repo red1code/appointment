@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
@@ -6,18 +7,11 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class DatabaseService {
 
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) { }
 
   createPatientsList(data:any) {
-    return new Promise<any>((resolve, reject) => {
-      this.firestore.collection('patientsList').add(data)
-      .then(res => {
-        resolve(res);
-        console.log(res);
-      }, err => {
-        reject(err);
-        console.log(err);
-      });
+    return new Promise<any>(() => {
+      this.firestore.collection('patientsList').add(data);
     });
   }
 
@@ -26,7 +20,35 @@ export class DatabaseService {
   }
 
   deletePatient(data: any) {
-    return this.firestore.collection("patientsList").doc(data.payload.doc.id).delete();
+    if (confirm("Are you sure You wanna delete this?")) {
+      this.firestore.collection("patientsList").doc(data.payload.doc.id).delete();
+    }
+    
+  }
+
+  updatePatientInfos(data: any) {
+    return this.firestore.collection("patientsList").doc(data.payload.doc.id).update({
+      fullName: data.fullName2,
+      phoneNumber: data.phoneNumber2
+    });
   }
 
 }
+
+
+
+
+
+/*
+
+{
+  fullName: data.fullName.value,
+  phoneNumber: data.phoneNumber.value,
+  email: this.auth.onAuthStateChanged((user:any) => {
+    if (user) {
+      return user.email;
+    }
+  })
+}
+
+*/
