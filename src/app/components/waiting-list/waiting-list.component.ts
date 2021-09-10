@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
@@ -13,11 +13,8 @@ export class WaitingListComponent implements OnInit {
 
   firebaseErrorMessage: string;
   patientsList: any;
-  show: boolean;
   createForm!: FormGroup;
-  updateForm!: FormGroup;
   id: string;
-  updating: boolean;
 
   constructor(private formBuilder: FormBuilder,
               private fireStore: AngularFirestore,
@@ -25,8 +22,6 @@ export class WaitingListComponent implements OnInit {
               public afAuth: AngularFireAuth)
     {
       this.firebaseErrorMessage = '';
-      this.show = false;
-      this.updating = false;
       this.id = '';
     }
 
@@ -48,7 +43,7 @@ export class WaitingListComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmitForm() {
     let data = this.createForm.value;
     if (this.id === '') {
       this.dbService.createPatientsList(data);
@@ -76,18 +71,3 @@ export class WaitingListComponent implements OnInit {
   }
 
 }
-
-
-
-
-
-/*
-
-formEdited = new FormGroup({
-    fullName2: new FormControl(patient.payload.doc.data().fullName, Validators.required),
-    phoneNumber2: new FormControl(patient.payload.doc.data().phoneNumber, Validators.required)
-  });
-
-*/
-
-// this.fireStore.collection("patientsList").doc(patient.payload.doc.id).update(data);

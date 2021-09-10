@@ -1,8 +1,8 @@
-<div class="global" style="min-height: 80vh;">
+<div class="global" style="min-height: 100vh;">
   <div class="container-fluid">
     <div class="row align-items-center justify-content-center no-gutters">
       <div class="col-md-4">
-        <form (ngSubmit)="onSubmit()" [formGroup]="createForm" class="submit-form">
+        <form (ngSubmit)="onSubmitForm()" [formGroup]="createForm" class="submit-form">
           <h2>Prendre un rendez-vous!</h2>
           <div>
             <label for="fullName">Nom Du Patient</label> <br>
@@ -34,13 +34,15 @@
             <tr *ngFor="let patient of patientsList">
               <td>{{ patient.payload.doc.data().fullName }}</td>
               <td>{{ patient.payload.doc.data().phoneNumber }}</td>
-              <td><i class="fas fa-edit" (click)="onUpdateIcon(patient)"
-                     style="cursor: pointer; padding: 5px; color: #0d6efd;">
-                  </i>
+              <td>
+                <i class="fas fa-edit" (click)="onUpdateIcon(patient)"
+                   style="cursor: pointer; padding: 5px; color: #0d6efd;">
+                </i>
               </td>
-              <td><i class="fas fa-trash-alt" (click)="onDelete(patient)"
-                     style="cursor: pointer; padding: 5px; color: #dc3545;">
-                  </i>
+              <td>
+                <i class="fas fa-trash-alt" (click)="onDelete(patient)"
+                   style="cursor: pointer; padding: 5px; color: #dc3545;">
+                </i>
               </td>
             </tr>
           </tbody>
