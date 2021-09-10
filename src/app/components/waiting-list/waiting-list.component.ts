@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { DatabaseService } from 'src/app/services/database.service';
-import { MatDialog }from '@angular/material/dialog';
 
 @Component({
   selector: 'app-waiting-list',
@@ -16,87 +14,65 @@ export class WaitingListComponent implements OnInit {
   firebaseErrorMessage: string;
   patientsList: any;
   show: boolean;
-  userEmail: any;
-  fUserEmail: any;
-  carrier: any;
+  createForm!: FormGroup;
+  updateForm!: FormGroup;
+  id: string;
+  updating: boolean;
 
-  form = new FormGroup({
-    fullName: new FormControl('', Validators.required),
-    phoneNumber: new FormControl('', Validators.required)
-  });
-
-  formEdited!: FormGroup;
-
-  constructor(private authService: AuthService, 
+  constructor(private formBuilder: FormBuilder,
               private fireStore: AngularFirestore,
               private dbService: DatabaseService,
-              public afAuth: AngularFireAuth,
-              private dialog: MatDialog) {
-                
-    this.firebaseErrorMessage = '';
-    this.show = false;
-  }
+              public afAuth: AngularFireAuth)
+    {
+      this.firebaseErrorMessage = '';
+      this.show = false;
+      this.updating = false;
+      this.id = '';
+    }
 
   ngOnInit(): void {
     this.getPatientsList();
-    this.getAuthEmail();
-    this.getFstoreEmail();
+    this.initForm();
   }
 
-  getAuthEmail = () => {
-    this.afAuth.onAuthStateChanged((user) => {
-      if (user) {
-        this.userEmail = user.email;
-      }
-    })
-  }
-
-  getFstoreEmail() {
-    this.afAuth.onAuthStateChanged((user) => {
-      if (user) {
-        this.fireStore.collection('patientsList').doc(user.uid).get().subscribe(() => {
-          this.fUserEmail = user.email;
-        })
-      }
-    })
-  }
-
-  submitForm = () => {
-    if (this.form.invalid) return;
-    let data = this.form.value;
-    this.dbService.createPatientsList(data);
-    this.form.reset();
-    
-  }
-
-  getPatientsList = () => {
+  getPatientsList() {
     return this.dbService.getPatientsList().subscribe(res => {
       this.patientsList = res;
     })
   }
 
-  deletePatient = (data:any) => this.dbService.deletePatient(data);
-
-  editInfo = (patient:any) => {
-    this.show = true;
-    this.formEdited = new FormGroup({
-      fullName2: new FormControl(patient.payload.doc.data().fullName, Validators.required),
-      phoneNumber2: new FormControl(patient.payload.doc.data().phoneNumber, Validators.required)
+  initForm() {
+    this.createForm = this.formBuilder.group({
+      fullName: ['', [Validators.required]],
+      phoneNumber: ['', Validators.required]
     });
-    this.carrier = patient;
   }
 
-  updateForm = () => {
-    if (this.formEdited.invalid) return;
-    if (!this.formEdited.valueChanges) return;
-    let data = this.formEdited.value;
-    this.fireStore.collection("patientsList").doc(data.payload.doc.id).update({
-      fullName: data.fullName2,
-      phoneNumber: data.phoneNumber2
-    }).then(() => {
-      this.formEdited.reset();
-      this.show = false;
-    }); 
+  onSubmit() {
+    let data = this.createForm.value;
+    if (this.id === '') {
+      this.dbService.createPatientsList(data);
+      this.createForm.reset();
+    } else {
+      this.fireStore.collection("patientsList").doc(this.id).update(data);
+      this.createForm.reset();
+      this.id = '';
+    }     
+  }  
+
+  onUpdateIcon(patient: any) {
+    this.createForm = this.formBuilder.group({
+      fullName: [patient.payload.doc.data().fullName, [Validators.required]],
+      phoneNumber: [patient.payload.doc.data().phoneNumber, Validators.required]
+    });
+    this.id = patient.payload.doc.id;
+  }
+
+  onDelete = (data:any) => this.dbService.deletePatient(data);
+
+  resetForm() {
+    this.createForm.reset();
+    this.id = '';
   }
 
 }

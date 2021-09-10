@@ -18,8 +18,7 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPswComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'home', component: HomeComponent },
-  { path: '**', component: HomeComponent },
-
+  { path: '**', component: HomeComponent }
 ];
 
 @NgModule({
