@@ -7,7 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class DatabaseService {
 
-  constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) { }
+  constructor(private firestore: AngularFirestore) {}
 
   createPatientsList(data:any) {
     return new Promise<any>(() => {

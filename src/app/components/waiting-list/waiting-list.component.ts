@@ -12,13 +12,13 @@ import { DatabaseService } from 'src/app/services/database.service';
 export class WaitingListComponent implements OnInit {
 
   firebaseErrorMessage: string;
-  patientsList: any;
   createForm!: FormGroup;
+  patientsList: any;
   id: string;
 
   constructor(private formBuilder: FormBuilder,
-              private fireStore: AngularFirestore,
-              private dbService: DatabaseService,
+              private angularFirestore: AngularFirestore,
+              private databaseService: DatabaseService,
               public afAuth: AngularFireAuth)
     {
       this.firebaseErrorMessage = '';
@@ -31,7 +31,7 @@ export class WaitingListComponent implements OnInit {
   }
 
   getPatientsList() {
-    return this.dbService.getPatientsList().subscribe(res => {
+    return this.databaseService.getPatientsList().subscribe(res => {
       this.patientsList = res;
     })
   }
@@ -46,10 +46,10 @@ export class WaitingListComponent implements OnInit {
   onSubmitForm() {
     let data = this.createForm.value;
     if (this.id === '') {
-      this.dbService.createPatientsList(data);
+      this.databaseService.createPatientsList(data);
       this.createForm.reset();
     } else {
-      this.fireStore.collection("patientsList").doc(this.id).update(data);
+      this.angularFirestore.collection("patientsList").doc(this.id).update(data);
       this.createForm.reset();
       this.id = '';
     }     
@@ -63,7 +63,7 @@ export class WaitingListComponent implements OnInit {
     this.id = patient.payload.doc.id;
   }
 
-  onDelete = (data:any) => this.dbService.deletePatient(data);
+  onDelete = (data:any) => this.databaseService.deletePatient(data);
 
   resetForm() {
     this.createForm.reset();
