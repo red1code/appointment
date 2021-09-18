@@ -19,3 +19,6 @@
 .noAccount a:hover {
     color: #3f51b5;
 }
+.error-style {
+    color: #d43f3a;
+}
