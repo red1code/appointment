@@ -125,4 +125,14 @@ export class AuthService {
     return this.aFstore.collection('users').snapshotChanges();
   }
 
+  getUser() {
+    this.afAuth.onAuthStateChanged((user) => {
+      if (user) {
+        this.aFstore.collection('users').doc(user.uid).get().subscribe((doc:any) => {
+          return user.email;
+        })
+      }
+    })
+  }
+
 }

@@ -1,23 +1,25 @@
 <div class="top-heading">
     <div class="usr-log">
-        <p *ngIf="(afAuth.user | async)"><span>You are logged in as: </span><span>{{ user }}</span></p>
-        <p *ngIf="!(afAuth.user | async)">You Are Not Logged In</p>
+        <p *ngIf="(angularFireAuth.user | async)">
+            <span>Welcome back, </span><span>{{ user }}</span>
+        </p>
+        <p *ngIf="!(angularFireAuth.user | async)">You Are Not Logged In</p>
     </div>
 </div>
 
 <nav>
     <div class="navigation">
         <a routerLink="/home" routerLinkActive="active">Home</a>
-        <a *ngIf="(afAuth.user | async)" routerLink="/waiting-list" routerLinkActive="active">Waiting List</a>
+        <a *ngIf="(angularFireAuth.user | async)" routerLink="/waiting-list" routerLinkActive="active">Waiting List</a>
     </div>
     <div>{{ info }}</div>
     <div class="title"  title="LOGO: navigate to home">
         <a routerLink="/home">Rendez-vous-App</a>
     </div>
     <div class="auth">
-        <a *ngIf="!(afAuth.user | async)" routerLink="/login">Sign in</a>
-        <!-- <a *ngIf="!(afAuth.user | async)" routerLink="/signup" routerLinkActive="active">Sign up</a> -->
-        <a *ngIf="(afAuth.user | async)" class="logout-btn" (click)="logOut()" title="Log out">
+        <a *ngIf="!(angularFireAuth.user | async)" routerLink="/login">Sign in</a>
+        <!-- <a *ngIf="!(angularFireAuth.user | async)" routerLink="/signup" routerLinkActive="active">Sign up</a> -->
+        <a *ngIf="(angularFireAuth.user | async)" class="logout-btn" (click)="logOut()" title="Log out">
             Sign Out
         </a>
     </div>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { DatabaseService } from 'src/app/services/database.service';
+import { Patient } from 'src/app/models/patient';
 
 @Component({
   selector: 'app-waiting-list',
@@ -14,7 +15,9 @@ export class WaitingListComponent implements OnInit {
   firebaseErrorMessage: string;
   createForm!: FormGroup;
   patientsList: any;
+  patient!: Patient;
   id: string;
+  tm = new Date();
 
   constructor(private formBuilder: FormBuilder,
               private angularFirestore: AngularFirestore,
@@ -44,7 +47,7 @@ export class WaitingListComponent implements OnInit {
   }
 
   onSubmitForm() {
-    let data = this.createForm.value;
+    let data = this.createForm.value;    
     if (this.id === '') {
       this.databaseService.createPatientsList(data);
       this.createForm.reset();

@@ -13,7 +13,7 @@ export class HeaderComponent implements OnInit {
   user: any;
   info: any;
 
-  constructor(public afAuth: AngularFireAuth,
+  constructor(public angularFireAuth: AngularFireAuth,
               private afStore: AngularFirestore,
               private authService: AuthService) { }
 
@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logOut() {
-    this.afAuth.signOut();
+    this.angularFireAuth.signOut();
   }
 
   // getUsersList = () => {
@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
   // }
 
   getUser = () => {
-    this.afAuth.onAuthStateChanged((user) => {
+    this.angularFireAuth.onAuthStateChanged((user) => {
       if (user) {
         this.afStore.collection('users').doc(user.uid).get().subscribe((doc:any) => {
           this.user = user.email;
