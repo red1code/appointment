@@ -8,22 +8,22 @@ import { AngularFireAuth } from '@angular/fire/auth'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private router: Router, private angularFireAuth: AngularFireAuth) {}
+  constructor(private router: Router, private angularFireAuth: AngularFireAuth) { }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return new Promise((resolve, reject) => {
-      this.angularFireAuth.onAuthStateChanged((user) => {
-        if (user) {
-          resolve(true);
-        } else {
-          console.log('Auth guard : user is not logged in');
-          this.router.navigate(['/home']);
-          resolve(false);
-        }
+  canActivate(route: ActivatedRouteSnapshot,
+              state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean 
+    {
+      return new Promise((resolve, reject) => {
+        this.angularFireAuth.onAuthStateChanged((user) => {
+          if (user) {
+            resolve(true);
+          } else {
+            console.log('Auth guard : user is not logged in');
+            this.router.navigate(['/home']);
+            resolve(false);
+          }
+        });
       });
-    });
-  }
-  
+    }
+
 }

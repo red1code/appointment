@@ -10,7 +10,9 @@
 <nav>
     <div class="navigation">
         <a routerLink="/home" routerLinkActive="active">Home</a>
-        <a *ngIf="(angularFireAuth.user | async)" routerLink="/waiting-list" routerLinkActive="active">Waiting List</a>
+        <a *ngIf="(angularFireAuth.user | async)" routerLink="/waiting-list" routerLinkActive="active">
+            Waiting List
+        </a>
     </div>
     <div>{{ info }}</div>
     <div class="title"  title="LOGO: navigate to home">
