@@ -32,16 +32,8 @@ export class DatabaseService {
         });
     }
 
-    dateFormat(data: any) {
-        let date = new Date(data);
-
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDay();
-        let hour = date.getHours();
-        let min = date.getMinutes();
-
-        return `${month} ${day}, ${year} --- ${hour}:${min}`;
+    getUsersList() {
+        return this.firestore.collection('users').snapshotChanges();
     }
 
 }

@@ -86,24 +86,6 @@ export class WaitingListComponent implements OnInit {
         });
     }
 
-    getDateFormat(data: any) {
-        return this.databaseService.dateFormat(data)
-    }
-
 }
 
 /* THE END */
-
-
-
-/*
-
-return {
-      year: this.databaseService.dateFormat(data).year,
-      month: this.databaseService.dateFormat(data).month,
-      day: this.databaseService.dateFormat(data).day,
-      hours: this.databaseService.dateFormat(data).hour,
-      min: this.databaseService.dateFormat(data).min
-}
-
-*/

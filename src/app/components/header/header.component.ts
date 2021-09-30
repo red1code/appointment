@@ -4,41 +4,40 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
 
-  user: any;
-  info: any;
+    user: any;
+    id!: string;
+    userImgURL!: string;
 
-  constructor(public angularFireAuth: AngularFireAuth,
-              private afStore: AngularFirestore,
-              private authService: AuthService) { }
+    constructor(
+        public angularFireAuth: AngularFireAuth,
+        private ngFirestore: AngularFirestore,
+        private authService: AuthService
+    ) { }
 
-  ngOnInit(): void {
-    this.getUser();
-  }
+    ngOnInit(): void {
+        this.getUser();
+    }
 
-  logOut() {
-    this.angularFireAuth.signOut();
-  }
+    logOut = () => this.angularFireAuth.signOut();
 
-  // getUsersList = () => {
-  //   return this.authService.getUsersList().subscribe(res => {
-  //     this.usersList = res;
-  //   })
-  // }
-
-  getUser = () => {
-    this.angularFireAuth.onAuthStateChanged((user) => {
-      if (user) {
-        this.afStore.collection('users').doc(user.uid).get().subscribe((doc:any) => {
-          this.user = user.email;
-        })
-      }
-    });
-  }
+    getUser() {
+        this.angularFireAuth.onAuthStateChanged((user) => {
+            if (user) {
+                this.user = user.email;
+                this.id = user.uid;
+                this.ngFirestore.collection('users').doc(this.id).valueChanges()
+                    .subscribe((usr: any) => this.userImgURL = usr.imageURL)
+                
+            }
+        });
+    }
 
 }
+
+/* THE END */

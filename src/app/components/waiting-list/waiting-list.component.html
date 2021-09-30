@@ -9,22 +9,19 @@
                     <input type="text" formControlName="fullName" class="form-control">
                     <p *ngIf="patientForm.controls.fullName.touched && 
                               patientForm.controls.fullName.invalid &&
-                              patientForm.controls.fullName.invalid" 
-                        class="alert alert-danger">Please, Enter a valid name.</p>
+                              patientForm.controls.fullName.invalid" class="alert alert-danger">Please, Enter a valid
+                        name.</p>
                 </div>
                 <div class="form-group" id="phoneNumber-input-section">
                     <label for="phoneNumber">Numéro De Téléphone</label> <br>
                     <input type="tel" formControlName="phoneNumber" class="form-control">
                     <p *ngIf="patientForm.controls.phoneNumber.touched && 
                               patientForm.controls.phoneNumber.invalid &&
-                              patientForm.controls.phoneNumber.invalid" 
-                        class="alert alert-danger">
+                              patientForm.controls.phoneNumber.invalid" class="alert alert-danger">
                         Please,Enter 10 digit Mobile Number.</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary" 
-                            type="submit" 
-                            [disabled]="patientForm.invalid">Submit</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="patientForm.invalid">Submit</button>
                 </div>
                 <div *ngIf="firebaseErrorMessage != ''" style="background-color: #dc3545;">
                     {{ firebaseErrorMessage }}

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { User } from '../models/user';
 
 @Injectable({
     providedIn: 'root'
@@ -11,10 +12,31 @@ export class AuthService {
     isAuth!: boolean;
     userEmail!: string;
 
-    constructor(private router: Router,
-                            private ngFireAuth: AngularFireAuth,
-                            private ngFirestore: AngularFirestore) {
+    constructor(
+        private router: Router,
+        private ngFireAuth: AngularFireAuth,
+        private ngFirestore: AngularFirestore
+    ) {
         this.getUserEmail();
+    }
+
+    createNewUser(user: User): Promise<any> {
+        return this.ngFireAuth.createUserWithEmailAndPassword(user.email, user.password)
+            .then((result: any) => {
+                result.user.sendEmailVerification();
+                user.id = result.user.uid;
+                user.created_at = new Date();
+                user.imageURL = 'https://firebasestorage.googleapis.com/v0/b/appointment-d19b2.appspot.com/o/profile-pictures%2Funknown-profile-picture.jpg?alt=media&token=f3904851-9e74-49d1-b23d-7149cf2348c0';
+                user.password = '*******';
+                this.ngFirestore.doc('/users/' + user.id).set(user);
+            }).catch((error): any => {
+                console.log('Auth Service: signup error', error);
+                if (error.code)
+                    return {
+                        isValid: false,
+                        message: error.message
+                    };
+            });
     }
 
     loginUser(email: string, password: string): Promise<any> {
@@ -29,26 +51,6 @@ export class AuthService {
                 console.log('error', error);
                 if (error.code)
                     return { isValid: false, message: error.message };
-            });
-    }
-
-    signupUser(user: any): Promise<any> {
-        return this.ngFireAuth.createUserWithEmailAndPassword(user.email, user.password)
-            .then((result: any) => {
-                let emailLower = user.email.toLowerCase();
-                this.ngFirestore.doc('/users/' + emailLower).set({
-                    fullName: user.displayName,
-                    email: user.email,
-                });
-                result.user.sendEmailVerification();                 // immediately send the user a verification email
-
-            }).catch((error): any => {
-                console.log('Auth Service: signup error', error);
-                if (error.code)
-                    return {
-                        isValid: false,
-                        message: error.message
-                    };
             });
     }
 

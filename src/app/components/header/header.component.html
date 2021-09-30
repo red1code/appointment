@@ -14,8 +14,7 @@
             Waiting List
         </a>
     </div>
-    <div>{{ info }}</div>
-    <div class="title"  title="LOGO: navigate to home">
+    <div class="title" title="LOGO: navigate to home">
         <a routerLink="/home">Rendez-vous-App</a>
     </div>
     <div class="auth">
@@ -24,5 +23,11 @@
         <a *ngIf="(angularFireAuth.user | async)" class="logout-btn" (click)="logOut()" title="Log out">
             Sign Out
         </a>
+    </div>
+    <div>
+        <img *ngIf="(angularFireAuth.user | async)"
+             [src]="userImgURL" class="rounded-circle"
+             style="width: 35px; height: 35px; margin-right: 11px;"
+             routerLink="user-profile/{{id}}">
     </div>
 </nav>
