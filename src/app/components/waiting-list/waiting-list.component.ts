@@ -18,14 +18,14 @@ export class WaitingListComponent implements OnInit {
     patientsList: any;
     patient!: Patient;
     id: string;
-    tm = new Date();
 
-
-    constructor(private formBuilder: FormBuilder,
+    constructor(
+        private formBuilder: FormBuilder,
         private angularFirestore: AngularFirestore,
         private databaseService: DatabaseService,
         private ngFireAuth: AngularFireAuth,
-        private authService: AuthService) {
+        private authService: AuthService
+    ) {
         this.firebaseErrorMessage = '';
         this.id = '';
     }
@@ -38,9 +38,9 @@ export class WaitingListComponent implements OnInit {
     onSubmitForm() {
         if (this.patientForm.invalid) return;
         this.patient = this.patientForm.value;
-        this.patient.created_by = this.authService.userEmail;
-        this.patient.created_at = new Date();
         if (this.id === '') {
+            this.patient.created_at = new Date();
+            this.patient.created_by = this.authService.userEmail;
             this.databaseService.createPatientsList(this.patient);
             this.patientForm.reset();
         } else {
@@ -58,8 +58,6 @@ export class WaitingListComponent implements OnInit {
         });
         this.id = patient.payload.doc.id;
     }
-
-    onDelete = (data: any) => this.databaseService.deletePatient(data);
 
     resetForm() {
         this.patientForm.reset();
@@ -85,6 +83,8 @@ export class WaitingListComponent implements OnInit {
             phoneNumber: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]]
         });
     }
+
+    onDelete = (data: any) => this.databaseService.deletePatient(data);
 
 }
 

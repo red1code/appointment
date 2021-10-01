@@ -1,11 +1,11 @@
 <div class="container-fluid" style="min-height: 100vh;">
-    <div class="row align-items-center justify-content-center no-gutters">
-        <div class="col-md-4">
-            <form (ngSubmit)="onSubmitForm()" [formGroup]="patientForm" class="submit-form">
-                <h2 *ngIf="id == ''">Prendre un rendez-vous!</h2>
+    <div class="row align-items-center justify-content-center no-gutters col-md-">
+        <div class="col-md-3" id="form-container">
+            <form (ngSubmit)="onSubmitForm()" [formGroup]="patientForm" class="submit-form" id="form">
+                <h2 *ngIf="id == ''" style="margin-bottom: 35px;">Prendre un rendez-vous!</h2>
                 <h2 *ngIf="id != ''">Update Infos</h2>
                 <div class="form-group" id="fullName-input-section">
-                    <label for="fullName">Nom Du Patient</label> <br>
+                    <label for="fullName">Patient's name</label> <br>
                     <input type="text" formControlName="fullName" class="form-control">
                     <p *ngIf="patientForm.controls.fullName.touched && 
                               patientForm.controls.fullName.invalid &&
@@ -13,7 +13,7 @@
                         name.</p>
                 </div>
                 <div class="form-group" id="phoneNumber-input-section">
-                    <label for="phoneNumber">Numéro De Téléphone</label> <br>
+                    <label for="phoneNumber">Phone number</label> <br>
                     <input type="tel" formControlName="phoneNumber" class="form-control">
                     <p *ngIf="patientForm.controls.phoneNumber.touched && 
                               patientForm.controls.phoneNumber.invalid &&
@@ -26,7 +26,7 @@
                 <div *ngIf="firebaseErrorMessage != ''" style="background-color: #dc3545;">
                     {{ firebaseErrorMessage }}
                 </div>
-                <button *ngIf="(id === '') && patientForm.dirty" class="btn btn-danger" (click)="resetForm()">
+                <button *ngIf="(id === '') && patientForm.touched" class="btn btn-danger" (click)="resetForm()">
                     Cancel
                 </button>
                 <button *ngIf="id !== ''" class="btn btn-danger" (click)="resetForm()">
@@ -36,7 +36,7 @@
             </form>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-md-8" id="list-container">
             <table *ngIf="patientsList.length != 0" class="table">
                 <thead>
                     <th>Full Name</th>
@@ -75,11 +75,6 @@
             </h1>
         </div>
     </div>
-</div>
-
-<br>
-<div style="text-align: center; margin: 25px; opacity: 0.8;">
-    {{ tm | date:'MMMM d, y --- hh:mm aa' }}
 </div>
 
 <!-- THE END -->

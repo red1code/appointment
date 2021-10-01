@@ -1,28 +1,27 @@
-<div class="container-fluid" style="min-height: 100vh; background-color: #efefef; padding: 50px 11px;">
-    <div *ngIf="!updateInfos" class="col-sm-8" style="background-color: #fff; display: flex; flex-direction: row;
-                justify-content: space-around; min-height: 250px;
-                box-shadow: 0 0 2px 0; border-radius: 3px;
-                margin: 0 auto; padding: 15px; position: relative;">
+<div class="container-fluid" id="container">
+    <div *ngIf="!updateInfos" class="col-sm-8" style="margin: 11px auto;">
+        <button class="btn btn-primary" (click)="goBack()" title="Go back">
+            <i class="fas fa-arrow-left"></i> Go back
+        </button>
+        <button *ngIf="!updateInfos" class="btn btn-warning" 
+                 style="float: right;" (click)="onUpdateInfosBTN()">
+            Edit profile
+        </button>
+    </div>
+    <div *ngIf="!updateInfos" class="col-sm-8" id="profile-infos">
         <div class="col-sm-3">
-            <img [src]="user.imageURL" width="250px" class="rounded-circle" 
-                 alt="{{this.user.firstName}}-{{this.user.familyName}}'s profile picture">
+            <img [src]="user.imageURL" width="250px" class="rounded-circle"
+                alt="{{this.user.firstName}}-{{this.user.familyName}}'s profile picture">
         </div>
         <div class="col-sm-5">
-            <h2>Full name : {{ user.firstName }} {{ user.familyName }}</h2>
-            <p>Email : {{ user.email }}</p>
-            <p>Phone number : {{ user.phoneNumber }}</p>
-            <p>Account created in : {{ user.created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</p>
-            <div class="buttons" style="position: absolute; bottom: 15px;">
-                <button class="btn btn-outline-primary px-4" (click)="onUpdateInfosBTN()">Edit profile</button>
-            </div>
+            <h2>{{ user.firstName }} {{ user.familyName }}</h2>
+            <h4><i class="fas fa-envelope"></i> {{ user.email }}</h4>
+            <h4><i class="fas fa-phone-square-alt"></i> {{ user.phoneNumber }}</h4>
+            <h4>Sign up in : {{ user.created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</h4>
         </div>
     </div>
 
-    <form *ngIf="updateInfos" [formGroup]="updateInfosForm" (ngSubmit)="onSubmit()" 
-           style="background-color: #fff; box-shadow: 0 0 2px 0; 
-                  border-radius: 3px; padding: 15px; margin: 0 auto;" class="col-sm-6 form">
-        <div style="width: fit-content; float: right; padding: 5px; cursor: pointer;
-                    font-size: x-large;" (click)="onUpdateInfosBTN()" title="Cancel edit profile">x</div>
+    <form *ngIf="updateInfos" [formGroup]="updateInfosForm" (ngSubmit)="onSubmit()" class="col-sm-6 form" id="form">
         <h2 style="width: fit-content; margin: 0 auto 50px auto;">
             Update your profile
         </h2>
@@ -53,9 +52,14 @@
         </div>
         <br>
         <div>
-            <button class="btn btn-success"
-                    [disabled]="updateInfosForm.invalid || 
-                                fileIsUploading">Save</button>
+            <button class="btn btn-success" title="Save changes & go back to profile"
+                [disabled]="updateInfosForm.invalid || fileIsUploading">
+                Save
+            </button>
+            <button *ngIf="!fileUploaded" (click)="onUpdateInfosBTN()" class="btn btn-danger pull-right" id="close-form"
+                title="Cancel edit & go back to profile">
+                <i class="fas fa-times-circle"></i>
+            </button>
         </div>
     </form>
 </div>

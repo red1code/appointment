@@ -1,0 +1,36 @@
+#container {
+    min-height: 100vh;
+    background-color: #efefef;
+    padding: 25px 11px;
+}
+
+#profile-infos {
+    background-color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 300px;
+    box-shadow: 0 0 2px 0;
+    border-radius: 3px;
+    margin: 0 auto;
+    padding: 15px;
+    position: relative;
+}
+
+#form {
+    background-color: #fff;
+    box-shadow: 0 0 2px 0;
+    border-radius: 3px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+#close-form {
+    float: right;
+}
+
+.form-group {
+    margin-bottom: 7px;
+}

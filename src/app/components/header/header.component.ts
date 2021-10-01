@@ -29,11 +29,12 @@ export class HeaderComponent implements OnInit {
     getUser() {
         this.angularFireAuth.onAuthStateChanged((user) => {
             if (user) {
-                this.user = user.email;
                 this.id = user.uid;
                 this.ngFirestore.collection('users').doc(this.id).valueChanges()
-                    .subscribe((usr: any) => this.userImgURL = usr.imageURL)
-                
+                    .subscribe((usr: any) => {
+                        this.user = `${usr.firstName} ${usr.familyName}`
+                        this.userImgURL = usr.imageURL
+                    })
             }
         });
     }

@@ -16,10 +16,7 @@ footer {
     color: #ffffff;
 }
 .footer-text a:hover {
-    padding: 5px 9px;
-    border-radius: 35px;
-    background-color: #ffffff;
-    color: #3f51b5;
-    margin: 0 5px;
+    font-size: 1rem;
+    color: #fffd88;
     transition: 0.5s;
 }
