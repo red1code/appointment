@@ -36,14 +36,15 @@ export class WaitingListComponent implements OnInit {
     }
 
     onSubmitForm() {
-        if (this.patientForm.invalid) return;
-        this.patient = this.patientForm.value;
         if (this.id === '') {
+            if (this.patientForm.invalid) return;
+            this.patient = this.patientForm.value;
             this.patient.created_at = new Date();
             this.patient.created_by = this.authService.userEmail;
             this.databaseService.createPatientsList(this.patient);
             this.patientForm.reset();
         } else {
+            if (this.patientForm.invalid) return;
             this.patient.lastUpdate = new Date();
             this.angularFirestore.collection("patientsList").doc(this.id).update(this.patient);
             this.patientForm.reset();

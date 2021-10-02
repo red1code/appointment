@@ -12,7 +12,7 @@
 nav {
     background-color: #3f51b5;
     color: #ffffff;
-    height: 50px;
+    height: 60px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -81,6 +81,21 @@ nav {
     opacity: 0.7;
 }
 
+#signIn-btn {
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: transparent;
+    color: #fff;
+    border-radius: 5px;
+    padding: 7px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+#signIn-btn:hover {
+    color: #fffd88;
+    border-color: #fffd88;
+}
+
 /* router active class for header */
 
 .active {
@@ -88,8 +103,49 @@ nav {
     border-bottom: 2px solid #fff;
 }
 
-#userIMG:hover {
-    opacity: 0.7;
+#account-container {
+    position: relative;
+    margin-right: 11px;
+    border: 1px solid #fff;
+    border-radius: 40px;
+    padding: 3px;
+}
+
+#account-container:hover {
+    background-color: #fff;
+    color: #3f51b5;
+    transition: 0.8s;
+}
+
+#account-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 350px;
+    color: #000;
+    background-color: #fff;
+    box-shadow: 0 0 5px 0;
+    border-radius: 5px;
+    padding: 0;
+}
+
+.div-sec-inside {
+    border-bottom: 0.1px solid rgb(141, 141, 141);
+}
+
+.inside-container {
+    vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 5px 15px;
+    margin: 9px 0;
+    cursor: pointer;
+}
+
+.inside-container:hover {
+    background-color: #e2e2e2;
 }
 
 /* responsive */

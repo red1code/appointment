@@ -18,16 +18,28 @@
         <a routerLink="/home">Rendezvous</a>
     </div>
     <div class="auth">
-        <a *ngIf="!(angularFireAuth.user | async)" routerLink="/login">Sign in</a>
+        <button id="signIn-btn" *ngIf="!(angularFireAuth.user | async)" routerLink="/login">Sign in</button>
         <!-- <a *ngIf="!(angularFireAuth.user | async)" routerLink="/signup" routerLinkActive="active">Sign up</a> -->
-        <a *ngIf="(angularFireAuth.user | async)" class="logout-btn" (click)="logOut()" title="Log out">
-            Sign Out
-        </a>
     </div>
-    <div>
-        <img *ngIf="(angularFireAuth.user | async)"
-             [src]="userImgURL" class="rounded-circle"
-             style="width: 35px; height: 35px; margin-right: 11px;"
-             routerLink="user-profile/{{id}}" id="userIMG">
+    <div id="account-container" *ngIf="(angularFireAuth.user | async)" (click)="toggleMenu()" title="Menu">
+        <img [src]="userImgURL" class="rounded-circle" style="width: 40px;"
+            id="userIMG">
+        <i style="margin: 0 10px;" class="fas fa-caret-down"></i>
+        <div *ngIf="accountMenu" id="account-menu">
+            <div id="goToProfile" (click)="goToUserProfile()" class="div-sec-inside">
+                <div class="inside-container" title="See your profile">
+                    <div><img [src]="userImgURL" class="rounded-circle" style="width: 40px;"></div>
+                    <div style="margin-left: 15px; font-size: large;">{{ user }}</div>
+                </div>
+            </div>
+            <div id="signOut" (click)="logOut()" class="div-sec-inside">
+                <div class="inside-container" title="Log out">
+                    <div class="inside" style="font-size: 1rem;">
+                        <i class="fas fa-power-off"></i>
+                    </div>
+                    <div style="margin-left: 15px; font-size: 1rem;">Sign out</div>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>

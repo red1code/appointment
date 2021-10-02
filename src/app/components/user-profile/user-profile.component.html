@@ -1,6 +1,6 @@
 <div class="container-fluid" id="container">
     <div *ngIf="!updateInfos" class="col-sm-8" style="margin: 11px auto;">
-        <button class="btn btn-primary" (click)="goBack()" title="Go back">
+        <button class="btn btn-primary" routerLink=".." title="Go back">
             <i class="fas fa-arrow-left"></i> Go back
         </button>
         <button *ngIf="!updateInfos" class="btn btn-warning" 
