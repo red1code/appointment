@@ -21,7 +21,9 @@ export class HeaderComponent implements OnInit {
         private ngFirestore: AngularFirestore,
         private authService: AuthService,
         private router: Router
-    ) { }
+    ) {
+        this.accountMenu = false;
+    }
 
     ngOnInit(): void {
         this.getUser();

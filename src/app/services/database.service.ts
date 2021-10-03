@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
@@ -7,60 +6,28 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class DatabaseService {
 
-    constructor(private firestore: AngularFirestore) { }
+    constructor(private angularFirestore: AngularFirestore) { }
 
-    createPatientsList(data: any) {
+    createNewPatient(data: any) {
         return new Promise<any>(() => {
-            this.firestore.collection('patientsList').add(data);
+            this.angularFirestore.collection('patientsList').add(data);
         });
     }
 
     getPatientsList() {
-        return this.firestore.collection('patientsList').snapshotChanges();
+        return this.angularFirestore.collection('patientsList').snapshotChanges();
+    }
+
+    updatePatient(id: string, patient: any) {
+        return new Promise(() => {
+            this.angularFirestore.collection("patientsList").doc(id).update(patient);
+        })
     }
 
     deletePatient(data: any) {
         if (confirm(`Are you sure You want to delete "${data.payload.doc.data().fullName}"?`)) {
-            this.firestore.collection("patientsList").doc(data.payload.doc.id).delete();
+            this.angularFirestore.collection("patientsList").doc(data.payload.doc.id).delete();
         }
-    }
-
-    updatePatientInfos(data: any) {
-        return this.firestore.collection("patientsList").doc(data.payload.doc.id).update({
-            fullName: data.fullName2,
-            phoneNumber: data.phoneNumber2
-        });
-    }
-
-    getUsersList() {
-        return this.firestore.collection('users').snapshotChanges();
-    }
+    }    
 
 }
-
-
-
-
-
-/*
-
-return {
-      year: year,
-      month: month,
-      day: day,
-      hour: hour,
-      min: min
-}
-
-
-{
-  fullName: data.fullName.value,
-  phoneNumber: data.phoneNumber.value,
-  email: this.auth.onAuthStateChanged((user:any) => {
-    if (user) {
-      return user.email;
-    }
-  })
-}
-
-*/

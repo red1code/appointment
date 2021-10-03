@@ -1,13 +1,4 @@
 <div class="container-fluid" id="container">
-    <div *ngIf="!updateInfos" class="col-sm-8" style="margin: 11px auto;">
-        <button class="btn btn-primary" routerLink=".." title="Go back">
-            <i class="fas fa-arrow-left"></i> Go back
-        </button>
-        <button *ngIf="!updateInfos" class="btn btn-warning" 
-                 style="float: right;" (click)="onUpdateInfosBTN()">
-            Edit profile
-        </button>
-    </div>
     <div *ngIf="!updateInfos" class="col-sm-8" id="profile-infos">
         <div class="col-sm-3">
             <img [src]="user.imageURL" width="250px" class="rounded-circle"
@@ -20,8 +11,18 @@
             <h4>Sign up in : {{ user.created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</h4>
         </div>
     </div>
+    <div *ngIf="!updateInfos" class="col-sm-8" style="margin: 11px auto;">
+        <button *ngIf="!updateInfos" class="btn btn-warning" style="float: right;" (click)="onUpdateBTN()">
+            Edit profile
+        </button>
+    </div>
 
     <form *ngIf="updateInfos" [formGroup]="updateInfosForm" (ngSubmit)="onSubmit()" class="col-sm-6 form" id="form">
+        <div>
+            <span (click)="onUpdateBTN()" id="close-form" title="Cancel edit & go back to profile">
+                <i class="fas fa-times-circle"></i>
+            </span>
+        </div>
         <h2 style="width: fit-content; margin: 0 auto 50px auto;">
             Update your profile
         </h2>
@@ -52,14 +53,11 @@
         </div>
         <br>
         <div>
-            <button class="btn btn-success" title="Save changes & go back to profile"
+            <button class="btn btn-success" title="Save changes & go back to profile" type="submit"
                 [disabled]="updateInfosForm.invalid || fileIsUploading">
-                Save
+                Save changes
             </button>
-            <button *ngIf="!fileUploaded" (click)="onUpdateInfosBTN()" class="btn btn-danger pull-right" id="close-form"
-                title="Cancel edit & go back to profile">
-                <i class="fas fa-times-circle"></i>
-            </button>
+            <button id="delete-account-btn" class="btn btn-danger" (click)="deleteUser()">Delete account</button>
         </div>
     </form>
 </div>

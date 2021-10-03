@@ -27,8 +27,14 @@
     margin: 0 auto;
 }
 
-#close-form {
+#close-form, #delete-account-btn {
     float: right;
+}
+
+#close-form {
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
 }
 
 .form-group {

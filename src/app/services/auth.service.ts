@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 
@@ -11,24 +12,27 @@ export class AuthService {
 
     isAuth!: boolean;
     userEmail!: string;
+    userID!: any;
+    profileImgURL!: any;
 
     constructor(
         private router: Router,
-        private ngFireAuth: AngularFireAuth,
-        private ngFirestore: AngularFirestore
+        private angularFireAuth: AngularFireAuth,
+        private angularFirestore: AngularFirestore,
+        private angularFireStorage: AngularFireStorage
     ) {
-        this.getUserEmail();
+        this.getUser();
     }
 
-    createNewUser(user: User): Promise<any> {
-        return this.ngFireAuth.createUserWithEmailAndPassword(user.email, user.password)
+    async createNewUser(user: User): Promise<any> {
+        return await this.angularFireAuth.createUserWithEmailAndPassword(user.email, user.password)
             .then((result: any) => {
                 result.user.sendEmailVerification();
                 user.id = result.user.uid;
                 user.created_at = new Date();
                 user.imageURL = 'https://firebasestorage.googleapis.com/v0/b/appointment-d19b2.appspot.com/o/profile-pictures%2Funknown-profile-picture.jpg?alt=media&token=f3904851-9e74-49d1-b23d-7149cf2348c0';
-                user.password = '*******';
-                this.ngFirestore.doc('/users/' + user.id).set(user);
+                user.password = "PASSWORD CAN'T BE SAVED HERE";
+                this.angularFirestore.doc('/users/' + user.id).set(user);
             }).catch((error): any => {
                 console.log('Auth Service: signup error', error);
                 if (error.code)
@@ -39,8 +43,8 @@ export class AuthService {
             });
     }
 
-    loginUser(email: string, password: string): Promise<any> {
-        return this.ngFireAuth.signInWithEmailAndPassword(email, password)
+    async loginUser(email: string, password: string): Promise<any> {
+        return await this.angularFireAuth.signInWithEmailAndPassword(email, password)
             .then(() => {
                 console.log('Auth Service: loginUser: success');
                 this.router.navigate(['/waiting-list']);
@@ -54,18 +58,14 @@ export class AuthService {
             });
     }
 
-    resetPassword(email: string): Promise<any> {
-        return this.ngFireAuth.sendPasswordResetEmail(email)
-            .then(() => {
-                console.log('Auth Service: reset password success');
-                // this.router.navigate(['/amount']);
-            })
+    async resetPassword(email: string): Promise<any> {
+        return await this.angularFireAuth.sendPasswordResetEmail(email)
+            .then(() => console.log('Auth Service: reset password success'))
             .catch(error => {
-                console.log('Auth Service: reset password error...');
+                console.log('Reset password error :');
                 console.log(error.code);
                 console.log(error)
-                if (error.code)
-                    return error;
+                if (error.code) return error;
             });
     }
 
@@ -83,8 +83,8 @@ export class AuthService {
     //     });
     // }
 
-    logoutUser(): Promise<void> {
-        return this.ngFireAuth.signOut()
+    async logoutUser(): Promise<void> {
+        return await this.angularFireAuth.signOut()
             .then(() => {
                 this.router.navigate(['/home']);                    // when we log the user out, navigate them to home
             })
@@ -97,29 +97,31 @@ export class AuthService {
             });
     }
 
-    setUserInfo(payload: object) {
-        console.log('Auth Service: saving user info...');
-        this.ngFirestore.collection('users').add(payload).then(res => console.log(res));
-    }
-
-    addPatient(name: string, phone: string) {
-        return this.ngFirestore.doc('/products/' + name).set(
-            {
-                patientName: name,
-                patientPhoneNumber: phone
-            }
-        )
+    deleteUser() {
+        this.angularFireAuth.currentUser.then((usr) => {
+            this.userID = usr?.uid;
+            this.angularFirestore.collection('users').doc(usr?.uid).valueChanges()
+                .subscribe((result: any) => {
+                    this.profileImgURL = result.imageURL;
+                    this.angularFireStorage.storage.refFromURL(this.profileImgURL).delete().then(
+                        () => this.angularFirestore.collection('users').doc(this.userID).delete().then(
+                            () => usr?.delete()
+                        )
+                    )
+                })
+        })
     }
 
     getUsersList() {
-        return this.ngFirestore.collection('users').snapshotChanges();
+        return this.angularFirestore.collection('users').snapshotChanges();
     }
 
-    getUserEmail() {
-        this.ngFireAuth.onAuthStateChanged((usr: any) => {
+    getUser() {
+        this.angularFireAuth.onAuthStateChanged((usr: any) => {
             if (usr) {
                 this.isAuth = true;
                 this.userEmail = usr.email;
+                this.userID = usr.uid;
             } else {
                 this.isAuth = false;
             }

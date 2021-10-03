@@ -36,19 +36,19 @@ export class WaitingListComponent implements OnInit {
     }
 
     onSubmitForm() {
+        if (this.patientForm.invalid) return;
+        this.patient = this.patientForm.value;
         if (this.id === '') {
-            if (this.patientForm.invalid) return;
-            this.patient = this.patientForm.value;
             this.patient.created_at = new Date();
             this.patient.created_by = this.authService.userEmail;
-            this.databaseService.createPatientsList(this.patient);
+            this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();
         } else {
-            if (this.patientForm.invalid) return;
             this.patient.lastUpdate = new Date();
-            this.angularFirestore.collection("patientsList").doc(this.id).update(this.patient);
+            this.databaseService.updatePatient(this.id, this.patient);
             this.patientForm.reset();
             this.id = '';
+
         }
     }
 
@@ -60,22 +60,19 @@ export class WaitingListComponent implements OnInit {
         this.id = patient.payload.doc.id;
     }
 
-    resetForm() {
-        this.patientForm.reset();
-        this.id = '';
+    getPatientsList() {
+        return this.databaseService.getPatientsList().subscribe(res => {
+            this.patientsList = res;
+        })
     }
+
+    onDelete = (data: any) => this.databaseService.deletePatient(data);
 
     checkUserPermission(patient: any): boolean {
         let userEmail = this.authService.userEmail;
         let patientEmail = patient.payload.doc.data().created_by;
         if (userEmail === patientEmail) return true;
         else return false;
-    }
-
-    getPatientsList() {
-        return this.databaseService.getPatientsList().subscribe(res => {
-            this.patientsList = res;
-        })
     }
 
     initForm() {
@@ -85,7 +82,10 @@ export class WaitingListComponent implements OnInit {
         });
     }
 
-    onDelete = (data: any) => this.databaseService.deletePatient(data);
+    resetForm() {
+        this.patientForm.reset();
+        this.id = '';
+    }
 
 }
 

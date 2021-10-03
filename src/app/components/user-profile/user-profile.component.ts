@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/services/auth.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
@@ -5,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
     selector: 'app-user-profile',
@@ -18,17 +20,21 @@ export class UserProfileComponent implements OnInit {
     updateInfosForm!: FormGroup;
     updateInfos: boolean = false;
     fileUrl!: Observable<string>;
-    fileUploaded: boolean = false;
-    fileIsUploading: boolean = false;
+    fileUploaded: boolean;
+    fileIsUploading: boolean;
     persentage!: any;
 
     constructor(
         private angularFireStorage: AngularFireStorage,
         private angularFirestore: AngularFirestore,
+        private authService: AuthService,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router
-    ) { }
+    ) {
+        this.fileIsUploading = false;
+        this.fileUploaded = false;
+    }
 
     ngOnInit(): void {
         this.id = this.route.snapshot.params['id'];
@@ -38,13 +44,22 @@ export class UserProfileComponent implements OnInit {
 
     onSubmit() {
         this.user = this.updateInfosForm.value;
-        this.user.imageURL = this.fileUrl;
-        return this.angularFirestore.collection("users").doc(this.id)
-            .update(this.user).then(() => {
-                this.updateInfos = false;
-                this.updateInfosForm.reset();
-                this.fileUploaded = false;
-            });
+        if (this.fileIsUploading || this.fileUploaded) {
+            this.user.imageURL = this.fileUrl;
+            return this.angularFirestore.collection("users").doc(this.id)
+                .update(this.user).then(() => {
+                    this.updateInfos = false;
+                    this.updateInfosForm.reset();
+                    this.fileUploaded = false;
+                });
+        } else {
+            return this.angularFirestore.collection("users").doc(this.id)
+                .update(this.user).then(() => {
+                    this.updateInfos = false;
+                    this.updateInfosForm.reset();
+                    this.fileUploaded = false;
+                });
+        }
     }
 
     detectFiles(event: any) {
@@ -60,13 +75,6 @@ export class UserProfileComponent implements OnInit {
             this.fileUrl.subscribe((url: any) => {
                 if (url) {
                     this.fileUrl = url;
-                    this.angularFirestore.collection('profile-pictures').doc().set({
-                        imageName: name,
-                        storagePath: filePath,
-                        created_at: new Date(),
-                        created_by: this.user.email,
-                        downloadURL: this.fileUrl
-                    });
                     this.fileIsUploading = false;
                     this.fileUploaded = true;
                 }
@@ -74,13 +82,12 @@ export class UserProfileComponent implements OnInit {
         })).subscribe();
     }
 
-    onUpdateInfosBTN() {
+    onUpdateBTN() {
         if (this.updateInfos === true) {
             this.updateInfos = false;
             this.updateInfosForm.reset();
             this.fileUploaded = false;
-        }
-        else {
+        } else {
             this.updateInfos = true;
             this.updateInfosForm = this.formBuilder.group({
                 firstName: [this.user.firstName, [Validators.required, Validators.pattern(/.*\S.*/)]],
@@ -89,6 +96,11 @@ export class UserProfileComponent implements OnInit {
                 email: [this.user.email, [Validators.required, Validators.email]]
             });
         }
+    }
+
+    deleteUser() {
+        if (confirm("By deleting your account, you will lose all your information.\nIf you are sure about this, press: OK.\nOtherwise press: Cancel"))
+            this.authService.deleteUser();
     }
 
 }
