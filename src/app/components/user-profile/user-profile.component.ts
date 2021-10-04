@@ -7,6 +7,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-user-profile',
@@ -30,7 +31,8 @@ export class UserProfileComponent implements OnInit {
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private location: Location
     ) {
         this.fileIsUploading = false;
         this.fileUploaded = false;
@@ -102,5 +104,7 @@ export class UserProfileComponent implements OnInit {
         if (confirm("By deleting your account, you will lose all your information.\nIf you are sure about this, press: OK.\nOtherwise press: Cancel"))
             this.authService.deleteUser();
     }
+
+    goBack = () => this.location.back();
 
 }

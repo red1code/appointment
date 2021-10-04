@@ -1,4 +1,5 @@
 <div class="container-fluid" id="container">
+    <div><button (click)="goBack()" class="btn btn-primary">Go back</button></div>
     <div *ngIf="!updateInfos" class="col-sm-8" id="profile-infos">
         <div class="col-sm-3">
             <img [src]="user.imageURL" width="250px" class="rounded-circle"
@@ -19,7 +20,7 @@
 
     <form *ngIf="updateInfos" [formGroup]="updateInfosForm" (ngSubmit)="onSubmit()" class="col-sm-6 form" id="form">
         <div>
-            <span (click)="onUpdateBTN()" id="close-form" title="Cancel edit & go back to profile">
+            <span *ngIf="!fileUploaded" (click)="onUpdateBTN()" id="close-form" title="Cancel edit & go back to profile">
                 <i class="fas fa-times-circle"></i>
             </span>
         </div>

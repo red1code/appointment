@@ -1,17 +1,17 @@
-<div>
-    <form [formGroup]="forgotPasswordForm" (ngSubmit)="retrievePassword()">
-        <p>A password-reset email will be sent to...</p>
+<div id="container">
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="retrievePassword()" class="form">
+        <h1>Find your account</h1>
+        <p>Enter your Address e-mail so we can send you a reset password e-mail.</p>
         <div>
-            <label>Email</label>
-            <input autocomplete="off" formControlName="email" type="email" placeholder="Email">
+            <input autocomplete="off" formControlName="email" type="email" placeholder="Email" class="form-control">
         </div>
 
         <div *ngIf="firebaseErrorMessage != ''" class="error-style">
             <span>{{ firebaseErrorMessage }}</span>
         </div>
-
-        <button [disabled]="mailSent">Reset my password</button>
-        
+        <div style="margin-top: 15px ;">
+            <button [disabled]="mailSent" class="btn btn-info">Reset my password</button>
+        </div>
         <div *ngIf="mailSent">
             <p>An email has been sent!</p>
             <button routerLink="/home">

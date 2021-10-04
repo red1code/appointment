@@ -1,5 +1,4 @@
 <div class="container-fluid" style="min-height: 100vh; background-color: #efefef; padding: 50px 11px;">
-
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
         <h2 style="width: fit-content; margin: 0 auto 50px auto;">Welcome back</h2>
         <div>
@@ -17,10 +16,12 @@
         <div>
             <button class="btn btn-primary" style="width: 100%;">Continue</button>
         </div>
-
-        <div class="noAccount" style="margin-top: 50px; text-align: center;">
-            No account? <a routerLink="/signup">Create one</a>
+        <div><a id="forgotPSW-link" routerLink="/forgot-password">Forgot password?</a></div>
+        <hr>
+        <br>
+        <div class="noAccount">
+            <p style="text-align: center;">OR</p>
+            <button class="btn btn-success" routerLink="/signup">Create new account</button>
         </div>
     </form>
-
 </div>
