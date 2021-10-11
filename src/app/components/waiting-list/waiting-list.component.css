@@ -1,3 +1,9 @@
+.container-fluid {
+    padding-top: 25px;
+    padding-bottom: 50px;
+    background-color: #efefef;
+}
+
 #form-container {
     box-shadow: 0 0 3px 0;
     padding: 15px;
@@ -14,12 +20,6 @@
     background-color: #fff;
     min-height: 350px;
     margin-left: 7px;
-}
-
-.container-fluid {
-    padding-top: 25px;
-    padding-bottom: 50px;
-    background-color: #efefef;
 }
 
 .col-8 {
@@ -84,12 +84,17 @@
     color: #17a2b8;
 }
 
+#emptyList {
+    opacity: 0.5;
+    text-align: center;
+    padding: 125px 0;
+}
+
 @media only screen and (max-width: 752px) {
     .container-fluid {
         width: 100%;
         padding: 11px;
     }
-
     #list-container, #form-container {
         width: 95%;
         margin: 11px auto;

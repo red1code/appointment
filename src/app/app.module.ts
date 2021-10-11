@@ -1,3 +1,4 @@
+import { DashboardGuard } from './services/dashboard.guard';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -32,6 +33,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     WaitingListComponent,
     HomeComponent,
     FooterComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -62,13 +66,16 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    ChartsModule
+    // ChartsModule
   ],
   providers: [
     AuthService,
     AuthGuard,
     ListService,
-    DatabaseService   
+    DatabaseService ,
+    DashboardGuard  
   ],
   bootstrap: [AppComponent]
 })

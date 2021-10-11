@@ -97,6 +97,7 @@ export class AuthService {
             });
     }
 
+    // this methode will delete the current user that is signed in
     deleteUser() {
         this.angularFireAuth.currentUser.then((usr) => {
             this.userID = usr?.uid;
@@ -110,6 +111,10 @@ export class AuthService {
                     )
                 })
         })
+    }
+
+    deleteSpecificUser(id: string) {
+        
     }
 
     getUsersList() {

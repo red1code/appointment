@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { DashboardGuard } from './../../services/dashboard.guard';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -15,14 +17,17 @@ export class HeaderComponent implements OnInit {
     id!: string;
     userImgURL!: string;
     accountMenu: boolean = false;
+    isAdmin: boolean
 
     constructor(
         public angularFireAuth: AngularFireAuth,
         private ngFirestore: AngularFirestore,
         private authService: AuthService,
+        private dashboardGuard: DashboardGuard,
         private router: Router
     ) {
         this.accountMenu = false;
+        this.isAdmin = false;
     }
 
     ngOnInit(): void {
@@ -34,11 +39,13 @@ export class HeaderComponent implements OnInit {
         this.angularFireAuth.onAuthStateChanged((user) => {
             if (user) {
                 this.id = user.uid;
+                if (user.email === 'redouane.bekk@gmail.com') this.isAdmin = true;
+                else this.isAdmin = false;
                 this.ngFirestore.collection('users').doc(this.id).valueChanges()
                     .subscribe((usr: any) => {
-                        this.user = `${usr.firstName} ${usr.familyName}`
+                        this.user = usr;
                         this.userImgURL = usr.imageURL
-                    })
+                    });
             }
         });
     }

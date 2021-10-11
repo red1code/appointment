@@ -8,6 +8,7 @@ export class DatabaseService {
 
     constructor(private angularFirestore: AngularFirestore) { }
 
+    // patients data
     createNewPatient(data: any) {
         return new Promise<any>(() => {
             this.angularFirestore.collection('patientsList').add(data);
@@ -28,6 +29,11 @@ export class DatabaseService {
         if (confirm(`Are you sure You want to delete "${data.payload.doc.data().fullName}"?`)) {
             this.angularFirestore.collection("patientsList").doc(data.payload.doc.id).delete();
         }
-    }    
+    }
+
+    // users data
+    getUsersList() {
+        return this.angularFirestore.collection('users').snapshotChanges();
+    }
 
 }

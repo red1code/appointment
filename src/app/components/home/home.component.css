@@ -1,3 +1,9 @@
 .img-container img {
     width: 100%;
 }
+
+#divChart {
+    display: block;
+    width: 450px;
+    height: 450px;
+}

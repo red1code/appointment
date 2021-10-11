@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Router, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/auth'
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class DashboardGuard implements CanActivate {
 
-    constructor(private router: Router, private angularFireAuth: AngularFireAuth) { }
+    constructor(
+        private angularFireAuth: AngularFireAuth,
+        private router: Router
+    ) { }
 
     canActivate(
         route: ActivatedRouteSnapshot,
@@ -17,11 +20,10 @@ export class AuthGuard implements CanActivate {
 
         return new Promise((resolve, reject) => {
             this.angularFireAuth.onAuthStateChanged((user) => {
-                if (user) {
+                if (user && user.email === 'redouane.bekk@gmail.com') {
                     resolve(true);
                 } else {
-                    console.log('Auth guard : user is not logged in');
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['..']);
                     resolve(false);
                     reject();
                 }

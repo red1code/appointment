@@ -105,6 +105,6 @@ export class UserProfileComponent implements OnInit {
             this.authService.deleteUser();
     }
 
-    goBack = () => this.location.back();
+    // goBack = () => this.location.back();
 
 }

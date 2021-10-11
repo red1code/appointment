@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service'
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-forgot-psw',
@@ -19,6 +20,7 @@ export class ForgotPswComponent implements OnInit {
     constructor(
         private authService: AuthService,
         private router: Router,
+        private location: Location,
         private angularFireAuth: AngularFireAuth
     ) {
         this.mailSent = false;
@@ -55,5 +57,7 @@ export class ForgotPswComponent implements OnInit {
                 }
             });
     }
+
+    goBack = () => this.location.back();
 
 }
