@@ -1,6 +1,6 @@
 <div class="container-fluid" style="min-height: 100vh;">
     <div class="row align-items-center justify-content-center no-gutters col-md-">
-        <div class="col-md-3" id="form-container">
+        <div class="col-md-3 facebook-style" id="form-container">
             <form (ngSubmit)="onSubmitForm()" [formGroup]="patientForm" class="submit-form" id="form">
                 <h2 *ngIf="id == ''" style="margin-bottom: 35px;">Prendre un rendez-vous!</h2>
                 <h2 *ngIf="id != ''">Update Infos</h2>
@@ -36,7 +36,7 @@
             </form>
         </div>
 
-        <div class="col-md-8" id="list-container">
+        <div class="col-md-8 facebook-style" id="list-container">
             <table *ngIf="patientsList.length != 0" class="table">
                 <thead>
                     <th>Full Name</th>

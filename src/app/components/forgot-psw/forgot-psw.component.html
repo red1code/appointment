@@ -1,6 +1,6 @@
 <div id="container">
     <div id="back-btn-container"><button (click)="goBack()" class="btn btn-primary">Go back</button></div>
-    <form [formGroup]="forgotPasswordForm" (ngSubmit)="retrievePassword()" class="form">
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="retrievePassword()" class="form facebook-style">
         <h1>Find your account</h1>
         <p>Enter your Address e-mail so we can send you a reset password e-mail.</p>
         <div>
@@ -11,13 +11,10 @@
             <span>{{ firebaseErrorMessage }}</span>
         </div>
         <div style="margin-top: 15px ;">
-            <button [disabled]="mailSent" class="btn btn-info">Reset my password</button>
+            <button [disabled]="mailSent || forgotPasswordForm.invalid" class="btn btn-info">Reset my password</button>
         </div>
-        <div *ngIf="mailSent">
+        <div *ngIf="mailSent" class="text-success">
             <p>An email has been sent!</p>
-            <button routerLink="/home">
-                <span>Return Home</span>
-            </button>
         </div>
     </form>
 </div>

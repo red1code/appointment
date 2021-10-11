@@ -1,10 +1,7 @@
-import { Observable } from 'rxjs';
-import { DashboardGuard } from './../../services/dashboard.guard';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -16,15 +13,13 @@ export class HeaderComponent implements OnInit {
     user: any;
     id!: string;
     userImgURL!: string;
-    accountMenu: boolean = false;
+    accountMenu: boolean;
     isAdmin: boolean
 
     constructor(
-        public angularFireAuth: AngularFireAuth,
+        private router: Router,
         private ngFirestore: AngularFirestore,
-        private authService: AuthService,
-        private dashboardGuard: DashboardGuard,
-        private router: Router
+        public angularFireAuth: AngularFireAuth
     ) {
         this.accountMenu = false;
         this.isAdmin = false;
@@ -32,7 +27,6 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit(): void {
         this.getUser();
-        this.accountMenu = false;
     }
 
     getUser() {
@@ -50,16 +44,9 @@ export class HeaderComponent implements OnInit {
         });
     }
 
-    logOut() {
-        this.accountMenu = false;
-        this.angularFireAuth.signOut();
-    }
+    logOut = () => this.angularFireAuth.signOut();
 
-    goToUserProfile() {
-        this.toggleMenu();
-        this.router.navigate(['user-profile', this.id]);
-        this.toggleMenu();
-    }
+    goToUserProfile = () => this.router.navigate(['user-profile', this.id]);
 
     toggleMenu() {
         if (this.accountMenu === false) return this.accountMenu = true;

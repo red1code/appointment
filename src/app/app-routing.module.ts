@@ -1,4 +1,3 @@
-import { DashboardGuard } from './services/dashboard.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -9,6 +8,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { WaitingListComponent } from './components/waiting-list/waiting-list.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './services/auth.guard';
+import { DashboardGuard } from './services/dashboard.guard';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 const routes: Routes = [

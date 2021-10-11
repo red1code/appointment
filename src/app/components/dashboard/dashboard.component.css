@@ -1,24 +1,15 @@
 .container-fluid {
-    padding: 11px;
-    background-color: #efefef;
+    padding: 5px 11px;
     min-height: 100vh;
 }
 
 #users-list, #rendezvous-list, #chart-container {
-    box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.4);
     padding: 15px;
-    border-radius: 5px;
-    background-color: #fff;
-    margin: 11px 4px;
-    width: max-content;
+    margin: 15px auto;
+    max-width: 90%;
+    min-width: max-content;
 }
 
 .t-th-cel, .t-td-cel {
     padding-left: 15px;
 }
-
-/* #divChart {
-    display: block;
-    width: 500px;
-    height: 500px;
-} */

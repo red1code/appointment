@@ -1,10 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
-/* * {
+
+* {
     margin: 0;
     padding: 0;
 }
+
 body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
-    background-color: #EEEEEE;
+    background-color: #efefef;
     min-width: 300px;
-} */
+    min-height: 100vh;
+}
+
+.facebook-style {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.4);
+}

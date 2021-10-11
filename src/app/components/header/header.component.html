@@ -1,30 +1,35 @@
 <nav>
+    <!-- left navigation links -->
     <div class="navigation">
         <a routerLink="/home" routerLinkActive="active">Home</a>
-        <a *ngIf="(angularFireAuth.user | async)" routerLink="/waiting-list" routerLinkActive="active">
-            Waiting List</a>
-        <a *ngIf="isAdmin" routerLink="/dashboard" routerLinkActive="active">
-            Dashboard</a>
+        <a *ngIf="(angularFireAuth.user | async)" routerLink="/waiting-list" 
+            routerLinkActive="active">Waiting List</a>
+        <a *ngIf="isAdmin && (angularFireAuth.user | async)" 
+            routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     </div>
+    <!-- logo in the center -->
     <div class="title" title="LOGO: navigate to home">
         <a routerLink="/home">Rendezvous</a>
     </div>
+    <!-- right navigation links (sign in, profile pic + user's name) -->
     <div class="auth">
-        <button id="signIn-btn" *ngIf="!(angularFireAuth.user | async)" routerLink="/login">Sign in</button>
-        <!-- <a *ngIf="!(angularFireAuth.user | async)" routerLink="/signup" routerLinkActive="active">Sign up</a> -->
+        <button id="signIn-btn" *ngIf="!(angularFireAuth.user | async)" 
+                routerLink="/login">Sign in</button>
     </div>
-    <button id="account-container" *ngIf="(angularFireAuth.user | async)" (click)="toggleMenu()"(blur)="accountMenu=false" title="Menu">
-        <img [src]="userImgURL" class="rounded-circle" style="width: 40px;" id="userIMG">
+    <!-- profile pic & user's name -->
+    <button id="account-container" *ngIf="(angularFireAuth.user | async)" 
+            (click)="toggleMenu()" (blur)="accountMenu=false" title="Menu">
+        <img [src]="userImgURL" class="rounded-circle" 
+             style="width: 40px; height: 40px;" id="userIMG">
         <h3 style="width: fit-content; display: inline-block; margin: 0 10px;">
-            <strong>{{ user.firstName }}</strong>
-        </h3>
+            <strong>{{ user.firstName }}</strong></h3>
+        <!-- popup menu -->
         <div *ngIf="accountMenu" id="account-menu">
-            <div id="goToProfile" (click)="goToUserProfile()" class="div-sec-inside">
+            <div id="goToProfile" (click)="goToUserProfile()" 
+                 class="div-sec-inside">
                 <div class="inside-container" title="See your profile">
-                    <div>
-                        <img [src]="userImgURL" class="rounded-circle" 
-                             style="width: 60px; height: 60px;">
-                    </div>
+                    <div><img [src]="userImgURL" class="rounded-circle" 
+                             style="width: 60px; height: 60px;"></div>
                     <div style="margin-left: 9px; font-size: large; height: 45px;">
                         <p style="width: max-content;">{{ user.firstName }} {{ user.familyName }}</p>
                         <p style="font-size: 14px; text-align: center; margin-top: -5px;">{{ user.email }}</p>
@@ -34,8 +39,7 @@
             <div id="signOut" (click)="logOut()" class="div-sec-inside">
                 <div class="inside-container" title="Log out">
                     <div class="inside" style="font-size: 1rem;">
-                        <i class="fas fa-power-off"></i>
-                    </div>
+                        <i class="fas fa-power-off"></i></div>
                     <div style="margin-left: 15px; font-size: 1rem;">Sign out</div>
                 </div>
             </div>

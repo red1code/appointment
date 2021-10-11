@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class DashboardGuard implements CanActivate {
 
     constructor(
-        private angularFireAuth: AngularFireAuth,
-        private router: Router
+        private router: Router,
+        private angularFireAuth: AngularFireAuth
     ) { }
 
     canActivate(
@@ -23,7 +23,7 @@ export class DashboardGuard implements CanActivate {
                 if (user && user.email === 'redouane.bekk@gmail.com') {
                     resolve(true);
                 } else {
-                    this.router.navigate(['..']);
+                    this.router.navigate(['/home']);
                     resolve(false);
                     reject();
                 }
