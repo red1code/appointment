@@ -72,13 +72,14 @@ nav {
 }
 
 #signIn-btn {
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.9);
     background: transparent;
     color: #fff;
     border-radius: 5px;
-    padding: 7px;
+    padding: 7px 9px;
     font-size: 1rem;
     font-weight: 500;
+    box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.5);
 }
 
 #signIn-btn:hover {
