@@ -12,21 +12,25 @@ export class DashboardComponent implements OnInit {
 
     users: any;
     patients!: any[];
-    days!: any;
+    months: string[];
+    rdvMonths!: string[];
+    rdvPerMonth!: number[];
 
     constructor(
-        private databaseService: DatabaseService,
-        private authService: AuthService
-    ) { }
+        private authService: AuthService,
+        private databaseService: DatabaseService
+    ) {
+        this.months = Array.from({ length: 12 }, (item, i) => {
+            return new Date(0, i).toLocaleString('en', { month: 'long' })
+        });
+    }
 
     ngOnInit(): void {
         this.getUsers();
         this.getPatients();
-        // this.getPDays();
-        this.chart();
     }
 
-    // users methods
+    // users methods.
     getUsers() {
         return this.databaseService.getUsersList().subscribe(res => {
             this.users = res;
@@ -38,34 +42,47 @@ export class DashboardComponent implements OnInit {
             this.authService.deleteUser();
     }
 
-    // rendezvous methods
+    // rendezvous methods.
     getPatients() {
         return this.databaseService.getPatientsList().subscribe(res => {
+            // get an array of patients's rendezvous.
             this.patients = res;
+            // get an array of months that has rendezvous.
+            this.rdvMonths = this.patients.map(p => {
+                return p.payload.doc.data().created_at.toDate()
+                    .toLocaleString('en', { month: 'long' });
+            });
+
+            // make an array of rendezvous in every month.
+            // this.rdvPerMonth = this.months.map(month => {
+            //     return this.rdvMonths.reduce(
+            //         (previousValue: number, currentValue: string) => {
+            //             return currentValue == month ? ++previousValue : previousValue;
+            //         }, 0)
+            // })
+
+            this.rdvPerMonth =this.months.map(month => this.rdvMonths.filter(val =>val == month).length)
+
+            this.shit = 
+
+
+            /* chart methode must be called here 
+               because we must get rdvPerMonth array first. */
+            this.chart();
         })
     }
 
     onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
 
-    getPDays() {
-        let date = new Date();
-        var month = date.getMonth() + 1;
-        var year = date.getFullYear();
-        this.days = new Date(year, month, 0).getDate();
-        // this.patients.map((p:any) => {
-        //     this.days = this.days.push(p.payload.doc.data().created_at)
-        // })
-    }
-
-    // chart.js
+    // chartJS method.
     chart() {
         var myChart: any = new Chart("myChart", {
-            type: 'line',
+            type: 'bar',
             data: {
-                labels: ['January', 'February', 'March', 'Avril', 'May', 'June', 'July', 'Out', 'September', 'October', 'November', 'December'],
+                labels: this.months,
                 datasets: [{
                     label: 'Rendezvous',
-                    data: [4, 3, 5, 11, 25, 50, 75, 40, 29, 60, 88, 121 ],
+                    data: this.rdvPerMonth, // [4, 3, 5, 11, 25, 50, 75, 40, 29, 60, 88, 121],
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(255, 206, 86, 0.2)',
@@ -98,7 +115,8 @@ export class DashboardComponent implements OnInit {
                 }]
             },
             options: {
-                title:{
+                scales: {},
+                title: {
                     display: true,
                     text: 'Number of rendezvous in every month',
                     fontSize: 25
