@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
     months: string[];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
+    shit!: any;
 
     constructor(
         private authService: AuthService,

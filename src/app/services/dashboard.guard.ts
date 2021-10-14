@@ -1,3 +1,4 @@
+import { AuthGuard } from './auth.guard';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
@@ -10,6 +11,7 @@ export class DashboardGuard implements CanActivate {
 
     constructor(
         private router: Router,
+        private authGuard: AuthGuard,
         private angularFireAuth: AngularFireAuth
     ) { }
 

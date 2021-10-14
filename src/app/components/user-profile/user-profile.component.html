@@ -1,6 +1,6 @@
 <div class="container-fluid" id="container">
     <!-- <div><button (click)="goBack()" class="btn btn-primary">Go back</button></div> -->
-    <div *ngIf="!updateInfos" class="col-sm-8" id="profile-infos">
+    <div *ngIf="!updateInfos" class="col-sm-8 facebook-style" id="profile-infos">
         <div class="col-sm-3">
             <img [src]="user.imageURL" width="250px" height="250px" class="rounded-circle"
                 alt="{{this.user.firstName}}-{{this.user.familyName}}'s profile picture">
@@ -18,7 +18,7 @@
         </button>
     </div>
 
-    <form *ngIf="updateInfos" [formGroup]="updateInfosForm" (ngSubmit)="onSubmit()" class="col-sm-6 form" id="form">
+    <form *ngIf="updateInfos" [formGroup]="updateInfosForm" (ngSubmit)="onSubmit()" class="col-sm-6 form facebook-style" id="form">
         <div>
             <span *ngIf="!fileUploaded" (click)="onUpdateBTN()" id="close-form" title="Cancel edit & go back to profile">
                 <i class="fas fa-times-circle"></i>
