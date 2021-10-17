@@ -30,6 +30,7 @@ export class AuthService {
                 result.user.sendEmailVerification();
                 user.id = result.user.uid;
                 user.created_at = new Date();
+                user.role = 'User';
                 user.imageURL = 'https://firebasestorage.googleapis.com/v0/b/appointment-d19b2.appspot.com/o/profile-pictures%2Funknown-profile-picture.jpg?alt=media&token=f3904851-9e74-49d1-b23d-7149cf2348c0';
                 user.password = "PASSWORD CAN'T BE SAVED HERE";
                 this.angularFirestore.doc('/users/' + user.id).set(user);
@@ -122,7 +123,7 @@ export class AuthService {
     }
 
     getUser() {
-        this.angularFireAuth.onAuthStateChanged((usr: any) => {
+        return this.angularFireAuth.onAuthStateChanged((usr: any) => {
             if (usr) {
                 this.isAuth = true;
                 this.userEmail = usr.email;

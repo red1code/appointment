@@ -7,4 +7,5 @@ export class User {
     created_at!: Date;
     password!: string;
     imageURL!: string;
+    role!: 'Admin' | 'Editor' | 'Analyst' | 'User';
 }

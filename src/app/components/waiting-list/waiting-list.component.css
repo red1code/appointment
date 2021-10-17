@@ -3,16 +3,10 @@
     padding-bottom: 50px;
 }
 
-#form-container {
+#form-container, #list-container {
     padding: 15px;
     min-height: 350px;
     margin-right: 7px;
-}
-
-#list-container {
-    padding: 15px;
-    min-height: 350px;
-    margin-left: 7px;
 }
 
 .col-8 {
@@ -39,11 +33,7 @@
     margin: 15px auto;
 }
 
-.submit-form div input {
-    width: 100%;
-}
-
-.submit-form div button {
+.submit-form div input, .submit-form div button {
     width: 100%;
 }
 
@@ -57,11 +47,7 @@
     padding: 5px 11px;
 }
 
-.editPat, .deletePat {
-    width: fit-content;
-}
-
-.patTel {
+.editPat, .deletePat, .patTel {
     width: fit-content;
 }
 

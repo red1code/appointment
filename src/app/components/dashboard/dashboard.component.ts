@@ -11,11 +11,14 @@ import { Chart } from 'chart.js';
 export class DashboardComponent implements OnInit {
 
     users: any;
+    usrsCols: any[];
     patients!: any[];
+    rdvCols: any[];
     months: string[];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
     shit!: any;
+    expChart: any;
 
     constructor(
         private authService: AuthService,
@@ -24,6 +27,13 @@ export class DashboardComponent implements OnInit {
         this.months = Array.from({ length: 12 }, (item, i) => {
             return new Date(0, i).toLocaleString('en', { month: 'long' })
         });
+        this.rdvCols = [
+            { field: 'fullName', header: 'Full Name' },
+            { field: 'phoneNumber', header: 'Phone Number' },
+            { field: 'createdAt', header: 'Created at' },
+            { field: 'lastUpdate', header: 'Last update' },
+        ];
+        this.usrsCols = [];
     }
 
     ngOnInit(): void {
@@ -34,39 +44,41 @@ export class DashboardComponent implements OnInit {
     // users methods.
     getUsers() {
         return this.databaseService.getUsersList().subscribe(res => {
-            this.users = res;
+            // in order to get rid of "payload.doc.data()" I added these steps:
+            let results = res;
+            this.users = results.map((user: any) => {
+                return {
+                    firstName: user.payload.doc.data().firstName,
+                    familyName: user.payload.doc.data().familyName,
+                    email: user.payload.doc.data().email,
+                    phoneNumber: user.payload.doc.data().phoneNumber,
+                    created_at: user.payload.doc.data().created_at
+                }
+            })
         })
     }
 
-    onDeleteUser() {
-        if (confirm("Are you sure that you want to delete that user ?"))
-            this.authService.deleteUser();
-    }
+    onDeleteUser() {}
 
     // rendezvous methods.
     getPatients() {
         return this.databaseService.getPatientsList().subscribe(res => {
-            // get an array of patients's rendezvous.
-            this.patients = res;
-            // get an array of months that has rendezvous.
-            this.rdvMonths = this.patients.map(p => {
+            // in order to get rid of "payload.doc.data()" I added these steps:
+            let results = res;
+            this.patients = results.map((patient: any) => {
+                return {
+                    fullName: patient.payload.doc.data().fullName,
+                    phoneNumber: patient.payload.doc.data().phoneNumber,
+                    created_at: patient.payload.doc.data().created_at,
+                    lastUpdate: patient.payload.doc.data().lastUpdate
+                }
+            })
+            // make an array of rendezvous in every month.
+            this.rdvMonths = results.map((p:any) => {
                 return p.payload.doc.data().created_at.toDate()
                     .toLocaleString('en', { month: 'long' });
             });
-
-            // make an array of rendezvous in every month.
-            // this.rdvPerMonth = this.months.map(month => {
-            //     return this.rdvMonths.reduce(
-            //         (previousValue: number, currentValue: string) => {
-            //             return currentValue == month ? ++previousValue : previousValue;
-            //         }, 0)
-            // })
-
-            this.rdvPerMonth =this.months.map(month => this.rdvMonths.filter(val =>val == month).length)
-
-            this.shit = 
-
-
+            this.rdvPerMonth = this.months.map(month => this.rdvMonths.filter(val => val == month).length);
             /* chart methode must be called here 
                because we must get rdvPerMonth array first. */
             this.chart();
@@ -119,13 +131,80 @@ export class DashboardComponent implements OnInit {
                 scales: {},
                 title: {
                     display: true,
-                    text: 'Number of rendezvous in every month',
+                    text: 'Rendezvous per month',
                     fontSize: 25
                 }
             }
         });
+        this.expChart = myChart;
+    }
+
+    // exporting rdv list.
+    rdvListToCSV() {
+        let header: string[] = [];
+        this.rdvCols.forEach(c => {
+            header.push(c.header)
+        });
+        this.downloadCSV(this.patients, 'rdv-list', header);
+
+    }
+
+    downloadCSV(result: any, fileName: string, header: any) {
+        const csvData = this.convertToCSV(result, header);
+        const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8' });
+        const downloadLink = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        downloadLink.setAttribute('href', url);
+        downloadLink.setAttribute('download', fileName + '.csv');
+        downloadLink.style.visibility = 'hidden';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+
+    convertToCSV(objArray: any, headerList: any) {
+        const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+        let str = '';
+        let row = 'S.No,';
+        for (let i in headerList) {
+            row += headerList[i] + ','
+        }
+        row = row.slice(0, -1);
+        str = row + '\r\n';
+        for (let i = 0; i < array.length; i++) {
+            let line = (i + 1) + '';
+            for (let i in headerList) {
+                const head = headerList[i];
+                line += ',' + array[i][head];
+            }
+            alert('it works till here !');
+            str += line + '\r\n';
+        }
+        return str;
+    }
+
+    // exporting chart.
+    chartToPNG() {
+        let canvas = document.getElementById('myChart') as HTMLCanvasElement;
+        let dataURL = canvas.toDataURL("image/jpeg");
+        let fName = this.expChart.options.title.text + '.jpeg';
+        this.downloadFile(dataURL, fName);
+    }
+
+    downloadFile(data: any, filename: any) {
+        let a = document.createElement('a');
+        a.href = data;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
     }
 
 }
 
 // THE END.
+
+
+
+/*
+patient.payload.doc.data().fullName
+*/

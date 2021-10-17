@@ -1,4 +1,4 @@
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from './../../services/auth.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { Location } from '@angular/common';
 
 @Component({
@@ -24,6 +23,7 @@ export class UserProfileComponent implements OnInit {
     fileUploaded: boolean;
     fileIsUploading: boolean;
     persentage!: any;
+    isAdmin: boolean;
 
     constructor(
         private angularFireStorage: AngularFireStorage,
@@ -36,6 +36,7 @@ export class UserProfileComponent implements OnInit {
     ) {
         this.fileIsUploading = false;
         this.fileUploaded = false;
+        this.isAdmin = false;
     }
 
     ngOnInit(): void {
@@ -104,7 +105,5 @@ export class UserProfileComponent implements OnInit {
         if (confirm("By deleting your account, you will lose all your information.\nIf you are sure about this, press: OK.\nOtherwise press: Cancel"))
             this.authService.deleteUser();
     }
-
-    // goBack = () => this.location.back();
 
 }

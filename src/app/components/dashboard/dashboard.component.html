@@ -8,18 +8,18 @@
                 <th class="t-th-cel">Email</th>
                 <th class="t-th-cel">Phone Number</th>
                 <th class="t-th-cel">Created at</th>
-                <th class="t-th-cel">Last Sign in</th>
                 <th class="t-th-cel">Delete</th>
             </thead>
             <br>
             <tbody>
                 <tr *ngFor="let user of users">
-                    <td class="t-td-cel">{{ user.payload.doc.data().firstName }}</td>
-                    <td class="t-td-cel">{{ user.payload.doc.data().familyName }}</td>
-                    <td class="t-td-cel">{{ user.payload.doc.data().email }}</td>
-                    <td class="t-td-cel">{{ user.payload.doc.data().phoneNumber }}</td>
-                    <td class="t-td-cel">{{ user.payload.doc.data().created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</td>
-                    <td class="t-td-cel"></td>
+                    <td class="t-td-cel">{{ user.firstName }}</td>
+                    <td class="t-td-cel">{{ user.familyName }}</td>
+                    <td class="t-td-cel">{{ user.email }}</td>
+                    <td class="t-td-cel">{{ user.phoneNumber }}</td>
+                    <td class="t-td-cel">
+                        {{ user.created_at.toDate() | date:'MMMM d, y --- hh:mm aa'}}
+                    </td>
                     <td class="t-td-cel" (click)="onDeleteUser()">
                         <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
                     </td>
@@ -30,7 +30,7 @@
 
     <!-- rendezvous list -->
     <div class="col-md-8 facebook-style" id="rendezvous-list">
-        <table class="table">
+        <table class="table" id="rdv-table">
             <thead>
                 <th class="t-th-cel">Full Name</th>
                 <th class="t-th-cel">Phone Number</th>
@@ -41,13 +41,18 @@
             <br>
             <tbody>
                 <tr *ngFor="let patient of patients">
-                    <td class="t-td-cel">{{ patient.payload.doc.data().fullName }}</td>
-                    <td class="t-td-cel">{{ patient.payload.doc.data().phoneNumber }}</td>
-                    <td class="t-td-cel">{{ patient.payload.doc.data().created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</td>
-                    <td class="t-td-cel">{{ patient.payload.doc.data().lastUpdate.toDate() | date:'MMMM d, y --- hh:mm aa' }}</td>
+                    <td class="t-td-cel">{{ patient.fullName }}</td>
+                    <td class="t-td-cel">{{ patient.phoneNumber }}</td>
+                    <td class="t-td-cel">
+                        {{ patient.created_at.toDate() | date:'MMMM d, y --- hh:mmaa' }}
+                    </td>
+                    <td class="t-td-cel">
+                        <p *ngIf="!patient.lastUpdate">Not updated</p>
+                        <p *ngIf="patient.lastUpdate">{{ patient.lastUpdate.toDate() | date:'MMMM d, y --- hh:mmaa' }}</p>
+                    </td>
                     <td class="t-td-cel">
                         <i class="fas fa-trash-alt" (click)="onDeletePatient(patient)"
-                           style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
+                            style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
                     </td>
                 </tr>
             </tbody>
@@ -55,12 +60,18 @@
         <h1 *ngIf="patients.length === 0" id="emptyList">
             List Empty
         </h1>
+        <div style=" margin-top: 25px; text-align: right">
+            <button class="btn btn-outline-success" (click)="rdvListToCSV()">
+                export to csv</button></div> 
     </div>
 
     <div class="col-md-8 facebook-style" id="chart-container">
         <div id="divChart">
-            <canvas id="myChart" width="750" height="500" baseChart #myChart></canvas>
+            <canvas id="myChart" width="750" height="400" #t></canvas>
         </div>
+        <div style=" margin-top: 25px; text-align: right">
+            <button class="btn btn-outline-success" (click)="chartToPNG()">
+                export to png</button></div>        
     </div>
 
     <div class="test">
@@ -68,7 +79,7 @@
         <h3>Months that has rdvs: [ {{ rdvMonths }} ]</h3>
         <h3>rdv per month: [ {{ rdvPerMonth }} ]</h3>
 
-        <h3>rdv per month: [ {{ shit }} ]</h3>
+        <h3>rdvs: [ {{ patients }} ]</h3>
     </div>
 </div>
 

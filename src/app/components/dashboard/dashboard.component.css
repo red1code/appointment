@@ -8,8 +8,15 @@
     margin: 15px auto;
     max-width: 90%;
     min-width: max-content;
+    min-height: 100px;
 }
 
 .t-th-cel, .t-td-cel {
     padding-left: 15px;
+}
+
+#emptyList {
+    opacity: 0.5;
+    text-align: center;
+    padding: 50px 0;
 }
