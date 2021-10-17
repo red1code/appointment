@@ -49,13 +49,12 @@
                 <br>
                 <tbody>
                     <tr *ngFor="let patient of patientsList">
-                        <td>{{ patient.payload.doc.data().fullName }}</td>
-                        <td>{{ patient.payload.doc.data().phoneNumber }}</td>
-                        <td>{{ patient.payload.doc.data().created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</td>
+                        <td>{{ patient.fullName }}</td>
+                        <td>{{ patient.phoneNumber }}</td>
+                        <td>{{ patient.created_at.toDate() | date:'MMMM d, y --- hh:mm aa' }}</td>
                         <td>
-                            <p *ngIf="patient.payload.doc.data().lastUpdate">
-                                {{ patient.payload.doc.data().lastUpdate.toDate() | date:'MMMM d, y --- hh:mm aa' }}</p>
-                            <p *ngIf="!patient.payload.doc.data().lastUpdate">Not yet</p>
+                            <p *ngIf="!patient.lastUpdate">Not updated</p>
+                            <p *ngIf="patient.lastUpdate">{{ patient.lastUpdate.toDate() | date:'MMMM d, y --- hh:mm aa' }}</p>
                         </td>
                         <td>
                             <i *ngIf="checkUserPermission(patient)" class="fas fa-edit" (click)="onUpdateIcon(patient)"

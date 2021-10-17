@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Patient } from 'src/app/models/patient';
 import { AuthService } from 'src/app/services/auth.service';
@@ -21,9 +19,7 @@ export class WaitingListComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private angularFirestore: AngularFirestore,
         private databaseService: DatabaseService,
-        private ngFireAuth: AngularFireAuth,
         private authService: AuthService
     ) {
         this.firebaseErrorMessage = '';
@@ -48,21 +44,31 @@ export class WaitingListComponent implements OnInit {
             this.databaseService.updatePatient(this.id, this.patient);
             this.patientForm.reset();
             this.id = '';
-
         }
     }
 
     onUpdateIcon(patient: any) {
         this.patientForm = this.formBuilder.group({
-            fullName: [patient.payload.doc.data().fullName, [Validators.required]],
-            phoneNumber: [patient.payload.doc.data().phoneNumber, Validators.required]
+            fullName: [patient.fullName, [Validators.required]],
+            phoneNumber: [patient.phoneNumber, Validators.required]
         });
-        this.id = patient.payload.doc.id;
+        this.id = patient.id;
     }
 
     getPatientsList() {
         return this.databaseService.getPatientsList().subscribe(res => {
-            this.patientsList = res;
+            // in order to get rid of "payload.doc.data()" I added these steps:
+            let results = res;
+            this.patientsList = results.map((rdv: any) => {
+                return {
+                    fullName: rdv.payload.doc.data().fullName,
+                    phoneNumber: rdv.payload.doc.data().phoneNumber,
+                    created_at: rdv.payload.doc.data().created_at,
+                    lastUpdate: rdv.payload.doc.data().lastUpdate,
+                    created_by: rdv.payload.doc.data().created_by,
+                    id: rdv.payload.doc.id
+                }
+            })
         })
     }
 
@@ -70,7 +76,7 @@ export class WaitingListComponent implements OnInit {
 
     checkUserPermission(patient: any): boolean {
         let userEmail = this.authService.userEmail;
-        let patientEmail = patient.payload.doc.data().created_by;
+        let patientEmail = patient.created_by;
         if (userEmail === patientEmail) return true;
         else return false;
     }
@@ -89,4 +95,4 @@ export class WaitingListComponent implements OnInit {
 
 }
 
-/* THE END */
+// THE END.

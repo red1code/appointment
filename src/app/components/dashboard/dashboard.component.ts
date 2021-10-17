@@ -30,10 +30,16 @@ export class DashboardComponent implements OnInit {
         this.rdvCols = [
             { field: 'fullName', header: 'Full Name' },
             { field: 'phoneNumber', header: 'Phone Number' },
-            { field: 'createdAt', header: 'Created at' },
-            { field: 'lastUpdate', header: 'Last update' },
+            { field: 'created_at', header: 'Created at' },
+            { field: 'lastUpdate', header: 'Last update' }
         ];
-        this.usrsCols = [];
+        this.usrsCols = [
+            { field: 'firstName', header: 'First Name' },
+            { field: 'familyName', header: 'Last Name' },
+            { field: 'email', header: 'Email' },
+            { field: 'phoneNumber', header: 'Phone Number' },
+            { field: 'created_at', header: 'Created at' }
+        ];
     }
 
     ngOnInit(): void {
@@ -58,7 +64,7 @@ export class DashboardComponent implements OnInit {
         })
     }
 
-    onDeleteUser() {}
+    onDeleteUser() { }
 
     // rendezvous methods.
     getPatients() {
@@ -74,7 +80,7 @@ export class DashboardComponent implements OnInit {
                 }
             })
             // make an array of rendezvous in every month.
-            this.rdvMonths = results.map((p:any) => {
+            this.rdvMonths = results.map((p: any) => {
                 return p.payload.doc.data().created_at.toDate()
                     .toLocaleString('en', { month: 'long' });
             });
@@ -139,6 +145,15 @@ export class DashboardComponent implements OnInit {
         this.expChart = myChart;
     }
 
+    // exporting usr list to csv file.
+    usrListToCSV() {
+        let header: string[] = [];
+        this.usrsCols.forEach(c => {
+            header.push(c.header)
+        });
+        this.downloadCSV(this.users, 'users-list', header);
+    }
+
     // exporting rdv list.
     rdvListToCSV() {
         let header: string[] = [];
@@ -146,7 +161,6 @@ export class DashboardComponent implements OnInit {
             header.push(c.header)
         });
         this.downloadCSV(this.patients, 'rdv-list', header);
-
     }
 
     downloadCSV(result: any, fileName: string, header: any) {
@@ -173,11 +187,10 @@ export class DashboardComponent implements OnInit {
         str = row + '\r\n';
         for (let i = 0; i < array.length; i++) {
             let line = (i + 1) + '';
-            for (let i in headerList) {
-                const head = headerList[i];
+            for (let index in headerList) {
+                const head = headerList[index];
                 line += ',' + array[i][head];
             }
-            alert('it works till here !');
             str += line + '\r\n';
         }
         return str;
@@ -186,6 +199,7 @@ export class DashboardComponent implements OnInit {
     // exporting chart.
     chartToPNG() {
         let canvas = document.getElementById('myChart') as HTMLCanvasElement;
+        // canvas.style.backgroundColor = '#fff'
         let dataURL = canvas.toDataURL("image/jpeg");
         let fName = this.expChart.options.title.text + '.jpeg';
         this.downloadFile(dataURL, fName);

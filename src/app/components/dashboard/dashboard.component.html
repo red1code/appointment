@@ -26,6 +26,9 @@
                 </tr>
             </tbody>
         </table>
+        <div style=" margin-top: 25px; text-align: right">
+            <button class="btn btn-outline-success" (click)="usrListToCSV()">
+                export to csv</button></div> 
     </div>
 
     <!-- rendezvous list -->
@@ -72,14 +75,6 @@
         <div style=" margin-top: 25px; text-align: right">
             <button class="btn btn-outline-success" (click)="chartToPNG()">
                 export to png</button></div>        
-    </div>
-
-    <div class="test">
-        <br>
-        <h3>Months that has rdvs: [ {{ rdvMonths }} ]</h3>
-        <h3>rdv per month: [ {{ rdvPerMonth }} ]</h3>
-
-        <h3>rdvs: [ {{ patients }} ]</h3>
     </div>
 </div>
 

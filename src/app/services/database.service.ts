@@ -26,8 +26,8 @@ export class DatabaseService {
     }
 
     deletePatient(data: any) {
-        if (confirm(`Are you sure You want to delete "${data.payload.doc.data().fullName}"?`)) {
-            this.angularFirestore.collection("patientsList").doc(data.payload.doc.id).delete();
+        if (confirm(`Are you sure You want to delete "${data.fullName}"?`)) {
+            this.angularFirestore.collection("patientsList").doc(data.id).delete();
         }
     }
 
