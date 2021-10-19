@@ -216,9 +216,3 @@ export class DashboardComponent implements OnInit {
 }
 
 // THE END.
-
-
-
-/*
-patient.payload.doc.data().fullName
-*/
