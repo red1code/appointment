@@ -1,3 +1,4 @@
+import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthGuard } from './auth.guard';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -12,7 +13,8 @@ export class DashboardGuard implements CanActivate {
     constructor(
         private router: Router,
         private authGuard: AuthGuard,
-        private angularFireAuth: AngularFireAuth
+        private angularFireAuth: AngularFireAuth,
+        private angularFirestore: AngularFirestore
     ) { }
 
     canActivate(
@@ -22,15 +24,22 @@ export class DashboardGuard implements CanActivate {
 
         return new Promise((resolve, reject) => {
             this.angularFireAuth.onAuthStateChanged((user) => {
-                if (user && user.email === 'redouane.bekk@gmail.com') {
-                    resolve(true);
-                } else {
-                    this.router.navigate(['/home']);
-                    resolve(false);
-                    reject();
+                if (user) {
+                    this.angularFirestore.collection('users').doc(user.uid)
+                        .valueChanges().subscribe((usr: any) => {
+                            if (user && (usr.role === 'admin' ||
+                                usr.role === 'editor' ||
+                                usr.role === 'analyst')) {
+                                resolve(true);
+                            } else {
+                                this.router.navigate(['/home']);
+                                resolve(false);
+                                reject();
+                            }
+                        })
                 }
             });
-        });
+        })
     }
 
 }

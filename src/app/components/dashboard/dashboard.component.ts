@@ -1,7 +1,11 @@
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Chart } from 'chart.js';
+import { User } from 'src/app/models/user';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-dashboard',
@@ -19,20 +23,17 @@ export class DashboardComponent implements OnInit {
     rdvPerMonth!: number[];
     shit!: any;
     expChart: any;
+    currentUser: any;
 
     constructor(
         private authService: AuthService,
-        private databaseService: DatabaseService
+        private databaseService: DatabaseService,
+        private angularFireAuth: AngularFireAuth,
+        private angularFirestore: AngularFirestore
     ) {
         this.months = Array.from({ length: 12 }, (item, i) => {
             return new Date(0, i).toLocaleString('en', { month: 'long' })
         });
-        this.rdvCols = [
-            { field: 'fullName', header: 'Full Name' },
-            { field: 'phoneNumber', header: 'Phone Number' },
-            { field: 'created_at', header: 'Created at' },
-            { field: 'lastUpdate', header: 'Last update' }
-        ];
         this.usrsCols = [
             { field: 'firstName', header: 'First Name' },
             { field: 'familyName', header: 'Last Name' },
@@ -40,17 +41,37 @@ export class DashboardComponent implements OnInit {
             { field: 'phoneNumber', header: 'Phone Number' },
             { field: 'created_at', header: 'Created at' }
         ];
+        this.rdvCols = [
+            { field: 'fullName', header: 'Full Name' },
+            { field: 'phoneNumber', header: 'Phone Number' },
+            { field: 'created_at', header: 'Created at' },
+            { field: 'lastUpdate', header: 'Last update' }
+        ];
     }
 
     ngOnInit(): void {
         this.getUsers();
         this.getPatients();
+        this.getCurrentUser();
+        // this.currentUser = this.authService.getCurrentUser();
+    }
+
+    getCurrentUser() {
+        this.angularFireAuth.onAuthStateChanged((user) => {
+            if (user) {
+                let id = user.uid;
+                this.angularFirestore.collection('users').doc(id).valueChanges()
+                    .subscribe((usr: any) => {
+                        this.currentUser = usr;
+                    });
+            }
+        });
     }
 
     // users methods.
     getUsers() {
         return this.databaseService.getUsersList().subscribe(res => {
-            // in order to get rid of "payload.doc.data()" I added these steps:
+            // in order to get rid of "payload.doc.data()", I added these steps:
             let results = res;
             this.users = results.map((user: any) => {
                 return {

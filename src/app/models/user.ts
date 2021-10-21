@@ -1,18 +1,18 @@
-export class Roles {
-    subscriber?: boolean;
-    analyst?: boolean;
-    editor?: boolean;
-    admin?: boolean;
-}
+// export interface Roles {
+//     subscriber?: boolean;
+//     analyst?: boolean;
+//     editor?: boolean;
+//     admin?: boolean;
+// }
 
-export class User {
-    id!: string;
-    firstName!: string;
-    familyName!: string;
-    phoneNumber!: number;
-    email!: string;
-    created_at!: Date;
-    password!: string;
-    imageURL!: string;
-    role!: Roles;
+export interface User {
+    id: string;
+    email: string;
+    imageURL: string;
+    password: string;
+    created_at: Date;
+    firstName: string;
+    familyName: string;
+    phoneNumber: number;
+    role: 'subscriber' | 'analyst' | 'editor' | 'admin';
 }

@@ -1,14 +1,11 @@
 <div class="container-fluid">
     <!-- users list -->
-    <div class="col-md-8 facebook-style" id="users-list">
+    <div  *ngIf="currentUser.role === 'admin' || currentUser.role === 'editor'"
+           class="col-md-8 facebook-style" id="users-list">
         <table class="table">
             <thead>
-                <th class="t-th-cel">First Name</th>
-                <th class="t-th-cel">Last Name</th>
-                <th class="t-th-cel">Email</th>
-                <th class="t-th-cel">Phone Number</th>
-                <th class="t-th-cel">Created at</th>
-                <th class="t-th-cel">Delete</th>
+                <th *ngFor="let head of usrsCols" 
+                    class="t-th-cel">{{ head.header }}</th>
             </thead>
             <br>
             <tbody>
@@ -20,7 +17,7 @@
                     <td class="t-td-cel">
                         {{ user.created_at.toDate() | date:'MMMM d, y --- hh:mm aa'}}
                     </td>
-                    <td class="t-td-cel" (click)="onDeleteUser()">
+                    <td *ngIf="currentUser.role==='admin'" class="t-td-cel" (click)="onDeleteUser()">
                         <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
                     </td>
                 </tr>
@@ -32,14 +29,12 @@
     </div>
 
     <!-- rendezvous list -->
-    <div class="col-md-8 facebook-style" id="rendezvous-list">
+    <div *ngIf="currentUser.role === 'admin' || currentUser.role === 'editor'"
+          class="col-md-8 facebook-style" id="rendezvous-list">
         <table class="table" id="rdv-table">
             <thead>
-                <th class="t-th-cel">Full Name</th>
-                <th class="t-th-cel">Phone Number</th>
-                <th class="t-th-cel">Created at</th>
-                <th class="t-th-cel">Last update</th>
-                <th class="t-th-cel">Delete</th>
+                <th *ngFor="let head of rdvCols" 
+                    class="t-th-cel">{{ head.header }}</th>
             </thead>
             <br>
             <tbody>
@@ -53,9 +48,8 @@
                         <p *ngIf="!patient.lastUpdate">Not updated</p>
                         <p *ngIf="patient.lastUpdate">{{ patient.lastUpdate.toDate() | date:'MMMM d, y --- hh:mmaa' }}</p>
                     </td>
-                    <td class="t-td-cel">
-                        <i class="fas fa-trash-alt" (click)="onDeletePatient(patient)"
-                            style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
+                    <td *ngIf="currentUser.role==='admin'" class="t-td-cel" (click)="onDeletePatient(patient)">
+                        <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
                     </td>
                 </tr>
             </tbody>

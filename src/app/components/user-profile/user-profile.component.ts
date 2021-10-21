@@ -42,7 +42,7 @@ export class UserProfileComponent implements OnInit {
     ngOnInit(): void {
         this.id = this.route.snapshot.params['id'];
         this.angularFirestore.collection('users').doc(this.id).valueChanges()
-            .subscribe((res: any) => this.user = res);
+            .subscribe(res => this.user = res);
     }
 
     onSubmit() {

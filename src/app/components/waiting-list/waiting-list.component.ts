@@ -75,9 +75,12 @@ export class WaitingListComponent implements OnInit {
     onDelete = (data: any) => this.databaseService.deletePatient(data);
 
     checkUserPermission(patient: any): boolean {
-        let userEmail = this.authService.userEmail;
+        let currentUser = this.authService.currentUser;
+        let role = currentUser.role;
+        let userEmail = currentUser.email;
         let patientEmail = patient.created_by;
-        if (userEmail === patientEmail) return true;
+        if (userEmail === patientEmail || role === 'admin' || role === 'editor')
+            return true;
         else return false;
     }
 

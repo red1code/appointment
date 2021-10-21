@@ -3,7 +3,7 @@
     <div *ngIf="!updateInfos" class="col-sm-8 facebook-style" id="profile-infos">
         <div class="col-sm-3">
             <img [src]="user.imageURL" width="250px" height="250px" class="rounded-circle"
-                alt="{{this.user.firstName}}-{{this.user.familyName}}'s profile picture">
+                alt="{{user.firstName}} {{user.familyName}} is profile picture">
         </div>
         <div class="col-sm-5">
             <h2>{{ user.firstName }} {{ user.familyName }}</h2>
