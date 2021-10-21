@@ -15,9 +15,10 @@
                     <td class="t-td-cel">{{ user.email }}</td>
                     <td class="t-td-cel">{{ user.phoneNumber }}</td>
                     <td class="t-td-cel">
-                        {{ user.created_at.toDate() | date:'MMMM d, y --- hh:mm aa'}}
+                        {{ user.created_at | date:'MMMM d, y - hh:mm aa'}}
                     </td>
-                    <td *ngIf="currentUser.role==='admin'" class="t-td-cel" (click)="onDeleteUser()">
+                    <td class="t-td-cel">{{ user.role }}</td>
+                    <td *ngIf="deletePermission()" class="t-td-cel" (click)="onDeleteUser()">
                         <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
                     </td>
                 </tr>
@@ -42,19 +43,19 @@
                     <td class="t-td-cel">{{ patient.fullName }}</td>
                     <td class="t-td-cel">{{ patient.phoneNumber }}</td>
                     <td class="t-td-cel">
-                        {{ patient.created_at.toDate() | date:'MMMM d, y --- hh:mmaa' }}
+                        {{ patient.created_at.toDate() | date:'MMMM d, y - hh:mmaa' }}
                     </td>
                     <td class="t-td-cel">
                         <p *ngIf="!patient.lastUpdate">Not updated</p>
-                        <p *ngIf="patient.lastUpdate">{{ patient.lastUpdate.toDate() | date:'MMMM d, y --- hh:mmaa' }}</p>
+                        <p *ngIf="patient.lastUpdate">{{ patient.lastUpdate.toDate() | date:'MMMM d, y - hh:mmaa' }}</p>
                     </td>
-                    <td *ngIf="currentUser.role==='admin'" class="t-td-cel" (click)="onDeletePatient(patient)">
+                    <td *ngIf="deletePermission()" class="t-td-cel" (click)="onDeletePatient(patient)">
                         <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <h1 *ngIf="patients.length === 0" id="emptyList">
+        <h1 *ngIf="!patients.length" id="emptyList">
             List Empty
         </h1>
         <div style=" margin-top: 25px; text-align: right">
@@ -73,3 +74,10 @@
 </div>
 
 <!-- THE END -->
+
+
+<!--
+
+*ngIf="currentUser.role==='admin'"
+
+-->

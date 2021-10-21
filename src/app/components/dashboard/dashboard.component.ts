@@ -21,7 +21,6 @@ export class DashboardComponent implements OnInit {
     months: string[];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
-    shit!: any;
     expChart: any;
     currentUser: any;
 
@@ -39,7 +38,8 @@ export class DashboardComponent implements OnInit {
             { field: 'familyName', header: 'Last Name' },
             { field: 'email', header: 'Email' },
             { field: 'phoneNumber', header: 'Phone Number' },
-            { field: 'created_at', header: 'Created at' }
+            { field: 'created_at', header: 'Created at' },
+            { field: 'roles', header: 'Role' }
         ];
         this.rdvCols = [
             { field: 'fullName', header: 'Full Name' },
@@ -79,7 +79,8 @@ export class DashboardComponent implements OnInit {
                     familyName: user.payload.doc.data().familyName,
                     email: user.payload.doc.data().email,
                     phoneNumber: user.payload.doc.data().phoneNumber,
-                    created_at: user.payload.doc.data().created_at
+                    role: user.payload.doc.data().role,
+                    created_at: user.payload.doc.data().created_at.toDate()                    
                 }
             })
         })
@@ -113,6 +114,8 @@ export class DashboardComponent implements OnInit {
     }
 
     onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
+
+    deletePermission = () => this.currentUser.role === 'admin' ? true : false;
 
     // chartJS method.
     chart() {
@@ -168,53 +171,12 @@ export class DashboardComponent implements OnInit {
 
     // exporting usr list to csv file.
     usrListToCSV() {
-        let header: string[] = [];
-        this.usrsCols.forEach(c => {
-            header.push(c.header)
-        });
-        this.downloadCSV(this.users, 'users-list', header);
+        this.databaseService.exportToCsv('users-list', this.users);
     }
 
     // exporting rdv list.
     rdvListToCSV() {
-        let header: string[] = [];
-        this.rdvCols.forEach(c => {
-            header.push(c.header)
-        });
-        this.downloadCSV(this.patients, 'rdv-list', header);
-    }
-
-    downloadCSV(result: any, fileName: string, header: any) {
-        const csvData = this.convertToCSV(result, header);
-        const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8' });
-        const downloadLink = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        downloadLink.setAttribute('href', url);
-        downloadLink.setAttribute('download', fileName + '.csv');
-        downloadLink.style.visibility = 'hidden';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-    }
-
-    convertToCSV(objArray: any, headerList: any) {
-        const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-        let str = '';
-        let row = 'S.No,';
-        for (let i in headerList) {
-            row += headerList[i] + ','
-        }
-        row = row.slice(0, -1);
-        str = row + '\r\n';
-        for (let i = 0; i < array.length; i++) {
-            let line = (i + 1) + '';
-            for (let index in headerList) {
-                const head = headerList[index];
-                line += ',' + array[i][head];
-            }
-            str += line + '\r\n';
-        }
-        return str;
+        this.databaseService.exportToCsv('rdv-list', this.patients);
     }
 
     // exporting chart.
