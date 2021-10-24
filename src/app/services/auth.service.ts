@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-    isAuth: boolean;
     userEmail!: string;
     userID!: any;
     userRole!: string;
@@ -24,22 +23,18 @@ export class AuthService {
         private angularFirestore: AngularFirestore,
         private angularFireStorage: AngularFireStorage
     ) {
-        this.isAuth = false;
         this.getUser();
     }
 
     getUser() {
         return this.angularFireAuth.onAuthStateChanged((usr: any) => {
             if (usr) {
-                this.isAuth = true;
                 this.userEmail = usr.email;
                 this.userID = usr.uid;
                 this.angularFirestore.collection('users')
                     .doc(usr.uid).valueChanges().subscribe(
                         res => this.currentUser = res
                     )
-            } else {
-                this.isAuth = false;
             }
         })
     }

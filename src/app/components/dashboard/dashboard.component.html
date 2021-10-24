@@ -1,11 +1,10 @@
 <div class="container-fluid">
     <!-- users list -->
-    <div  *ngIf="currentUser.role === 'admin' || currentUser.role === 'editor'"
-           class="col-md-8 facebook-style" id="users-list">
+    <div *ngIf="adminPermission() || editorPermission()" 
+          class="col-md-8 facebook-style" id="users-list">
         <table class="table">
             <thead>
-                <th *ngFor="let head of usrsCols" 
-                    class="t-th-cel">{{ head.header }}</th>
+                <th *ngFor="let th of usrsCols" class="t-th-cel">{{ th.header }}</th>
             </thead>
             <br>
             <tbody>
@@ -14,70 +13,60 @@
                     <td class="t-td-cel">{{ user.familyName }}</td>
                     <td class="t-td-cel">{{ user.email }}</td>
                     <td class="t-td-cel">{{ user.phoneNumber }}</td>
-                    <td class="t-td-cel">
-                        {{ user.created_at | date:'MMMM d, y - hh:mm aa'}}
-                    </td>
+                    <td class="t-td-cel">{{ user.created_at | date:datePipe }}</td>
                     <td class="t-td-cel">{{ user.role }}</td>
-                    <td *ngIf="deletePermission()" class="t-td-cel" (click)="onDeleteUser()">
-                        <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
+                    <td *ngIf="adminPermission()" class="t-td-cel fas-icon-container" 
+                        (click)="onDeleteUser()"><i class="fas fa-trash-alt"></i>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div style=" margin-top: 25px; text-align: right">
+        <div class="exp-btn-container">
             <button class="btn btn-outline-success" (click)="usrListToCSV()">
-                export to csv</button></div> 
+                export to csv</button>
+        </div>
     </div>
 
     <!-- rendezvous list -->
-    <div *ngIf="currentUser.role === 'admin' || currentUser.role === 'editor'"
+    <div *ngIf="adminPermission() || editorPermission()" 
           class="col-md-8 facebook-style" id="rendezvous-list">
         <table class="table" id="rdv-table">
             <thead>
-                <th *ngFor="let head of rdvCols" 
-                    class="t-th-cel">{{ head.header }}</th>
+                <th *ngFor="let th of rdvCols" class="t-th-cel">{{ th.header }}</th>
             </thead>
             <br>
             <tbody>
-                <tr *ngFor="let patient of patients">
-                    <td class="t-td-cel">{{ patient.fullName }}</td>
-                    <td class="t-td-cel">{{ patient.phoneNumber }}</td>
+                <tr *ngFor="let rdv of patients">
+                    <td class="t-td-cel">{{ rdv.fullName }}</td>
+                    <td class="t-td-cel">{{ rdv.phoneNumber }}</td>
+                    <td class="t-td-cel">{{ rdv.created_at.toDate() | date:datePipe }}</td>
                     <td class="t-td-cel">
-                        {{ patient.created_at.toDate() | date:'MMMM d, y - hh:mmaa' }}
+                        <p *ngIf="!rdv.lastUpdate">Not updated</p>
+                        <p *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePipe }}</p>
                     </td>
-                    <td class="t-td-cel">
-                        <p *ngIf="!patient.lastUpdate">Not updated</p>
-                        <p *ngIf="patient.lastUpdate">{{ patient.lastUpdate.toDate() | date:'MMMM d, y - hh:mmaa' }}</p>
-                    </td>
-                    <td *ngIf="deletePermission()" class="t-td-cel" (click)="onDeletePatient(patient)">
-                        <i class="fas fa-trash-alt" style="cursor: pointer; padding: 5px; color: #dc3545;"></i>
+                    <td *ngIf="adminPermission()" class="t-td-cel fas-icon-container" 
+                        (click)="onDeletePatient(rdv)"><i class="fas fa-trash-alt"></i>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <h1 *ngIf="!patients.length" id="emptyList">
-            List Empty
-        </h1>
-        <div style=" margin-top: 25px; text-align: right">
+        <h1 *ngIf="emptyRdvList()" id="emptyList">List Empty</h1>
+        <div class="exp-btn-container">
             <button class="btn btn-outline-success" (click)="rdvListToCSV()">
-                export to csv</button></div> 
+                export to csv</button>
+        </div>
     </div>
 
+    <!-- char -->
     <div class="col-md-8 facebook-style" id="chart-container">
         <div id="divChart">
-            <canvas id="myChart" width="750" height="400" #t></canvas>
+            <canvas id="myChart" width="750" height="400"></canvas>
         </div>
-        <div style=" margin-top: 25px; text-align: right">
+        <div class="exp-btn-container">
             <button class="btn btn-outline-success" (click)="chartToPNG()">
-                export to JPEG</button></div>        
+                export to JPEG</button>
+        </div>
     </div>
 </div>
 
 <!-- THE END -->
-
-
-<!--
-
-*ngIf="currentUser.role==='admin'"
-
--->

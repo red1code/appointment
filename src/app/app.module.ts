@@ -27,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
@@ -67,7 +68,8 @@ import { ChartsModule } from 'ng2-charts';
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    ChartsModule
+    ChartsModule,
+    MatSliderModule
     // ChartsModule
   ],
   providers: [

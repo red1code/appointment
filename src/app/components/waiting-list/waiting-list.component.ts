@@ -1,3 +1,4 @@
+import { User } from './../../models/user';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseService } from 'src/app/services/database.service';
@@ -11,19 +12,22 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class WaitingListComponent implements OnInit {
 
+    datePape = 'MMMM d, y - hh:mm aa';
     firebaseErrorMessage: string;
     patientForm!: FormGroup;
-    patientsList: any;
+    patientsList!: any[];
     patient!: Patient;
+    tHead: string[];
     id: string;
 
     constructor(
-        private formBuilder: FormBuilder,
         private databaseService: DatabaseService,
+        private formBuilder: FormBuilder,
         private authService: AuthService
     ) {
-        this.firebaseErrorMessage = '';
         this.id = '';
+        this.firebaseErrorMessage = '';
+        this.tHead = ['Full Name', 'Phone Number', 'Created At', 'Last update'];
     }
 
     ngOnInit(): void {
@@ -56,21 +60,23 @@ export class WaitingListComponent implements OnInit {
     }
 
     getPatientsList() {
-        return this.databaseService.getPatientsList().subscribe(res => {
+        return this.databaseService.getPatientsList().subscribe((res: any) => {
             // in order to get rid of "payload.doc.data()" I added these steps:
             let results = res;
             this.patientsList = results.map((rdv: any) => {
                 return {
                     fullName: rdv.payload.doc.data().fullName,
                     phoneNumber: rdv.payload.doc.data().phoneNumber,
+                    created_by: rdv.payload.doc.data().created_by,
                     created_at: rdv.payload.doc.data().created_at,
                     lastUpdate: rdv.payload.doc.data().lastUpdate,
-                    created_by: rdv.payload.doc.data().created_by,
                     id: rdv.payload.doc.id
                 }
             })
         })
     }
+
+    emptyList = () => (this.patientsList.length === 0) ? true : false;
 
     onDelete = (data: any) => this.databaseService.deletePatient(data);
 

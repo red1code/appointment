@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
 
+    currentUser: any;
     users: any;
     usrsCols: any[];
     patients!: any[];
@@ -22,7 +23,7 @@ export class DashboardComponent implements OnInit {
     rdvMonths!: string[];
     rdvPerMonth!: number[];
     expChart: any;
-    currentUser: any;
+    datePipe = 'MMMM d, y - hh:mm aa';
 
     constructor(
         private authService: AuthService,
@@ -80,7 +81,8 @@ export class DashboardComponent implements OnInit {
                     email: user.payload.doc.data().email,
                     phoneNumber: user.payload.doc.data().phoneNumber,
                     role: user.payload.doc.data().role,
-                    created_at: user.payload.doc.data().created_at.toDate()                    
+                    created_at: user.payload.doc.data().created_at.toDate(),
+                    id: user.payload.doc.id
                 }
             })
         })
@@ -98,7 +100,8 @@ export class DashboardComponent implements OnInit {
                     fullName: patient.payload.doc.data().fullName,
                     phoneNumber: patient.payload.doc.data().phoneNumber,
                     created_at: patient.payload.doc.data().created_at,
-                    lastUpdate: patient.payload.doc.data().lastUpdate
+                    lastUpdate: patient.payload.doc.data().lastUpdate,
+                    id: patient.payload.doc.id
                 }
             })
             // make an array of rendezvous in every month.
@@ -113,9 +116,9 @@ export class DashboardComponent implements OnInit {
         })
     }
 
-    onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
+    emptyRdvList = () => (this.patients.length === 0) ? true : false;
 
-    deletePermission = () => this.currentUser.role === 'admin' ? true : false;
+    onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
 
     // chartJS method.
     chart() {
@@ -182,9 +185,9 @@ export class DashboardComponent implements OnInit {
     // exporting chart.
     chartToPNG() {
         let canvas = document.getElementById('myChart') as HTMLCanvasElement;
-        // canvas.style.backgroundColor = '#fff'
-        let dataURL = canvas.toDataURL("image/jpeg");
-        let fName = this.expChart.options.title.text + '.jpeg';
+        canvas.style.backgroundColor = '#fff'
+        let dataURL = canvas.toDataURL();
+        let fName = this.expChart.options.title.text;
         this.downloadFile(dataURL, fName);
     }
 
@@ -195,6 +198,12 @@ export class DashboardComponent implements OnInit {
         document.body.appendChild(a);
         a.click();
     }
+
+    adminPermission = () => (this.currentUser.role === 'admin') ? true : false;
+
+    editorPermission = () => (this.currentUser.role === 'editor') ? true : false;
+
+    analystPermission = () => (this.currentUser.role === 'analyst') ? true : false;
 
 }
 

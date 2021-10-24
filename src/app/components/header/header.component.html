@@ -18,8 +18,7 @@
     <!-- profile pic & user's name -->
     <button id="account-container" *ngIf="(isAuth)" 
             (click)="toggleMenu()" (blur)="accountMenu=false" title="Menu">
-        <img [src]="userImgURL" class="rounded-circle" 
-             style="width: 40px; height: 40px;" id="userIMG">
+        <img [src]="userImgURL" class="rounded-circle" id="userIMG">
         <h3 style="width: fit-content; display: inline-block; margin: 0 10px;">
             <strong>{{ user.firstName }}</strong>
             <small> ( {{ user.role }} )</small></h3>
