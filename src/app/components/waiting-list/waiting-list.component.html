@@ -7,26 +7,26 @@
                 <div class="form-group" id="fullName-input-section">
                     <label for="fullName">Patient's name</label> <br>
                     <input type="text" formControlName="fullName" class="form-control">
-                    <p *ngIf="patientForm.controls.fullName.touched && 
+                    <p *ngIf="patientForm.controls.fullName.touched &&
                               patientForm.controls.fullName.invalid &&
-                              patientForm.controls.fullName.invalid" 
+                              patientForm.controls.fullName.invalid"
                         class="alert alert-danger">Please, Enter a valid name.</p>
                 </div>
                 <div class="form-group" id="phoneNumber-input-section">
                     <label for="phoneNumber">Phone number</label> <br>
                     <input type="tel" formControlName="phoneNumber" class="form-control">
-                    <p *ngIf="patientForm.controls.phoneNumber.touched && 
+                    <p *ngIf="patientForm.controls.phoneNumber.touched &&
                               patientForm.controls.phoneNumber.invalid &&
-                              patientForm.controls.phoneNumber.invalid" 
+                              patientForm.controls.phoneNumber.invalid"
                         class="alert alert-danger">Please,Enter 10 digit Mobile Numbers.</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary" type="submit" 
+                    <button class="btn btn-primary" type="submit"
                             [disabled]="patientForm.invalid">Submit</button>
                 </div>
-                <div *ngIf="firebaseErrorMessage != ''" 
+                <div *ngIf="firebaseErrorMessage != ''"
                       style="background-color: #dc3545;">{{ firebaseErrorMessage }}</div>
-                <button *ngIf="(id === '') && patientForm.touched" 
+                <button *ngIf="(id === '') && patientForm.touched"
                          class="btn btn-danger" (click)="resetForm()">Cancel</button>
                 <button *ngIf="id !== ''" class="btn btn-danger" (click)="resetForm()">
                     Cancel Updating
@@ -41,7 +41,7 @@
                 </thead>
                 <br>
                 <tbody>
-                    <tr *ngFor="let rdv of patientsList">
+                    <tr *ngFor="let rdv of patientsList |async">
                         <td>{{ rdv.fullName }}</td>
                         <td>{{ rdv.phoneNumber }}</td>
                         <td>{{ rdv.created_at.toDate() | date:datePape }}</td>

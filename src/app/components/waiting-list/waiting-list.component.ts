@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Patient } from 'src/app/models/patient';
 import { AuthService } from 'src/app/services/auth.service';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-waiting-list',
@@ -15,7 +16,7 @@ export class WaitingListComponent implements OnInit {
     datePape = 'MMMM d, y - hh:mm aa';
     firebaseErrorMessage: string;
     patientForm!: FormGroup;
-    patientsList!: any[];
+    patientsList!: any;
     patient!: Patient;
     tHead: string[];
     id: string;
@@ -60,20 +61,31 @@ export class WaitingListComponent implements OnInit {
     }
 
     getPatientsList() {
-        return this.databaseService.getPatientsList().subscribe((res: any) => {
-            // in order to get rid of "payload.doc.data()" I added these steps:
-            let results = res;
-            this.patientsList = results.map((rdv: any) => {
-                return {
-                    fullName: rdv.payload.doc.data().fullName,
-                    phoneNumber: rdv.payload.doc.data().phoneNumber,
-                    created_by: rdv.payload.doc.data().created_by,
-                    created_at: rdv.payload.doc.data().created_at,
-                    lastUpdate: rdv.payload.doc.data().lastUpdate,
-                    id: rdv.payload.doc.id
-                }
-            })
-        })
+
+      // TODO: @redouane, I'll let you discover how this works ;)
+      this.patientsList = this.databaseService.getPatientsList().pipe(
+        map(actions => actions.map( rdv => {
+          return {
+            id: rdv.payload.doc.id,
+            ...rdv.payload.doc.data()
+          }
+        }))
+      )
+
+        // return this.databaseService.getPatientsList().subscribe((res: any) => {
+        //     // in order to get rid of "payload.doc.data()" I added these steps:
+        //     let results = res;
+        //     this.patientsList = results.map((rdv: any) => {
+        //         return {
+        //             fullName: rdv.payload.doc.data().fullName,
+        //             phoneNumber: rdv.payload.doc.data().phoneNumber,
+        //             created_by: rdv.payload.doc.data().created_by,
+        //             created_at: rdv.payload.doc.data().created_at,
+        //             lastUpdate: rdv.payload.doc.data().lastUpdate,
+        //             id: rdv.payload.doc.id
+        //         }
+        //     })
+        // })
     }
 
     emptyList = () => (this.patientsList.length === 0) ? true : false;
