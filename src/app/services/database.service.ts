@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Patient } from '../models/patient';
+import { User } from '../models/user';
 
 @Injectable({
     providedIn: 'root'
@@ -11,29 +13,29 @@ export class DatabaseService {
     // patients data
     createNewPatient(data: any) {
         return new Promise<any>(() => {
-            this.angularFirestore.collection('patientsList').add(data);
+          this.angularFirestore.collection<Patient>('patientsList').add(data);
         });
     }
 
     getPatientsList() {
-        return this.angularFirestore.collection('patientsList').snapshotChanges();
+        return this.angularFirestore.collection<Patient>('patientsList').snapshotChanges();
     }
 
     updatePatient(id: string, patient: any) {
         return new Promise(() => {
-            this.angularFirestore.collection("patientsList").doc(id).update(patient);
+          this.angularFirestore.collection<Patient>("patientsList").doc(id).update(patient);
         })
     }
 
     deletePatient(data: any) {
         if (confirm(`Are you sure You want to delete "${data.fullName}"?`)) {
-            this.angularFirestore.collection("patientsList").doc(data.id).delete();
+          this.angularFirestore.collection<Patient>("patientsList").doc(data.id).delete();
         }
     }
 
     // users data
     getUsersList() {
-        return this.angularFirestore.collection('users').snapshotChanges();
+      return this.angularFirestore.collection<User>('users').snapshotChanges();
     }
 
     exportToCsv(filename: string, rows: object[]) {
