@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <!-- users list -->
-    <div *ngIf="adminPermission() || editorPermission()" 
+    <div *ngIf="adminPermission() || editorPermission()"
           class="col-md-8 facebook-style" id="users-list">
         <table class="table">
             <thead>
@@ -8,14 +8,14 @@
             </thead>
             <br>
             <tbody>
-                <tr *ngFor="let user of users">
+                <tr *ngFor="let user of users |async">
                     <td class="t-td-cel">{{ user.firstName }}</td>
                     <td class="t-td-cel">{{ user.familyName }}</td>
                     <td class="t-td-cel">{{ user.email }}</td>
                     <td class="t-td-cel">{{ user.phoneNumber }}</td>
                     <td class="t-td-cel">{{ user.created_at | date:datePipe }}</td>
                     <td class="t-td-cel">{{ user.role }}</td>
-                    <td *ngIf="adminPermission()" class="t-td-cel fas-icon-container" 
+                    <td *ngIf="adminPermission()" class="t-td-cel fas-icon-container"
                         (click)="onDeleteUser()"><i class="fas fa-trash-alt"></i>
                     </td>
                 </tr>
@@ -28,7 +28,7 @@
     </div>
 
     <!-- rendezvous list -->
-    <div *ngIf="adminPermission() || editorPermission()" 
+    <div *ngIf="adminPermission() || editorPermission()"
           class="col-md-8 facebook-style" id="rendezvous-list">
         <table class="table" id="rdv-table">
             <thead>
@@ -44,7 +44,7 @@
                         <p *ngIf="!rdv.lastUpdate">Not updated</p>
                         <p *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePipe }}</p>
                     </td>
-                    <td *ngIf="adminPermission()" class="t-td-cel fas-icon-container" 
+                    <td *ngIf="adminPermission()" class="t-td-cel fas-icon-container"
                         (click)="onDeletePatient(rdv)"><i class="fas fa-trash-alt"></i>
                     </td>
                 </tr>

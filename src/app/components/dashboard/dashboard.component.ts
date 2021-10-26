@@ -6,6 +6,7 @@ import { DatabaseService } from 'src/app/services/database.service';
 import { Chart } from 'chart.js';
 import { User } from 'src/app/models/user';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-dashboard',
@@ -71,21 +72,30 @@ export class DashboardComponent implements OnInit {
 
     // users methods.
     getUsers() {
-        return this.databaseService.getUsersList().subscribe(res => {
-            // in order to get rid of "payload.doc.data()", I added these steps:
-            let results = res;
-            this.users = results.map((user: any) => {
-                return {
-                    firstName: user.payload.doc.data().firstName,
-                    familyName: user.payload.doc.data().familyName,
-                    email: user.payload.doc.data().email,
-                    phoneNumber: user.payload.doc.data().phoneNumber,
-                    role: user.payload.doc.data().role,
-                    created_at: user.payload.doc.data().created_at.toDate(),
-                    id: user.payload.doc.id
-                }
-            })
-        })
+      // TODO: @redouane, I'll let you discover how this works ;)
+      this.users = this.databaseService.getUsersList().pipe(
+        map(actions => actions.map(user => {
+          return {
+            ...user.payload.doc.data(),
+            id: user.payload.doc.id,
+          }
+        }))
+      )
+        // return this.databaseService.getUsersList().subscribe(res => {
+        //     // in order to get rid of "payload.doc.data()", I added these steps:
+        //     let results = res;
+        //     this.users = results.map((user: any) => {
+        //         return {
+        //             firstName: user.payload.doc.data().firstName,
+        //             familyName: user.payload.doc.data().familyName,
+        //             email: user.payload.doc.data().email,
+        //             phoneNumber: user.payload.doc.data().phoneNumber,
+        //             role: user.payload.doc.data().role,
+        //             created_at: user.payload.doc.data().created_at.toDate(),
+        //             id: user.payload.doc.id
+        //         }
+        //     })
+        // })
     }
 
     onDeleteUser() { }
@@ -110,7 +120,7 @@ export class DashboardComponent implements OnInit {
                     .toLocaleString('en', { month: 'long' });
             });
             this.rdvPerMonth = this.months.map(month => this.rdvMonths.filter(val => val == month).length);
-            /* chart methode must be called here 
+            /* chart methode must be called here
                because we must get rdvPerMonth array first. */
             this.chart();
         })
