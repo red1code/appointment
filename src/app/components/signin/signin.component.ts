@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class SigninComponent implements OnInit {
 
-    loginForm!: FormGroup;
+    loginForm: FormGroup;
     firebaseErrorMessage: string;
 
     constructor(
@@ -19,6 +19,7 @@ export class SigninComponent implements OnInit {
         private authService: AuthService,
         private angularFireAuth: AngularFireAuth
     ) {
+        this.isAuthenticate();
         this.loginForm = new FormGroup({
             'email': new FormControl('', [Validators.required, Validators.email]),
             'password': new FormControl('', Validators.required)
@@ -26,9 +27,7 @@ export class SigninComponent implements OnInit {
         this.firebaseErrorMessage = '';
     }
 
-    ngOnInit() {
-        this.isAuthenticate()
-    }
+    ngOnInit() { }
 
     onSubmit() {
         if (this.loginForm.invalid) return;   // if loginForm isn't valid, do not submit it.

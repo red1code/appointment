@@ -22,6 +22,7 @@ export class SignupComponent implements OnInit {
         private authService: AuthService,
         private angularFireAuth: AngularFireAuth
     ) {
+        this.isAuthenticate();
         this.signupForm = this.formBuilder.group({
             firstName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
             familyName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
@@ -32,9 +33,7 @@ export class SignupComponent implements OnInit {
         this.firebaseErrorMessage = '';
     }
 
-    ngOnInit(): void {
-        this.isAuthenticate()
-    }
+    ngOnInit(): void { }
 
     onSubmit() {
         if (this.signupForm.invalid) return;   // if signupForm isn't valid, don't submit it.

@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
     }
 
     getUser() {
-        this.angularFireAuth.user.subscribe((user) => {
+        this.angularFireAuth.onAuthStateChanged((user) => {
             if (user) {
                 this.isAuth = true;
                 this.id = user.uid;
@@ -56,10 +56,7 @@ export class HeaderComponent implements OnInit {
 
     goToUserProfile = () => this.router.navigate(['user-profile', this.id]);
 
-    toggleMenu() {
-        if (this.accountMenu === false) return this.accountMenu = true;
-        else return this.accountMenu = false;
-    }
+    toggleMenu = () => (this.accountMenu === false) ? this.accountMenu = true : this.accountMenu = false;
 
 }
 

@@ -1,5 +1,5 @@
 <div class="container-fluid" style="min-height: 100vh;">
-    <div class="row align-items-center justify-content-center no-gutters col-md-">
+    <div class="row justify-content-center no-gutters col-md-">
         <div class="col-md-3 facebook-style" id="form-container">
             <form (ngSubmit)="onSubmitForm()" [formGroup]="patientForm" class="submit-form" id="form">
                 <h2 *ngIf="id == ''" style="margin-bottom: 35px;">Prendre un rendez-vous!</h2>
@@ -37,27 +37,23 @@
         <div class="col-md-8 facebook-style" id="list-container">
             <table *ngIf="patientsList.length != 0" class="table">
                 <thead>
-                    <th *ngFor="let th of tHead">{{ th }}</th>
+                    <tr>
+                        <th *ngFor="let th of tHead">{{ th }}</th>
+                    </tr>
                 </thead>
-                <br>
                 <tbody>
                     <tr *ngFor="let rdv of patientsList">
                         <td>{{ rdv.fullName }}</td>
                         <td>{{ rdv.phoneNumber }}</td>
                         <td>{{ rdv.created_at.toDate() | date:datePape }}</td>
                         <td>
-                            <p *ngIf="!rdv.lastUpdate">Not updated</p>
-                            <p *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePape }}</p>
-                        </td>
-                        <td>
-                            <i *ngIf="checkUserPermission(rdv)" class="fas fa-edit" (click)="onUpdateIcon(rdv)"
-                                style="cursor: pointer; padding: 5px; color: #0d6efd;">
-                            </i>
-                        </td>
-                        <td>
-                            <i *ngIf="checkUserPermission(rdv)" class="fas fa-trash-alt" (click)="onDelete(rdv)"
-                                style="cursor: pointer; padding: 5px; color: #dc3545;">
-                            </i>
+                            <span *ngIf="!rdv.lastUpdate">Not updated</span>
+                            <span *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePape }}</span>
+                            <span *ngIf="checkUserPermission(rdv)" 
+                                   style="float: right; margin-left: 15px;">
+                                <i class="fas fa-edit" (click)="onUpdateIcon(rdv)"></i>
+                                <i class="fas fa-trash-alt" (click)="onDelete(rdv)"></i>
+                            </span>
                         </td>
                     </tr>
                 </tbody>
@@ -67,4 +63,10 @@
     </div>
 </div>
 
-<!-- THE END. -->
+<!-- THE END -->
+
+
+
+<!-- 
+datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+-->

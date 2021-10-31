@@ -16,7 +16,6 @@ footer {
     color: #ffffff;
 }
 .footer-text a:hover {
-    font-size: 1rem;
     color: #fffd88;
     transition: 0.5s;
 }

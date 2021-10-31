@@ -12,9 +12,8 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
     userEmail!: string;
-    userID!: any;
+    userID!: string;
     userRole!: string;
-    profileImgURL!: string;
     currentUser!: any;
 
     constructor(
@@ -43,12 +42,15 @@ export class AuthService {
         return await this.angularFireAuth.createUserWithEmailAndPassword(user.email, user.password)
             .then((result: any) => {
                 result.user.sendEmailVerification();
-                user.id = result.user.uid;
-                user.created_at = new Date();
+                user.password = '';
                 user.role = 'subscriber';
-                user.imageURL = 'assets/unknown-profile-picture.jpg';
-                user.password = "PASSWORD CAN'T BE SAVED HERE";
-                this.angularFirestore.doc('/users/' + user.id).set(user);
+                user.uid = result.user.uid;
+                user.created_at = new Date();
+                user.imageURL = 'assets/unknown-profile-picture.png';
+                this.getUsersList().subscribe(res => {
+                    user.id = res.length;
+                    this.angularFirestore.doc('/users/' + user.uid).set(user);
+                })                
             }).catch((error): any => {
                 console.log('Auth Service: signup error', error);
                 if (error.code)
@@ -101,29 +103,31 @@ export class AuthService {
 
     async logoutUser(): Promise<void> {
         return await this.angularFireAuth.signOut()
-            .then(() => {
-                this.router.navigate(['/home']);                    // when we log the user out, navigate them to home
-            })
+            .then(() => this.router.navigate(['/home']))                    // when we log the user out, navigate them to home
             .catch(error => {
                 console.log('Auth Service: logout error...');
                 console.log('error code', error.code);
                 console.log('error', error);
-                if (error.code)
-                    return error;
+                if (error.code) return error;
             });
     }
 
     // this methode will delete the current user that is signed in
     deleteUser() {
-        this.angularFireAuth.currentUser.then((usr) => {
-            this.userID = usr?.uid;
-            this.angularFirestore.collection('users').doc(usr?.uid).valueChanges()
+        this.angularFireAuth.currentUser.then((usr: any) => {
+            let uid = usr?.uid;
+            this.angularFirestore.collection('users').doc(uid).valueChanges()
                 .subscribe((result: any) => {
-                    this.profileImgURL = result.imageURL;
-                    this.angularFireStorage.storage.refFromURL(this.profileImgURL).delete().then(
-                        () => this.angularFirestore.collection('users')
-                            .doc(this.userID).delete().then(() => usr?.delete())
-                    )
+                    let imgURL = result.imageURL;
+                    let picPath = imgURL.slice(0, 6);
+                    if (picPath !== "assets") {
+                        this.angularFireStorage.storage.refFromURL(imgURL).delete()
+                            .then(() => this.angularFirestore.collection('users')
+                                .doc(uid).delete().then(() => usr?.delete()))
+                    } else {
+                        this.angularFirestore.collection('users').doc(uid)
+                            .delete().then(() => usr?.delete())
+                    }
                 })
         })
     }
@@ -131,9 +135,7 @@ export class AuthService {
     deleteSpecificUser(id: string) {
     }
 
-    getUsersList() {
-        return this.angularFirestore.collection('users').snapshotChanges();
-    }
+    getUsersList = () => this.angularFirestore.collection('users').snapshotChanges();
 
     checkAuthorization(user: User, allowedRoles: string[]): boolean {
         if (!user) return false;

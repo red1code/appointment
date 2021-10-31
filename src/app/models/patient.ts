@@ -4,4 +4,5 @@ export class Patient {
     created_by!: string;
     created_at!: Date;
     lastUpdate?: Date;
+    order!: number;
 }

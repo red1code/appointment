@@ -6,7 +6,8 @@
 // }
 
 export interface User {
-    id: string;
+    id: number;
+    uid: string;
     email: string;
     imageURL: string;
     password: string;

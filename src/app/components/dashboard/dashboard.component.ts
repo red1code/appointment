@@ -1,29 +1,33 @@
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Chart } from 'chart.js';
 import { User } from 'src/app/models/user';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { ADTSettings } from 'angular-datatables/src/models/settings';
+import * as firebase from 'firebase';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
 
-    currentUser: any;
-    users: any;
-    usrsCols: any[];
+    currentUser!: User;
+    users!: any[];
+    usrsCols: string[];
     patients!: any[];
-    rdvCols: any[];
+    rdvCols: string[];
     months: string[];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
     expChart: any;
     datePipe = 'MMMM d, y - hh:mm aa';
+    dtOptions: any; // DataTables.Settings;
+    dtTrigger: Subject<ADTSettings> = new Subject();
 
     constructor(
         private authService: AuthService,
@@ -34,27 +38,42 @@ export class DashboardComponent implements OnInit {
         this.months = Array.from({ length: 12 }, (item, i) => {
             return new Date(0, i).toLocaleString('en', { month: 'long' })
         });
-        this.usrsCols = [
-            { field: 'firstName', header: 'First Name' },
-            { field: 'familyName', header: 'Last Name' },
-            { field: 'email', header: 'Email' },
-            { field: 'phoneNumber', header: 'Phone Number' },
-            { field: 'created_at', header: 'Created at' },
-            { field: 'roles', header: 'Role' }
-        ];
-        this.rdvCols = [
-            { field: 'fullName', header: 'Full Name' },
-            { field: 'phoneNumber', header: 'Phone Number' },
-            { field: 'created_at', header: 'Created at' },
-            { field: 'lastUpdate', header: 'Last update' }
-        ];
+        this.usrsCols =
+            ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number', 'Created At', 'Role'];
+        this.rdvCols =
+            ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last Update']
     }
 
     ngOnInit(): void {
         this.getUsers();
         this.getPatients();
         this.getCurrentUser();
-        // this.currentUser = this.authService.getCurrentUser();
+        this.dtOptions = {
+            pagingType: 'full_numbers',
+            pageLength: 5,
+            lengthMenu: [3, 5, 10, 25, 50, 100],
+            dom: 'Bfrtip',
+            // Configure the buttons
+            buttons: [
+                'columnsToggle',
+                'colvis',
+                // 'copy',
+                // 'print',
+                'csv',
+                'excel',
+                // {
+                //     text: 'Some button',
+                //     key: '1',
+                //     action: function (e: any, dt: any, node: any, config: any) {
+                //         alert('Button activated');
+                //     }
+                // }
+            ]
+        }
+    }
+
+    ngAfterViewInit(): void {
+        this.dtTrigger.next();
     }
 
     getCurrentUser() {
@@ -76,19 +95,22 @@ export class DashboardComponent implements OnInit {
             let results = res;
             this.users = results.map((user: any) => {
                 return {
-                    firstName: user.payload.doc.data().firstName,
-                    familyName: user.payload.doc.data().familyName,
-                    email: user.payload.doc.data().email,
-                    phoneNumber: user.payload.doc.data().phoneNumber,
-                    role: user.payload.doc.data().role,
-                    created_at: user.payload.doc.data().created_at.toDate(),
-                    id: user.payload.doc.id
+                    ID: user.payload.doc.data().id,
+                    First_Name: user.payload.doc.data().firstName,
+                    Family_Name: user.payload.doc.data().familyName,
+                    Email: user.payload.doc.data().email,
+                    Phone_Number: user.payload.doc.data().phoneNumber,
+                    Role: user.payload.doc.data().role,
+                    Created_At: user.payload.doc.data().created_at,
+                    UID: user.payload.doc.id
                 }
             })
         })
     }
 
-    onDeleteUser() { }
+    onDeleteUser(uid: string) {
+    //     firebase.auth
+    }
 
     // rendezvous methods.
     getPatients() {
@@ -97,19 +119,21 @@ export class DashboardComponent implements OnInit {
             let results = res;
             this.patients = results.map((patient: any) => {
                 return {
+                    id: patient.payload.doc.data().order,
                     fullName: patient.payload.doc.data().fullName,
                     phoneNumber: patient.payload.doc.data().phoneNumber,
                     created_at: patient.payload.doc.data().created_at,
                     lastUpdate: patient.payload.doc.data().lastUpdate,
-                    id: patient.payload.doc.id
+                    rdvID: patient.payload.doc.id
                 }
-            })
-            // make an array of rendezvous in every month.
+            });
+            // make an array of how many rendezvous in every month.
             this.rdvMonths = results.map((p: any) => {
                 return p.payload.doc.data().created_at.toDate()
                     .toLocaleString('en', { month: 'long' });
             });
-            this.rdvPerMonth = this.months.map(month => this.rdvMonths.filter(val => val == month).length);
+            this.rdvPerMonth = this.months.map(
+                month => this.rdvMonths.filter(val => val == month).length);
             /* chart methode must be called here 
                because we must get rdvPerMonth array first. */
             this.chart();
@@ -170,16 +194,6 @@ export class DashboardComponent implements OnInit {
             }
         });
         this.expChart = myChart;
-    }
-
-    // exporting usr list to csv file.
-    usrListToCSV() {
-        this.databaseService.exportToCsv('users-list', this.users);
-    }
-
-    // exporting rdv list.
-    rdvListToCSV() {
-        this.databaseService.exportToCsv('rdv-list', this.patients);
     }
 
     // exporting chart.

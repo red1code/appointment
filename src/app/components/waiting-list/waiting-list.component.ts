@@ -1,5 +1,5 @@
 import { User } from './../../models/user';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Patient } from 'src/app/models/patient';
@@ -14,25 +14,28 @@ export class WaitingListComponent implements OnInit {
 
     datePape = 'MMMM d, y - hh:mm aa';
     firebaseErrorMessage: string;
-    patientForm!: FormGroup;
+    patientForm: FormGroup;
     patientsList!: any[];
     patient!: Patient;
     tHead: string[];
     id: string;
 
     constructor(
-        private databaseService: DatabaseService,
         private formBuilder: FormBuilder,
-        private authService: AuthService
+        private authService: AuthService,
+        private databaseService: DatabaseService
     ) {
         this.id = '';
         this.firebaseErrorMessage = '';
         this.tHead = ['Full Name', 'Phone Number', 'Created At', 'Last update'];
+        this.patientForm = this.formBuilder.group({
+            fullName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
+            phoneNumber: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]]
+        });
     }
 
     ngOnInit(): void {
         this.getPatientsList();
-        this.initForm();
     }
 
     onSubmitForm() {
@@ -41,6 +44,7 @@ export class WaitingListComponent implements OnInit {
         if (this.id === '') {
             this.patient.created_at = new Date();
             this.patient.created_by = this.authService.userEmail;
+            this.patient.order = this.patientsList.length + 1;
             this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();
         } else {
@@ -56,7 +60,7 @@ export class WaitingListComponent implements OnInit {
             fullName: [patient.fullName, [Validators.required]],
             phoneNumber: [patient.phoneNumber, Validators.required]
         });
-        this.id = patient.id;
+        this.id = patient.rdvID;
     }
 
     getPatientsList() {
@@ -70,7 +74,7 @@ export class WaitingListComponent implements OnInit {
                     created_by: rdv.payload.doc.data().created_by,
                     created_at: rdv.payload.doc.data().created_at,
                     lastUpdate: rdv.payload.doc.data().lastUpdate,
-                    id: rdv.payload.doc.id
+                    rdvID: rdv.payload.doc.id
                 }
             })
         })
@@ -90,16 +94,9 @@ export class WaitingListComponent implements OnInit {
         else return false;
     }
 
-    initForm() {
-        this.patientForm = this.formBuilder.group({
-            fullName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
-            phoneNumber: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]]
-        });
-    }
-
     resetForm() {
-        this.patientForm.reset();
         this.id = '';
+        this.patientForm.reset();
     }
 
 }
