@@ -16,39 +16,63 @@ import * as firebase from 'firebase';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 
+    usrsCols: string[] = ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number', 'Created At', 'Role'];
+    rdvCols: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last Update'];
+    months: string[] = Array.from({ length: 12 }, (item, i) => {
+        return new Date(0, i).toLocaleString('en', { month: 'long' })
+    });
     currentUser!: User;
     users!: any[];
-    usrsCols: string[];
     patients!: any[];
-    rdvCols: string[];
-    months: string[];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
     expChart: any;
+    dtUsersOptions: any; // DataTables.Settings;
+    dtUsersTrigger: Subject<ADTSettings> = new Subject();
+    dtRdvsOptions: any; // DataTables.Settings;
+    dtRdvsTrigger: Subject<ADTSettings> = new Subject();
     datePipe = 'MMMM d, y - hh:mm aa';
-    dtOptions: any; // DataTables.Settings;
-    dtTrigger: Subject<ADTSettings> = new Subject();
+    // chartBackgrndColor: any;
+    color = '#ffffff';
 
     constructor(
         private authService: AuthService,
         private databaseService: DatabaseService,
         private angularFireAuth: AngularFireAuth,
         private angularFirestore: AngularFirestore
-    ) {
-        this.months = Array.from({ length: 12 }, (item, i) => {
-            return new Date(0, i).toLocaleString('en', { month: 'long' })
-        });
-        this.usrsCols =
-            ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number', 'Created At', 'Role'];
-        this.rdvCols =
-            ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last Update']
-    }
+    ) { }
+
+    // dltusr() {
+    //     this.angularFireAuth.idToken
+    // }
 
     ngOnInit(): void {
         this.getUsers();
         this.getPatients();
         this.getCurrentUser();
-        this.dtOptions = {
+        this.dtUsersOptions = {
+            pagingType: 'full_numbers',
+            pageLength: 5,
+            lengthMenu: [3, 5, 10, 25, 50, 100],
+            dom: 'Bfrtip',
+            // Configure the buttons
+            buttons: [
+                'columnsToggle',
+                'colvis',
+                // 'copy',
+                // 'print',
+                'csv',
+                'excel',
+                // {
+                //     text: 'Some button',
+                //     key: '1',
+                //     action: function (e: any, dt: any, node: any, config: any) {
+                //         alert('Button activated');
+                //     }
+                // }
+            ]
+        };
+        this.dtRdvsOptions = {
             pagingType: 'full_numbers',
             pageLength: 5,
             lengthMenu: [3, 5, 10, 25, 50, 100],
@@ -73,7 +97,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.dtTrigger.next();
+        this.dtUsersTrigger.next();
+        this.dtRdvsTrigger.next();
     }
 
     getCurrentUser() {
@@ -109,7 +134,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     onDeleteUser(uid: string) {
-    //     firebase.auth
+        //     firebase.auth
     }
 
     // rendezvous methods.
@@ -163,7 +188,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(255, 206, 86, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(25, 134, 84, 1)',
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(255, 206, 86, 0.2)',
                     ],
@@ -177,11 +202,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                         'rgba(54, 162, 235, 1)',
                         'rgba(255, 206, 86, 1)',
                         'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
+                        'rgba(230, 45, 45, 1)',
                         'rgba(54, 162, 235, 1)',
                         'rgba(255, 206, 86, 1)',
                     ],
-                    borderWidth: 1
+                    borderWidth: 2
                 }]
             },
             options: {
@@ -197,19 +222,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     // exporting chart.
-    chartToPNG() {
+    chartToImg() {
         let canvas = document.getElementById('myChart') as HTMLCanvasElement;
-        canvas.style.backgroundColor = '#fff'
-        let dataURL = canvas.toDataURL();
-        let fName = this.expChart.options.title.text;
-        this.downloadFile(dataURL, fName);
-    }
-
-    downloadFile(data: any, filename: any) {
+        let destinationCanvas = document.createElement("canvas");
+        destinationCanvas.width = canvas.width;
+        destinationCanvas.height = canvas.height;
+        let destCtx: CanvasRenderingContext2D | null = destinationCanvas.getContext('2d');
+        //create a rectangle with the desired color
+        destCtx!.fillStyle = this.color;
+        destCtx?.fillRect(0, 0, canvas.width, canvas.height);
+        //draw the original canvas onto the destination canvas
+        destCtx?.drawImage(canvas, 0, 0);
+        //finally use the destinationCanvas.toDataURL() method to get the desired output;
         let a = document.createElement('a');
-        a.href = data;
-        a.download = filename;
-        document.body.appendChild(a);
+        a.href = destinationCanvas.toDataURL()
+        a.download = this.expChart.options.title.text;
         a.click();
     }
 

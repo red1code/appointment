@@ -30,7 +30,6 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit(): void {
         this.getUser();
-
     }
 
     getUser() {
@@ -48,7 +47,6 @@ export class HeaderComponent implements OnInit {
                     })
             }
             else this.isAuth = false;
-
         })
     }
 

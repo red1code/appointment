@@ -18,10 +18,10 @@
     <!-- profile pic & user's name -->
     <button id="account-container" *ngIf="(isAuth)" 
             (click)="toggleMenu()" (blur)="accountMenu=false" title="Menu">
-        <img [src]="userImgURL" class="rounded-circle" id="userIMG">
-        <h3 style="width: fit-content; display: inline-block; margin: 0 10px;">
-            <strong>{{ user.firstName }}</strong>
-            <small> ( {{ user.role }} )</small></h3>
+        <img *ngIf="userImgURL" [src]="userImgURL" id="userIMG">
+        <h3 id="userName">
+            <strong>{{ user.firstName }} </strong>
+            <small> ({{ user.role }})</small></h3>
         <!-- popup menu -->
         <div *ngIf="accountMenu" id="account-menu">
             <div id="goToProfile" (click)="goToUserProfile()" 

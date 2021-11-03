@@ -2,7 +2,7 @@
     <!-- users list -->
     <div *ngIf="adminPermission() || editorPermission()" 
           class="col-md-8 facebook-style" id="users-list">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+        <table datatable [dtOptions]="dtUsersOptions" [dtTrigger]="dtUsersTrigger" class="row-border hover">
             <thead>
                 <tr>
                     <th *ngFor="let head of usrsCols">{{ head }}</th>
@@ -31,7 +31,7 @@
     <!-- rendezvous list -->
     <div *ngIf="adminPermission() || editorPermission()" 
           class="col-md-8 facebook-style" id="rendezvous-list">
-        <table *ngIf="!emptyRdvList()" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" 
+        <table *ngIf="!emptyRdvList()" datatable [dtOptions]="dtRdvsOptions" [dtTrigger]="dtRdvsTrigger" 
                 class="row-border hover" id="rdv-table">
             <thead>
                 <tr>
@@ -64,12 +64,16 @@
 
     <!-- chart js -->
     <div class="col-md-8 facebook-style" id="chart-container">
-        <div id="divChart">
-            <canvas id="myChart" width="750" height="400"></canvas>
+        <div class="chart-header-container">
+            <div>
+                <label for="background-color">Change Background Color: </label><br>
+                <input type="color" name="background-color" [(ngModel)]="color" style="width: 150px;">
+            </div>
+            <button class="btn btn-outline-success"
+                    (click)="chartToImg()">Export To Image</button>
         </div>
-        <div class="exp-btn-container">
-            <button class="btn btn-outline-success" (click)="chartToPNG()">
-                export to JPEG</button>
+        <div id="divChart"  [style.background-color]="color">
+            <canvas id="myChart" width="750"></canvas>
         </div>
     </div>
 </div>
