@@ -16,24 +16,25 @@ import * as firebase from 'firebase';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 
-    usrsCols: string[] = ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number', 'Created At', 'Role'];
-    rdvCols: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last Update'];
-    months: string[] = Array.from({ length: 12 }, (item, i) => {
-        return new Date(0, i).toLocaleString('en', { month: 'long' })
-    });
     currentUser!: User;
     users!: any[];
     patients!: any[];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
-    expChart: any;
-    dtUsersOptions: any; // DataTables.Settings;
+    dtUsersOptions!: DataTables.Settings;
     dtUsersTrigger: Subject<ADTSettings> = new Subject();
-    dtRdvsOptions: any; // DataTables.Settings;
-    dtRdvsTrigger: Subject<ADTSettings> = new Subject();
     datePipe = 'MMMM d, y - hh:mm aa';
-    // chartBackgrndColor: any;
-    color = '#ffffff';
+    dtRdvsOptions!: DataTables.Settings;
+    dtRdvsTrigger: Subject<ADTSettings> = new Subject();
+    backgroundColor = '#ffffff';
+    usrsCols: string[] = ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number',
+        'Created At', 'Role'];
+    rdvCols: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At',
+        'Last Update'];
+    months: string[] = Array.from({ length: 12 }, (item, i) => {
+        return new Date(0, i).toLocaleString('en', { month: 'long' })
+    });
+    expChart: any;
 
     constructor(
         private authService: AuthService,
@@ -42,37 +43,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         private angularFirestore: AngularFirestore
     ) { }
 
-    // dltusr() {
-    //     this.angularFireAuth.idToken
-    // }
-
     ngOnInit(): void {
         this.getUsers();
         this.getPatients();
+        this.dtUsersOptions = this.dtTablesSettings();
+        this.dtRdvsOptions = this.dtTablesSettings();
         this.getCurrentUser();
-        this.dtUsersOptions = {
-            pagingType: 'full_numbers',
-            pageLength: 5,
-            lengthMenu: [3, 5, 10, 25, 50, 100],
-            dom: 'Bfrtip',
-            // Configure the buttons
-            buttons: [
-                'columnsToggle',
-                'colvis',
-                // 'copy',
-                // 'print',
-                'csv',
-                'excel',
-                // {
-                //     text: 'Some button',
-                //     key: '1',
-                //     action: function (e: any, dt: any, node: any, config: any) {
-                //         alert('Button activated');
-                //     }
-                // }
-            ]
-        };
-        this.dtRdvsOptions = {
+    }
+
+    ngAfterViewInit(): void {
+        this.dtUsersTrigger.next();
+        this.dtRdvsTrigger.next();
+    }
+
+    dtTablesSettings() {
+        return {
             pagingType: 'full_numbers',
             pageLength: 5,
             lengthMenu: [3, 5, 10, 25, 50, 100],
@@ -96,11 +81,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
     }
 
-    ngAfterViewInit(): void {
-        this.dtUsersTrigger.next();
-        this.dtRdvsTrigger.next();
-    }
-
     getCurrentUser() {
         this.angularFireAuth.onAuthStateChanged((user) => {
             if (user) {
@@ -113,25 +93,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         });
     }
 
-    // users methods.
-    getUsers() {
-        return this.databaseService.getUsersList().subscribe(res => {
-            // in order to get rid of "payload.doc.data()", I added these steps:
-            let results = res;
-            this.users = results.map((user: any) => {
-                return {
-                    ID: user.payload.doc.data().id,
-                    First_Name: user.payload.doc.data().firstName,
-                    Family_Name: user.payload.doc.data().familyName,
-                    Email: user.payload.doc.data().email,
-                    Phone_Number: user.payload.doc.data().phoneNumber,
-                    Role: user.payload.doc.data().role,
-                    Created_At: user.payload.doc.data().created_at,
-                    UID: user.payload.doc.id
-                }
-            })
-        })
-    }
+    getUsers = () => this.angularFirestore.collection('users').valueChanges()
+        .subscribe(res => this.users = res)
 
     onDeleteUser(uid: string) {
         //     firebase.auth
@@ -139,7 +102,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // rendezvous methods.
     getPatients() {
-        return this.databaseService.getPatientsList().subscribe(res => {
+        this.databaseService.getPatientsList().subscribe(res => {
             // in order to get rid of "payload.doc.data()" I added these steps:
             let results = res;
             this.patients = results.map((patient: any) => {
@@ -152,15 +115,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     rdvID: patient.payload.doc.id
                 }
             });
-            // make an array of how many rendezvous in every month.
+            // making an array of number of rendezvous in every month:
             this.rdvMonths = results.map((p: any) => {
                 return p.payload.doc.data().created_at.toDate()
                     .toLocaleString('en', { month: 'long' });
             });
             this.rdvPerMonth = this.months.map(
                 month => this.rdvMonths.filter(val => val == month).length);
-            /* chart methode must be called here 
-               because we must get rdvPerMonth array first. */
+            // after we got rdvPerMonth array, now we call chart.js:
             this.chart();
         })
     }
@@ -172,41 +134,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // chartJS method.
     chart() {
         var myChart: any = new Chart("myChart", {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: this.months,
                 datasets: [{
                     label: 'Rendezvous',
                     data: this.rdvPerMonth, // [4, 3, 5, 11, 25, 50, 75, 40, 29, 60, 88, 121],
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(25, 134, 84, 1)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(230, 45, 45, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                    ],
-                    borderWidth: 2
+                    backgroundColor: ['rgba(255, 145, 0, 0.9)'],
+                    borderColor: ['rgba(30, 0, 255, 0.9)'],
+                    borderWidth: 1.5
                 }]
             },
             options: {
@@ -229,7 +165,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         destinationCanvas.height = canvas.height;
         let destCtx: CanvasRenderingContext2D | null = destinationCanvas.getContext('2d');
         //create a rectangle with the desired color
-        destCtx!.fillStyle = this.color;
+        destCtx!.fillStyle = this.backgroundColor;
         destCtx?.fillRect(0, 0, canvas.width, canvas.height);
         //draw the original canvas onto the destination canvas
         destCtx?.drawImage(canvas, 0, 0);
@@ -249,3 +185,50 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 }
 
 // THE END.
+
+
+
+/*
+
+'rgba(54, 162, 235, 0.2)',
+'rgba(255, 206, 86, 0.2)',
+'rgba(54, 162, 235, 0.2)',
+'rgba(255, 206, 86, 0.2)',
+'rgba(54, 162, 235, 0.2)',
+'rgba(255, 206, 86, 0.2)',
+'rgba(54, 162, 235, 0.2)',
+'rgba(255, 206, 86, 0.2)',
+'rgba(54, 162, 235, 0.2)',
+'rgba(25, 134, 84, 1)',
+'rgba(54, 162, 235, 0.2)',
+'rgba(255, 206, 86, 0.2)',
+
+'rgba(54, 162, 235, 1)',
+'rgba(255, 206, 86, 1)',
+'rgba(54, 162, 235, 1)',
+'rgba(255, 206, 86, 1)',
+'rgba(54, 162, 235, 1)',
+'rgba(255, 206, 86, 1)',
+'rgba(54, 162, 235, 1)',
+'rgba(255, 206, 86, 1)',
+'rgba(54, 162, 235, 1)',
+'rgba(230, 45, 45, 1)',
+'rgba(54, 162, 235, 1)',
+'rgba(255, 206, 86, 1)',
+
+
+let results = res;
+this.users = results.map((user: any) => {
+    return {
+        ID: user.payload.doc.data().id,
+        First_Name: user.payload.doc.data().firstName,
+        Family_Name: user.payload.doc.data().familyName,
+        Email: user.payload.doc.data().email,
+        Phone_Number: user.payload.doc.data().phoneNumber,
+        Role: user.payload.doc.data().role,
+        Created_At: user.payload.doc.data().created_at,
+        UID: user.payload.doc.id
+    }
+})
+
+*/

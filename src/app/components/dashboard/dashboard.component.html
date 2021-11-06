@@ -2,24 +2,23 @@
     <!-- users list -->
     <div *ngIf="adminPermission() || editorPermission()" 
           class="col-md-8 facebook-style" id="users-list">
-        <table datatable [dtOptions]="dtUsersOptions" [dtTrigger]="dtUsersTrigger" class="row-border hover">
+        <table datatable [dtOptions]="dtUsersOptions" [dtTrigger]="dtUsersTrigger"
+               class="row-border hover">
             <thead>
-                <tr>
-                    <th *ngFor="let head of usrsCols">{{ head }}</th>
-                </tr>
+                <tr><th *ngFor="let head of usrsCols">{{ head }}</th></tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users">
-                    <td>{{ user.ID }}</td>
-                    <td>{{ user.First_Name }}</td>
-                    <td>{{ user.Family_Name }}</td>
-                    <td>{{ user.Email }}</td>
-                    <td>{{ user.Phone_Number }}</td>
-                    <td>{{ user.Created_At.toDate() | date:datePipe }}</td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.familyName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phoneNumber }}</td>
+                    <td>{{ user.created_at.toDate() | date:datePipe }}</td>
                     <td>
-                        <span>{{ user.Role }}</span>
-                        <span *ngIf="adminPermission()" (click)="onDeleteUser(user.UID)"
-                               class="fas-icon-container">
+                        <span>{{ user.role }}</span>
+                        <span *ngIf="adminPermission()" class="fas-icon-container" 
+                               (click)="onDeleteUser(user.UID)">
                             <i class="fas fa-trash-alt fas-icon"></i>
                         </span>
                     </td>
@@ -31,12 +30,10 @@
     <!-- rendezvous list -->
     <div *ngIf="adminPermission() || editorPermission()" 
           class="col-md-8 facebook-style" id="rendezvous-list">
-        <table *ngIf="!emptyRdvList()" datatable [dtOptions]="dtRdvsOptions" [dtTrigger]="dtRdvsTrigger" 
+        <table *ngIf="!emptyRdvList()" datatable [dtOptions]="dtRdvsOptions" [dtTrigger]="dtRdvsTrigger"
                 class="row-border hover" id="rdv-table">
             <thead>
-                <tr>
-                    <th *ngFor="let header of rdvCols">{{ header }}</th>
-                </tr>
+                <tr><th *ngFor="let header of rdvCols">{{ header }}</th></tr>
             </thead>
             <tbody>
                 <tr *ngFor="let rdv of patients">
@@ -47,15 +44,10 @@
                     <td>
                         <span *ngIf="!rdv.lastUpdate">Not updated</span>
                         <span *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePipe }}</span>
-                        <span *ngIf="adminPermission()" (click)="onDeletePatient(rdv)"
-                               class="fas-icon-container">
+                        <span *ngIf="adminPermission()" (click)="onDeletePatient(rdv)" class="fas-icon-container">
                             <i class="fas fa-trash-alt fas-icon"></i>
                         </span>
                     </td>
-                    <!-- <td *ngIf="adminPermission()" class="fas-icon-container">
-                        <i class="fas fa-trash-alt" (click)="onDeletePatient(rdv)"
-                           style="cursor: pointer; padding: 5px;"></i>
-                    </td> -->
                 </tr>
             </tbody>
         </table>
@@ -66,14 +58,15 @@
     <div class="col-md-8 facebook-style" id="chart-container">
         <div class="chart-header-container">
             <div>
-                <label for="background-color">Change Background Color: </label><br>
-                <input type="color" name="background-color" [(ngModel)]="color" style="width: 150px;">
+                <label for="backgroundColor">Change Background Color: </label><br>
+                <input type="color" name="backgroundColor" [(ngModel)]="backgroundColor" 
+                       id="backgroundColor" style="width: 150px; cursor: pointer;">
             </div>
             <button class="btn btn-outline-success"
                     (click)="chartToImg()">Export To Image</button>
         </div>
-        <div id="divChart"  [style.background-color]="color">
-            <canvas id="myChart" width="750"></canvas>
+        <div id="divChart"  [style.background-color]="backgroundColor">
+            <canvas id="myChart"></canvas>
         </div>
     </div>
 </div>
