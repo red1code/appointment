@@ -23,14 +23,11 @@
 
 .fas-icon-container {
     color: #dc3545;
-    float: right;
-    margin-left: 9px;
 }
 
 .fas-icon {
-    padding: 5px;
+    padding: 7px;
     cursor: pointer;
-    color: #dc3545;
 }
 
 .chart-header-container {

@@ -27,7 +27,7 @@ export class WaitingListComponent implements OnInit {
     ) {
         this.id = '';
         this.firebaseErrorMessage = '';
-        this.tHead = ['Full Name', 'Phone Number', 'Created At', 'Last update'];
+        this.tHead = ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last update'];
         this.patientForm = this.formBuilder.group({
             fullName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
             phoneNumber: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]]
@@ -44,7 +44,7 @@ export class WaitingListComponent implements OnInit {
         if (this.id === '') {
             this.patient.created_at = new Date();
             this.patient.created_by = this.authService.userEmail;
-            this.patient.order = this.patientsList.length + 1;
+            // this.patient.order = this.patientsList.length + 1;
             this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();
         } else {
@@ -69,6 +69,7 @@ export class WaitingListComponent implements OnInit {
             let results = res;
             this.patientsList = results.map((rdv: any) => {
                 return {
+                    order: rdv.payload.doc.data().order,
                     fullName: rdv.payload.doc.data().fullName,
                     phoneNumber: rdv.payload.doc.data().phoneNumber,
                     created_by: rdv.payload.doc.data().created_by,
@@ -76,6 +77,11 @@ export class WaitingListComponent implements OnInit {
                     lastUpdate: rdv.payload.doc.data().lastUpdate,
                     rdvID: rdv.payload.doc.id
                 }
+            });
+            let i = 1;
+            this.patientsList.map(rdv => {
+                rdv.order = i;
+                i++;
             })
         })
     }

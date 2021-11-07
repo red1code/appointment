@@ -47,10 +47,7 @@ export class AuthService {
                 user.uid = result.user.uid;
                 user.created_at = new Date();
                 user.imageURL = 'assets/unknown-profile-picture.png';
-                this.getUsersList().subscribe(res => {
-                    user.id = res.length;
-                    this.angularFirestore.doc('/users/' + user.uid).set(user);
-                })                
+                this.angularFirestore.doc('/users/' + user.uid).set(user)               
             }).catch((error): any => {
                 console.log('Auth Service: signup error', error);
                 if (error.code)

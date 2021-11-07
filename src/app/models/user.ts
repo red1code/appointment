@@ -6,7 +6,7 @@
 // }
 
 export interface User {
-    id: number;
+    id?: number;
     uid: string;
     email: string;
     imageURL: string;

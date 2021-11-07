@@ -5,7 +5,10 @@
         <table datatable [dtOptions]="dtUsersOptions" [dtTrigger]="dtUsersTrigger"
                class="row-border hover">
             <thead>
-                <tr><th *ngFor="let head of usrsCols">{{ head }}</th></tr>
+                <tr>
+                    <th *ngFor="let head of usrsCols">{{ head }}</th>
+                    <th *ngIf="adminPermission()"></th>
+                </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users">
@@ -15,12 +18,9 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.phoneNumber }}</td>
                     <td>{{ user.created_at.toDate() | date:datePipe }}</td>
-                    <td>
-                        <span>{{ user.role }}</span>
-                        <span *ngIf="adminPermission()" class="fas-icon-container" 
-                               (click)="onDeleteUser(user.UID)">
-                            <i class="fas fa-trash-alt fas-icon"></i>
-                        </span>
+                    <td>{{ user.role }}</td>
+                    <td *ngIf="adminPermission()" class="fas-icon-container">
+                        <i class="fas fa-trash-alt fas-icon" (click)="onDeleteUser(user.UID)"></i>
                     </td>
                 </tr>
             </tbody>
@@ -33,7 +33,10 @@
         <table *ngIf="!emptyRdvList()" datatable [dtOptions]="dtRdvsOptions" [dtTrigger]="dtRdvsTrigger"
                 class="row-border hover" id="rdv-table">
             <thead>
-                <tr><th *ngFor="let header of rdvCols">{{ header }}</th></tr>
+                <tr>
+                    <th *ngFor="let header of rdvCols">{{ header }}</th>
+                    <th *ngIf="adminPermission()"></th>
+                </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let rdv of patients">
@@ -44,9 +47,9 @@
                     <td>
                         <span *ngIf="!rdv.lastUpdate">Not updated</span>
                         <span *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePipe }}</span>
-                        <span *ngIf="adminPermission()" (click)="onDeletePatient(rdv)" class="fas-icon-container">
-                            <i class="fas fa-trash-alt fas-icon"></i>
-                        </span>
+                    </td>
+                    <td *ngIf="adminPermission()" class="fas-icon-container">
+                        <i class="fas fa-trash-alt fas-icon" (click)="onDeletePatient(rdv)"></i>
                     </td>
                 </tr>
             </tbody>

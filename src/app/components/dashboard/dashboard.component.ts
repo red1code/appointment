@@ -41,14 +41,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         private databaseService: DatabaseService,
         private angularFireAuth: AngularFireAuth,
         private angularFirestore: AngularFirestore
-    ) { }
-
-    ngOnInit(): void {
+    ) {
         this.getUsers();
         this.getPatients();
+        this.getCurrentUser();
+    }
+
+    ngOnInit(): void {
         this.dtUsersOptions = this.dtTablesSettings();
         this.dtRdvsOptions = this.dtTablesSettings();
-        this.getCurrentUser();
     }
 
     ngAfterViewInit(): void {
@@ -93,8 +94,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         });
     }
 
-    getUsers = () => this.angularFirestore.collection('users').valueChanges()
-        .subscribe(res => this.users = res)
+    getUsers = () => this.angularFirestore.collection('users', ref => {
+        return ref.orderBy('created_at')
+    }).valueChanges()
+        .subscribe(res => {
+            this.users = res;
+            let i = 1;
+            this.users.map(usr => {
+                usr.id = i;
+                i++;
+            })
+        })
 
     onDeleteUser(uid: string) {
         //     firebase.auth
@@ -115,6 +125,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     rdvID: patient.payload.doc.id
                 }
             });
+            let i = 1;
+            this.patients.map(rdv => {
+                rdv.id = i;
+                i++;
+            })
             // making an array of number of rendezvous in every month:
             this.rdvMonths = results.map((p: any) => {
                 return p.payload.doc.data().created_at.toDate()

@@ -16,7 +16,9 @@ export class DatabaseService {
     }
 
     getPatientsList() {
-        return this.angularFirestore.collection('patientsList').snapshotChanges();
+        return this.angularFirestore.collection('patientsList', ref => {
+            return ref.orderBy('created_at')
+        }).snapshotChanges();
     }
 
     updatePatient(id: string, patient: any) {

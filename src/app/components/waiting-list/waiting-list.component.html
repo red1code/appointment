@@ -43,6 +43,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let rdv of patientsList">
+                        <td>{{ rdv.order }}</td>
                         <td>{{ rdv.fullName }}</td>
                         <td>{{ rdv.phoneNumber }}</td>
                         <td>{{ rdv.created_at.toDate() | date:datePape }}</td>

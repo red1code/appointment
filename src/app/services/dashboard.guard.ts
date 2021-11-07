@@ -37,6 +37,8 @@ export class DashboardGuard implements CanActivate {
                                 reject();
                             }
                         })
+                } else {
+                    this.router.navigate(['/home']);
                 }
             });
         })
