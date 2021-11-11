@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
  
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,6 +38,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChartsModule } from 'ng2-charts';
 import { DataTablesModule } from 'angular-datatables';
+import { TablesComponent } from './components/dashboard/tables/tables.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,8 @@ import { DataTablesModule } from 'angular-datatables';
     HomeComponent,
     FooterComponent,
     UserProfileComponent,
-    DashboardComponent
+    DashboardComponent,
+    TablesComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +82,8 @@ import { DataTablesModule } from 'angular-datatables';
     AuthGuard,
     ListService,
     DatabaseService ,
-    DashboardGuard  
+    DashboardGuard,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

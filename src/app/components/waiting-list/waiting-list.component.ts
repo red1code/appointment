@@ -1,9 +1,8 @@
-import { User } from './../../models/user';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseService } from 'src/app/services/database.service';
-import { Patient } from 'src/app/models/patient';
 import { AuthService } from 'src/app/services/auth.service';
+import { Patient } from 'src/app/models/patient';
 
 @Component({
     selector: 'app-waiting-list',
@@ -12,24 +11,21 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class WaitingListComponent implements OnInit {
 
-    datePape = 'MMMM d, y - hh:mm aa';
-    firebaseErrorMessage: string;
-    patientForm: FormGroup;
-    patientsList!: any[];
+    id: string = '';
     patient!: Patient;
-    tHead: string[];
-    id: string;
+    patientForm: FormGroup;
+    patientsList: any[] = [];
+    firebaseErrorMessage: string = '';
+    datePipe: string = 'MMMM d, y - hh:mm aa';
+    tHead: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last update'];
 
     constructor(
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private databaseService: DatabaseService
     ) {
-        this.id = '';
-        this.firebaseErrorMessage = '';
-        this.tHead = ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last update'];
         this.patientForm = this.formBuilder.group({
-            fullName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
+            displayName: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
             phoneNumber: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]]
         });
     }
@@ -43,8 +39,8 @@ export class WaitingListComponent implements OnInit {
         this.patient = this.patientForm.value;
         if (this.id === '') {
             this.patient.created_at = new Date();
+            this.patient.lastUpdate = 'Not updated';
             this.patient.created_by = this.authService.userEmail;
-            // this.patient.order = this.patientsList.length + 1;
             this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();
         } else {
@@ -57,7 +53,7 @@ export class WaitingListComponent implements OnInit {
 
     onUpdateIcon(patient: any) {
         this.patientForm = this.formBuilder.group({
-            fullName: [patient.fullName, [Validators.required]],
+            displayName: [patient.displayName, [Validators.required]],
             phoneNumber: [patient.phoneNumber, Validators.required]
         });
         this.id = patient.rdvID;
@@ -70,7 +66,7 @@ export class WaitingListComponent implements OnInit {
             this.patientsList = results.map((rdv: any) => {
                 return {
                     order: rdv.payload.doc.data().order,
-                    fullName: rdv.payload.doc.data().fullName,
+                    displayName: rdv.payload.doc.data().displayName,
                     phoneNumber: rdv.payload.doc.data().phoneNumber,
                     created_by: rdv.payload.doc.data().created_by,
                     created_at: rdv.payload.doc.data().created_at,

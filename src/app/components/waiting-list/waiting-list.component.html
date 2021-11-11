@@ -1,15 +1,16 @@
 <div class="container-fluid" style="min-height: 100vh;">
     <div class="row justify-content-center no-gutters col-md-">
+        <!-- add RDVs form -->
         <div class="col-md-3 facebook-style" id="form-container">
             <form (ngSubmit)="onSubmitForm()" [formGroup]="patientForm" class="submit-form" id="form">
                 <h2 *ngIf="id == ''" style="margin-bottom: 35px;">Prendre un rendez-vous!</h2>
                 <h2 *ngIf="id != ''">Update Infos</h2>
-                <div class="form-group" id="fullName-input-section">
-                    <label for="fullName">Patient's name</label> <br>
-                    <input type="text" formControlName="fullName" class="form-control">
-                    <p *ngIf="patientForm.controls.fullName.touched && 
-                              patientForm.controls.fullName.invalid &&
-                              patientForm.controls.fullName.invalid" 
+                <div class="form-group">
+                    <label for="displayName">Patient's name</label> <br>
+                    <input type="text" formControlName="displayName" class="form-control">
+                    <p *ngIf="patientForm.controls.displayName.touched && 
+                              patientForm.controls.displayName.invalid &&
+                              patientForm.controls.displayName.invalid" 
                         class="alert alert-danger">Please, Enter a valid name.</p>
                 </div>
                 <div class="form-group" id="phoneNumber-input-section">
@@ -34,22 +35,21 @@
             </form>
         </div>
 
+        <!-- RDVs table -->
         <div class="col-md-8 facebook-style" id="list-container">
             <table *ngIf="patientsList.length != 0" class="table">
                 <thead>
-                    <tr>
-                        <th *ngFor="let th of tHead">{{ th }}</th>
-                    </tr>
+                    <tr><th *ngFor="let th of tHead">{{ th }}</th></tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let rdv of patientsList">
                         <td>{{ rdv.order }}</td>
-                        <td>{{ rdv.fullName }}</td>
+                        <td>{{ rdv.displayName }}</td>
                         <td>{{ rdv.phoneNumber }}</td>
-                        <td>{{ rdv.created_at.toDate() | date:datePape }}</td>
+                        <td>{{ rdv.created_at.toDate() | date:datePipe }}</td>
                         <td>
-                            <span *ngIf="!rdv.lastUpdate">Not updated</span>
-                            <span *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePape }}</span>
+                            <span *ngIf="rdv.lastUpdate==='Not updated'">{{ rdv.lastUpdate }}</span>
+                            <span *ngIf="rdv.lastUpdate!=='Not updated'">{{ rdv.lastUpdate.toDate() | date:datePipe }}</span>
                             <span *ngIf="checkUserPermission(rdv)" 
                                    style="float: right; margin-left: 15px;">
                                 <i class="fas fa-edit" (click)="onUpdateIcon(rdv)"></i>

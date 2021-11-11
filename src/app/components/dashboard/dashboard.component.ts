@@ -8,35 +8,34 @@ import { User } from 'src/app/models/user';
 import { Observable, Subject } from 'rxjs';
 import { ADTSettings } from 'angular-datatables/src/models/settings';
 import * as firebase from 'firebase';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     currentUser!: User;
-    users!: any[];
-    patients!: any[];
+    users: any[] = [];
+    patients: any[] = [];
     rdvMonths!: string[];
     rdvPerMonth!: number[];
-    dtUsersOptions!: DataTables.Settings;
-    dtUsersTrigger: Subject<ADTSettings> = new Subject();
-    datePipe = 'MMMM d, y - hh:mm aa';
-    dtRdvsOptions!: DataTables.Settings;
-    dtRdvsTrigger: Subject<ADTSettings> = new Subject();
     backgroundColor = '#ffffff';
-    usrsCols: string[] = ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number',
-        'Created At', 'Role'];
-    rdvCols: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At',
-        'Last Update'];
+    datePipe = 'MMMM d, y - hh:mm aa';
+    dtOptions1: DataTables.Settings = {};
+    dtOptions2: DataTables.Settings = {};
+    dtUsersTrigger: Subject<ADTSettings> = new Subject();
+    dtRdvsTrigger: Subject<ADTSettings> = new Subject();
     months: string[] = Array.from({ length: 12 }, (item, i) => {
         return new Date(0, i).toLocaleString('en', { month: 'long' })
     });
     expChart: any;
+    datePipeString: string;
 
     constructor(
+        private datePipe$: DatePipe,
         private authService: AuthService,
         private databaseService: DatabaseService,
         private angularFireAuth: AngularFireAuth,
@@ -45,11 +44,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.getUsers();
         this.getPatients();
         this.getCurrentUser();
+        this.datePipeString = datePipe$.transform(new Date(), 'MMMM d, y - hh:mm aa') as string;
     }
 
     ngOnInit(): void {
-        this.dtUsersOptions = this.dtTablesSettings();
-        this.dtRdvsOptions = this.dtTablesSettings();
+        this.dtOptions1 = this.usersTable();
+        this.dtOptions2 = this.rdvTable();
     }
 
     ngAfterViewInit(): void {
@@ -57,11 +57,70 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.dtRdvsTrigger.next();
     }
 
-    dtTablesSettings() {
+    ngOnDestroy(): void {
+        this.dtUsersTrigger.unsubscribe();
+        this.dtRdvsTrigger.unsubscribe();
+    }
+
+    deleteUserByID(id: string) {
+        // admin.auth().deleteUser(uid)
+        //     .then(function () {
+        //         console.log("Successfully deleted user");
+        //     })
+        //     .catch(function (error) {
+        //         console.log("Error deleting user:", error);
+        //     });
+        // const auth = firebase.
+    }
+
+    usersTable() {
         return {
+            data: this.users,
+            columns: [
+                { title: 'Order', data: 'order' },
+                { title: 'First name', data: 'firstName' },
+                { title: 'Last name', data: 'familyName' },
+                { title: 'Email', data: 'email' },
+                { title: 'Phone Number', data: 'phoneNumber' },
+                { title: 'Created At', data: 'created_at' },
+                { title: 'role', data: 'role' }
+            ],
             pagingType: 'full_numbers',
-            pageLength: 5,
-            lengthMenu: [3, 5, 10, 25, 50, 100],
+            pageLength: 4,
+            // lengthMenu: [3, 5, 10, 25, 50, 100],
+            dom: 'Bfrtip',
+            // Configure the buttons
+            buttons: [
+                'columnsToggle',
+                'colvis',
+                // 'copy',
+                // 'print',
+                'csv',
+                'excel',
+                // {
+                //     text: 'Some button',
+                //     key: '1',
+                //     action: function (e: any, dt: any, node: any, config: any) {
+                //         alert('Button activated');
+                //     }
+                // }
+            ]
+        }
+    }
+
+    rdvTable() {
+        return {
+            data: this.patients,
+            columns: [
+                { title: 'Order', data: 'id' },
+                { title: 'Display Name', data: 'displayName' },
+                { title: 'Phone Number', data: 'phoneNumber' },
+                { title: 'Created At', data: 'created_at' },
+                { title: 'Last Update', data: 'lastUpdate' }
+            ],
+            pagingType: 'full_numbers',
+            pageLength: 4,
+            // lengthMenu: [3, 5, 10, 25, 50, 100],
             dom: 'Bfrtip',
             // Configure the buttons
             buttons: [
@@ -96,15 +155,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     getUsers = () => this.angularFirestore.collection('users', ref => {
         return ref.orderBy('created_at')
-    }).valueChanges()
-        .subscribe(res => {
-            this.users = res;
-            let i = 1;
-            this.users.map(usr => {
-                usr.id = i;
-                i++;
-            })
-        })
+    }).valueChanges().subscribe(res => {
+        this.users = res;
+        let i = 1;
+        this.users.map(usr => {
+            usr.order = i;
+            i++;
+        });
+    })
 
     onDeleteUser(uid: string) {
         //     firebase.auth
@@ -117,19 +175,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             let results = res;
             this.patients = results.map((patient: any) => {
                 return {
-                    id: patient.payload.doc.data().order,
-                    fullName: patient.payload.doc.data().fullName,
-                    phoneNumber: patient.payload.doc.data().phoneNumber,
-                    created_at: patient.payload.doc.data().created_at,
-                    lastUpdate: patient.payload.doc.data().lastUpdate,
-                    rdvID: patient.payload.doc.id
+                    rdvID: patient.payload.doc.id,
+                    ...patient.payload.doc.data()
                 }
             });
             let i = 1;
             this.patients.map(rdv => {
                 rdv.id = i;
                 i++;
-            })
+            });
             // making an array of number of rendezvous in every month:
             this.rdvMonths = results.map((p: any) => {
                 return p.payload.doc.data().created_at.toDate()
@@ -154,7 +208,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 labels: this.months,
                 datasets: [{
                     label: 'Rendezvous',
-                    data: this.rdvPerMonth, // [4, 3, 5, 11, 25, 50, 75, 40, 29, 60, 88, 121],
+                    data: this.rdvPerMonth,
                     backgroundColor: ['rgba(255, 145, 0, 0.9)'],
                     borderColor: ['rgba(30, 0, 255, 0.9)'],
                     borderWidth: 1.5
@@ -232,6 +286,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 'rgba(255, 206, 86, 1)',
 
 
+
 let results = res;
 this.users = results.map((user: any) => {
     return {
@@ -245,5 +300,23 @@ this.users = results.map((user: any) => {
         UID: user.payload.doc.id
     }
 })
+
+
+
+usrsCols: string[] = ['ID', 'First Name', 'Last Name', 'Email', 'Phone Number',
+    'Created At', 'Role'];
+
+rdvCols: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At',
+    'Last Update'];
+
+dtUsersOptions!: DataTables.Settings;
+
+dtRdvsOptions!: DataTables.Settings;
+
+// id: patient.payload.doc.data().order,
+// fullName: patient.payload.doc.data().fullName,
+// phoneNumber: patient.payload.doc.data().phoneNumber,
+// created_at: patient.payload.doc.data().created_at,
+// lastUpdate: patient.payload.doc.data().lastUpdate,
 
 */

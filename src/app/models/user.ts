@@ -6,7 +6,7 @@
 // }
 
 export interface User {
-    id?: number;
+    order?: number;
     uid: string;
     email: string;
     imageURL: string;

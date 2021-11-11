@@ -8,7 +8,7 @@ export class DatabaseService {
 
     constructor(private angularFirestore: AngularFirestore) { }
 
-    // patients data
+    // rdvs data
     createNewPatient(data: any) {
         return new Promise<any>(() => {
             this.angularFirestore.collection('patientsList').add(data);
@@ -28,7 +28,7 @@ export class DatabaseService {
     }
 
     deletePatient(data: any) {
-        if (confirm(`Are you sure You want to delete "${data.fullName}"?`)) {
+        if (confirm(`Are you sure You want to delete "${data.displayName}"?`)) {
             this.angularFirestore.collection("patientsList").doc(data.rdvID).delete();
         }
     }
