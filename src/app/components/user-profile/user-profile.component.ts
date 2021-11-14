@@ -1,6 +1,6 @@
-import { AuthService } from './../../services/auth.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -23,7 +23,8 @@ export class UserProfileComponent implements OnInit {
     fileUploaded: boolean;
     fileIsUploading: boolean;
     persentage!: any;
-    isAdmin: boolean;
+    role!: string;
+    roleSelected!: string;
 
     constructor(
         private angularFireStorage: AngularFireStorage,
@@ -36,18 +37,22 @@ export class UserProfileComponent implements OnInit {
     ) {
         this.fileIsUploading = false;
         this.fileUploaded = false;
-        this.isAdmin = false;
     }
+    test:any;
 
     ngOnInit(): void {
         this.id = this.route.snapshot.params['id'];
         this.angularFirestore.collection('users').doc(this.id).valueChanges()
-            .subscribe(res => this.user = res);
+            .subscribe((res: any) => {
+                this.user = res;
+                this.role = res.role;
+            });
+        
     }
 
     onSubmit() {
         this.user = this.updateInfosForm.value;
-        if (this.fileIsUploading || this.fileUploaded) {
+        if ((this.fileIsUploading || this.fileUploaded) && this.fileUrl) {
             this.user.imageURL = this.fileUrl;
             return this.angularFirestore.collection("users").doc(this.id)
                 .update(this.user).then(() => {
@@ -96,7 +101,8 @@ export class UserProfileComponent implements OnInit {
                 firstName: [this.user.firstName, [Validators.required, Validators.pattern(/.*\S.*/)]],
                 familyName: [this.user.familyName, [Validators.required, Validators.pattern(/.*\S.*/)]],
                 phoneNumber: [this.user.phoneNumber, [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
-                email: [this.user.email, [Validators.required, Validators.email]]
+                email: [this.user.email, [Validators.required, Validators.email]],
+                role: [this.user.role, Validators.required]
             });
         }
     }
@@ -105,5 +111,7 @@ export class UserProfileComponent implements OnInit {
         if (confirm("By deleting your account, you will lose all your information.\nIf you are sure about this, press: OK.\nOtherwise press: Cancel"))
             this.authService.deleteUser();
     }
+
+    isAdmin = () => (this.authService.isAdmin()) ? true : false;
 
 }

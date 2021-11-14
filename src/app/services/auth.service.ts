@@ -15,6 +15,7 @@ export class AuthService {
     userID!: string;
     userRole!: string;
     currentUser!: any;
+    role!: string;
 
     constructor(
         private router: Router,
@@ -23,6 +24,14 @@ export class AuthService {
         private angularFireStorage: AngularFireStorage
     ) {
         this.getUser();
+        this.angularFireAuth.onAuthStateChanged(user => {
+            if (user) {
+                this.angularFirestore.collection('users').doc(user.uid).valueChanges()
+                    .subscribe((result: any) => {
+                        this.role = result.role;
+                    });
+            }
+        })
     }
 
     getUser() {
@@ -47,7 +56,7 @@ export class AuthService {
                 user.uid = result.user.uid;
                 user.created_at = new Date();
                 user.imageURL = 'assets/unknown-profile-picture.png';
-                this.angularFirestore.doc('/users/' + user.uid).set(user)               
+                this.angularFirestore.doc('/users/' + user.uid).set(user)
             }).catch((error): any => {
                 console.log('Auth Service: signup error', error);
                 if (error.code)
@@ -155,6 +164,11 @@ export class AuthService {
     canDelete(user: User): boolean {
         const allowed = ['admin'];
         return this.checkAuthorization(user, allowed)
+    }
+
+    isAdmin(): boolean {
+        if (this.role === 'admin') return true;
+        else return false;
     }
 
 }

@@ -39,6 +39,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ChartsModule } from 'ng2-charts';
 import { DataTablesModule } from 'angular-datatables';
 import { TablesComponent } from './components/dashboard/tables/tables.component';
+import { ChartsComponent } from './components/dashboard/charts/charts.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { TablesComponent } from './components/dashboard/tables/tables.component'
     FooterComponent,
     UserProfileComponent,
     DashboardComponent,
-    TablesComponent
+    TablesComponent,
+    ChartsComponent
   ],
   imports: [
     BrowserModule,

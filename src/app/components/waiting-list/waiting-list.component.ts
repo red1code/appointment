@@ -39,7 +39,6 @@ export class WaitingListComponent implements OnInit {
         this.patient = this.patientForm.value;
         if (this.id === '') {
             this.patient.created_at = new Date();
-            this.patient.lastUpdate = 'Not updated';
             this.patient.created_by = this.authService.userEmail;
             this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();
@@ -65,12 +64,7 @@ export class WaitingListComponent implements OnInit {
             let results = res;
             this.patientsList = results.map((rdv: any) => {
                 return {
-                    order: rdv.payload.doc.data().order,
-                    displayName: rdv.payload.doc.data().displayName,
-                    phoneNumber: rdv.payload.doc.data().phoneNumber,
-                    created_by: rdv.payload.doc.data().created_by,
-                    created_at: rdv.payload.doc.data().created_at,
-                    lastUpdate: rdv.payload.doc.data().lastUpdate,
+                    ...rdv.payload.doc.data(),
                     rdvID: rdv.payload.doc.id
                 }
             });

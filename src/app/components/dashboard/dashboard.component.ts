@@ -9,6 +9,8 @@ import { Observable, Subject } from 'rxjs';
 import { ADTSettings } from 'angular-datatables/src/models/settings';
 import * as firebase from 'firebase';
 import { DatePipe } from '@angular/common';
+import { filter } from 'rxjs/operators'
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -33,8 +35,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     expChart: any;
     datePipeString: string;
+    usersHeader: string[] = ['Order', 'First name', 'Last name', 'Email',
+        'Phone Number', 'Created At', 'role'];
 
     constructor(
+        private router: Router,
         private datePipe$: DatePipe,
         private authService: AuthService,
         private databaseService: DatabaseService,
@@ -48,8 +53,24 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.dtOptions1 = this.usersTable();
-        this.dtOptions2 = this.rdvTable();
+        // this.dtOptions1 = this.usersTable();
+        // this.dtOptions2 = this.rdvTable();
+        this.usersTable();
+        this.rdvTable();
+        this.router.events
+            .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+            .subscribe(event => {
+                if (
+                    event.id === 1 &&
+                    event.url === event.urlAfterRedirects
+                ) {
+                    // here your code when page is refresh
+                    // this.dtOptions1 = this.usersTable();
+                    // this.dtOptions2 = this.rdvTable();
+                    // this.dtUsersTrigger.next();
+                    // this.dtRdvsTrigger.next();
+                }
+            })
     }
 
     ngAfterViewInit(): void {
@@ -245,6 +266,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         a.click();
     }
 
+    goToUserProfile = (id: string) => this.router.navigate(['user-profile', id]);
+
     adminPermission = () => (this.currentUser.role === 'admin') ? true : false;
 
     editorPermission = () => (this.currentUser.role === 'editor') ? true : false;
@@ -313,10 +336,10 @@ dtUsersOptions!: DataTables.Settings;
 
 dtRdvsOptions!: DataTables.Settings;
 
-// id: patient.payload.doc.data().order,
-// fullName: patient.payload.doc.data().fullName,
-// phoneNumber: patient.payload.doc.data().phoneNumber,
-// created_at: patient.payload.doc.data().created_at,
-// lastUpdate: patient.payload.doc.data().lastUpdate,
+id: patient.payload.doc.data().order,
+fullName: patient.payload.doc.data().fullName,
+phoneNumber: patient.payload.doc.data().phoneNumber,
+created_at: patient.payload.doc.data().created_at,
+lastUpdate: patient.payload.doc.data().lastUpdate,
 
 */
