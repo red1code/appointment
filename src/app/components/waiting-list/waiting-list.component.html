@@ -48,8 +48,8 @@
                         <td>{{ rdv.phoneNumber }}</td>
                         <td>{{ rdv.created_at.toDate() | date:datePipe }}</td>
                         <td>
-                            <span *ngIf="!rdv.lastUpdate">Not updated</span>
-                            <span *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePipe }}</span>
+                            <span *ngIf="rdv.lastUpdate === 'Not updated'">{{ rdv.lastUpdate }}</span>
+                            <span *ngIf="rdv.lastUpdate !== 'Not updated'">{{ rdv.lastUpdate.toDate() | date:datePipe }}</span>
                             <span *ngIf="checkUserPermission(rdv)" 
                                    style="float: right; margin-left: 15px;">
                                 <i class="fas fa-edit" (click)="onUpdateIcon(rdv)"></i>

@@ -1,16 +1,1 @@
-<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-    <thead>
-        <tr><td *ngFor="let head of tableHeader">{{ head }}</td></tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let dt of data">
-            <td>{{ dt.order }}</td>
-            <td>{{ dt.firstName }}</td>
-            <td>{{ dt.familyName }}</td>
-            <td>{{ dt.email }}</td>
-            <td>{{ dt.phoneNumber }}</td>
-            <td>{{ dt.created_at.toDate() | date:'MMMM d, y - hh:mm aa' }}</td>
-            <td>{{ dt.role }}</td>
-        </tr>
-    </tbody>
-</table>
+<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"></table>

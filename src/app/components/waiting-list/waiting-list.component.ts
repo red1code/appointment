@@ -39,6 +39,7 @@ export class WaitingListComponent implements OnInit {
         this.patient = this.patientForm.value;
         if (this.id === '') {
             this.patient.created_at = new Date();
+            this.patient.lastUpdate = 'Not updated';
             this.patient.created_by = this.authService.userEmail;
             this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();

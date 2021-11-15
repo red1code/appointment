@@ -1,5 +1,15 @@
 <div class="container-fluid">
-    <div *ngIf="adminPermission()" class="facebook-style" id="adminTable">
+    <!-- a button for editing users (only admins can see this) -->
+    <div style="text-align: center;">
+        <button *ngIf="adminPermission()" (click)="onEditUsers()" 
+                 style="margin-top: 15px;" class="btn btn-warning">
+            <span *ngIf="!canEditUsrs">Edit Users Roles & infos</span>
+            <span *ngIf="canEditUsrs">Close Edit Table</span>
+        </button>
+    </div>
+    <!-- a table for editing users roles & infos, (only admins can see this) -->
+    <div *ngIf="adminPermission() && canEditUsrs" class="facebook-style" 
+          id="adminTable">
         <h2 style="text-align: center;">Only an admin can see this table</h2>
         <br>
         <table *ngIf="adminPermission()" class="table">
@@ -7,8 +17,8 @@
                 <tr><th>Display Name</th><th>Email</th><th>Role</th></tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of users" (click)="goToUserProfile(user.uid)"
-                    class="selected-user" title="view Details & edit infos">
+                <tr *ngFor="let user of users" (click)="goToUserProfile(user.uid)" 
+                     class="selected-user" title="view Details & edit infos">
                     <td>{{ user.firstName }} {{ user.familyName }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
@@ -17,36 +27,34 @@
         </table>
     </div>
 
-    <!-- users list  *ngIf="adminPermission() || editorPermission()" -->
-    <div *ngIf="users.length!=0 && (adminPermission() || editorPermission())"
+    <!-- users list (admin & editor, can see this)-->
+    <div *ngIf="(users.length != 0) && (adminPermission() || editorPermission())" 
           class="facebook-style" id="users-list">
-          <h2 style="text-align: center;">Users table</h2><br>
-          <!-- <table datatable [dtOptions]="" [dtTrigger]="dtUsersTrigger"></table> -->
-          <app-tables [infos]="users" [tableHeader]="usersHeader"></app-tables>
-    
+        <h2 style="text-align: center;">Users table</h2>
+        <br>
+        <app-tables [infos]="users" [tableCol]="usersCols"></app-tables>
     </div>
 
-    <!-- rendezvous list -->
-    <div *ngIf="adminPermission() || editorPermission()" 
-          class="col-md-8 facebook-style" id="rendezvous-list">
-          <h2 style="text-align: center;">Rendezvous table</h2><br>
-          <!-- <table *ngIf="patients.length!=0" datatable [dtOptions]="rdvTable()" [dtTrigger]="dtUsersTrigger"></table> -->
-          <!-- <app-tables [dataOptions]="rdvTable()" [dataTrigger]="dtRdvsTrigger"></app-tables> -->
-    
-        <!-- <h1 *ngIf="emptyRdvList()" id="emptyList">Rendezvous List is Empty</h1> -->
+    <!-- rendezvous list (admin & editor, can see this) -->
+    <div *ngIf="(patients.length != 0) && (adminPermission() || editorPermission())" 
+          class="facebook-style" id="rendezvous-list">
+        <h2 style="text-align: center;">Rendezvous table</h2>
+        <br>
+        <app-tables [infos]="patients" [tableCol]="rdvsCols"></app-tables>
     </div>
 
-    <!-- chart js -->
+    <!-- chart js (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="chart-container">
         <div class="chart-header-container">
             <div>
                 <label for="backgroundColor">Change Background Color: </label><br>
-                <input type="color" name="backgroundColor" id="backgroundColor"
+                <input type="color" name="backgroundColor" id="backgroundColor" 
                        style="width: 150px; cursor: pointer;"
                        [(ngModel)]="backgroundColor">
             </div>
             <button class="btn btn-outline-success" (click)="chartToImg()">
-                Export To Image</button>
+                Export To Image
+            </button>
         </div>
         <div id="divChart" [style.background-color]="backgroundColor">
             <canvas id="myChart"></canvas>
@@ -55,56 +63,3 @@
 </div>
 
 <!-- THE END -->
-
-
-
-<!--<table datatable [dtOptions]="dtUsersOptions" [dtTrigger]="dtUsersTrigger"
-            class="row-border hover">
-        <thead>
-            <tr>
-                <th *ngFor="let head of usrsCols">{{ head }}</th>
-                <th *ngIf="adminPermission()"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of users">
-                <td>{{ user.id }}</td>
-                <td>{{ user.firstName }}</td>
-                <td>{{ user.familyName }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.phoneNumber }}</td>
-                <td>{{ user.created_at.toDate() | date:datePipe }}</td>
-                <td>{{ user.role }}</td>
-                <td *ngIf="adminPermission()" class="fas-icon-container">
-                    <i class="fas fa-trash-alt fas-icon" (click)="onDeleteUser(user.UID)"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table>-->
-
-
-
-<!-- <table *ngIf="!emptyRdvList()" datatable [dtOptions]="dtRdvsOptions" [dtTrigger]="dtRdvsTrigger"
-            class="row-border hover" id="rdv-table">
-        <thead>
-            <tr>
-                <th *ngFor="let header of rdvCols">{{ header }}</th>
-                <th *ngIf="adminPermission()"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let rdv of patients">
-                <td>{{ rdv.id }}</td>
-                <td>{{ rdv.fullName }}</td>
-                <td>{{ rdv.phoneNumber }}</td>
-                <td>{{ rdv.created_at.toDate() | date:datePipe }}</td>
-                <td>
-                    <span *ngIf="!rdv.lastUpdate">Not updated</span>
-                    <span *ngIf="rdv.lastUpdate">{{ rdv.lastUpdate.toDate() | date:datePipe }}</span>
-                </td>
-                <td *ngIf="adminPermission()" class="fas-icon-container">
-                    <i class="fas fa-trash-alt fas-icon" (click)="onDeletePatient(rdv)"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table> -->

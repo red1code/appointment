@@ -3,6 +3,6 @@ export interface Patient {
     phoneNumber: string;
     created_by: string;
     created_at: Date;
-    lastUpdate?: Date;
+    lastUpdate?: Date | 'Not updated';
     order?: number;
 }
