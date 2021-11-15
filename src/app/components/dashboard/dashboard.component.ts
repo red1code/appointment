@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ADTSettings } from 'angular-datatables/src/models/settings';
 import { DatabaseService } from 'src/app/services/database.service';
-import { AuthService } from 'src/app/services/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { TableColumn } from 'src/app/models/tablesCols';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User } from 'src/app/models/user';
 import { Observable, Subject } from 'rxjs';
@@ -20,16 +19,22 @@ export class DashboardComponent implements OnInit {
     currentUser!: User;
     users: any[] = [];
     patients: any[] = [];
+    canEditUsrs: boolean = false;
+
+    usrsPerMonth!: number[];
+    usrsLabel: string = 'User';
+    usrsChartTitle: string = 'User per month'
+
     rdvMonths!: string[];
     rdvPerMonth!: number[];
-    expChart: any;
-    canEditUsrs: boolean = false;
-    backgroundColor = '#ffffff';
-    datePipe = 'MMMM d, y - hh:mm aa';
+    rdvLabel: string = 'Rendezvous';
+    rdvChartTitle: string = 'Rendezvous per month';
+
     months: string[] = Array.from({ length: 12 }, (item, i) => {
         return new Date(0, i).toLocaleString('en', { month: 'long' })
     });
-    usersCols: object[] = [
+
+    usersCols: TableColumn[] = [
         { title: 'Order', data: 'order' },
         { title: 'First name', data: 'firstName' },
         { title: 'Last name', data: 'familyName' },
@@ -38,7 +43,7 @@ export class DashboardComponent implements OnInit {
         { title: 'Created At', data: 'created_at' },
         { title: 'Role', data: 'role' }
     ];
-    rdvsCols: object[] = [
+    rdvsCols: TableColumn[] = [
         { title: 'Order', data: 'id' },
         { title: 'Display Name', data: 'displayName' },
         { title: 'Phone Number', data: 'phoneNumber' },
@@ -48,7 +53,6 @@ export class DashboardComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private authService: AuthService,
         private databaseService: DatabaseService,
         private angularFireAuth: AngularFireAuth,
         private angularFirestore: AngularFirestore
@@ -66,7 +70,8 @@ export class DashboardComponent implements OnInit {
         this.users = result;
         this.users = this.users.map((usr: any) => {
             return {
-                ...usr.payload.doc.data()
+                ...usr.payload.doc.data(),
+                id: usr.payload.doc.id,
             }
         })
         let i = 1;
@@ -75,12 +80,17 @@ export class DashboardComponent implements OnInit {
             usr.order = i;
             i++;
         });
+        let usrMonths = result.map((m: any) => {
+            return m.payload.doc.data().created_at.toDate()
+                .toLocaleString('en', { month: 'long' });
+        });
+        this.usrsPerMonth = this.months.map(
+            month => usrMonths.filter(val => val == month).length);
     })
 
     // rendezvous methods.
     getPatients() {
         this.databaseService.getPatientsList().subscribe(result => {
-            // in order to get rid of "payload.doc.data()" I added these steps:
             let results = result;
             this.patients = results.map((patient: any) => {
                 return {
@@ -97,15 +107,13 @@ export class DashboardComponent implements OnInit {
                 rdv.id = i;
                 i++;
             });
-            // making an array of number of rendezvous in every month:
-            this.rdvMonths = results.map((p: any) => {
+            // making an array of numbers of rendezvous in every month:
+            let rdvMonths = results.map((p: any) => {
                 return p.payload.doc.data().created_at.toDate()
                     .toLocaleString('en', { month: 'long' });
             });
             this.rdvPerMonth = this.months.map(
-                month => this.rdvMonths.filter(val => val == month).length);
-            // after we get rdvPerMonth array, now we call chart.js:
-            this.chart();
+                month => rdvMonths.filter(val => val == month).length);
         })
     }
 
@@ -127,51 +135,6 @@ export class DashboardComponent implements OnInit {
 
     onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
 
-    // chart.
-    chart() {
-        var myChart: Chart = new Chart("myChart", {
-            type: 'line',
-            data: {
-                labels: this.months,
-                datasets: [{
-                    label: 'Rendezvous',
-                    data: this.rdvPerMonth,
-                    backgroundColor: ['rgba(255, 145, 0, 0.9)'],
-                    borderColor: ['rgba(30, 0, 255, 0.9)'],
-                    borderWidth: 1.5
-                }]
-            },
-            options: {
-                scales: {},
-                title: {
-                    display: true,
-                    text: 'Rendezvous per month',
-                    fontSize: 25
-                }
-            }
-        });
-        this.expChart = myChart;
-    }
-
-    // export chart.
-    chartToImg() {
-        let canvas = document.getElementById('myChart') as HTMLCanvasElement;
-        let destinationCanvas = document.createElement("canvas");
-        destinationCanvas.width = canvas.width;
-        destinationCanvas.height = canvas.height;
-        let destCtx: CanvasRenderingContext2D | null = destinationCanvas.getContext('2d');
-        //create a rectangle with the desired color
-        destCtx!.fillStyle = this.backgroundColor;
-        destCtx?.fillRect(0, 0, canvas.width, canvas.height);
-        //draw the original canvas onto the destination canvas
-        destCtx?.drawImage(canvas, 0, 0);
-        //finally use the destinationCanvas.toDataURL() method to get the desired output;
-        let a = document.createElement('a');
-        a.href = destinationCanvas.toDataURL();
-        a.download = this.expChart.options.title.text;
-        a.click();
-    }
-
     onEditUsers() {
         (this.canEditUsrs === true) ? this.canEditUsrs = false : this.canEditUsrs = true;
     }
@@ -192,50 +155,6 @@ export class DashboardComponent implements OnInit {
 
 /*
 
-'rgba(54, 162, 235, 0.2)',
-'rgba(255, 206, 86, 0.2)',
-'rgba(54, 162, 235, 0.2)',
-'rgba(255, 206, 86, 0.2)',
-'rgba(54, 162, 235, 0.2)',
-'rgba(255, 206, 86, 0.2)',
-'rgba(54, 162, 235, 0.2)',
-'rgba(255, 206, 86, 0.2)',
-'rgba(54, 162, 235, 0.2)',
-'rgba(25, 134, 84, 1)',
-'rgba(54, 162, 235, 0.2)',
-'rgba(255, 206, 86, 0.2)',
-
-'rgba(54, 162, 235, 1)',
-'rgba(255, 206, 86, 1)',
-'rgba(54, 162, 235, 1)',
-'rgba(255, 206, 86, 1)',
-'rgba(54, 162, 235, 1)',
-'rgba(255, 206, 86, 1)',
-'rgba(54, 162, 235, 1)',
-'rgba(255, 206, 86, 1)',
-'rgba(54, 162, 235, 1)',
-'rgba(230, 45, 45, 1)',
-'rgba(54, 162, 235, 1)',
-'rgba(255, 206, 86, 1)',
-
-let results = res;
-this.users = results.map((user: any) => {
-    return {
-        ID: user.payload.doc.data().id,
-        First_Name: user.payload.doc.data().firstName,
-        Family_Name: user.payload.doc.data().familyName,
-        Email: user.payload.doc.data().email,
-        Phone_Number: user.payload.doc.data().phoneNumber,
-        Role: user.payload.doc.data().role,
-        Created_At: user.payload.doc.data().created_at,
-        UID: user.payload.doc.id
-    }
-})
-
-id: patient.payload.doc.data().order,
-fullName: patient.payload.doc.data().fullName,
-phoneNumber: patient.payload.doc.data().phoneNumber,
-created_at: patient.payload.doc.data().created_at,
-lastUpdate: patient.payload.doc.data().lastUpdate,
+datePipe = 'MMMM d, y - hh:mm aa';
 
 */

@@ -3,7 +3,7 @@
     min-height: 100vh;
 }
 
-#adminTable, #users-list, #rendezvous-list, #chart-container {
+#adminTable, #users-list, #rendezvous-list, #rdv-chart-container, #usrs-chart-container {
     padding: 15px;
     margin: 15px auto;
     max-width: 90%;
@@ -33,14 +33,6 @@
 .fas-icon {
     padding: 7px;
     cursor: pointer;
-}
-
-.chart-header-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-    padding: 7px;
-    border-bottom: 1px solid #000;
 }
 
 .selected-user {

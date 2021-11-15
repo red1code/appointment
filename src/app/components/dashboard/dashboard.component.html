@@ -43,23 +43,42 @@
         <app-tables [infos]="patients" [tableCol]="rdvsCols"></app-tables>
     </div>
 
-    <!-- chart js (admin, editor & analyst, can see this) -->
-    <div class="col-md-8 facebook-style" id="chart-container">
-        <div class="chart-header-container">
-            <div>
-                <label for="backgroundColor">Change Background Color: </label><br>
-                <input type="color" name="backgroundColor" id="backgroundColor" 
-                       style="width: 150px; cursor: pointer;"
-                       [(ngModel)]="backgroundColor">
-            </div>
-            <button class="btn btn-outline-success" (click)="chartToImg()">
-                Export To Image
-            </button>
-        </div>
-        <div id="divChart" [style.background-color]="backgroundColor">
-            <canvas id="myChart"></canvas>
-        </div>
+    <!-- rdv chart (admin, editor & analyst, can see this) -->
+    <div class="col-md-8 facebook-style" id="rdv-chart-container">
+        <app-charts 
+            [xAxis]="months" [yAxis]="rdvPerMonth" 
+            [title]="rdvChartTitle" [lbl]="rdvLabel">
+        </app-charts>
+    </div>
+
+    <!-- users chart (admin, editor & analyst, can see this) -->
+    <div class="col-md-8 facebook-style" id="usrs-chart-container">
+        <app-charts 
+            [xAxis]="months" [yAxis]="usrsPerMonth" 
+            [title]="usrsChartTitle" [lbl]="usrsLabel">
+        </app-charts>
     </div>
 </div>
 
 <!-- THE END -->
+
+
+
+
+
+
+
+<!-- <div class="chart-header-container">
+        <div>
+            <label for="backgroundColor">Change Background Color: </label><br>
+            <input type="color" name="backgroundColor" id="backgroundColor" 
+                    style="width: 150px; cursor: pointer;"
+                    [(ngModel)]="backgroundColor">
+        </div>
+        <button class="btn btn-outline-success" (click)="chartToImg()">
+            Export To Image
+        </button>
+    </div>
+    <div id="divChart" [style.background-color]="backgroundColor">
+        <canvas id="myChart"></canvas>
+</div> -->

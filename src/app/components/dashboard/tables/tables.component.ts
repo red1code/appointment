@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, AfterViewInit } from '@angular/core';
 import { ADTSettings } from 'angular-datatables/src/models/settings';
+import { TableColumn } from 'src/app/models/tablesCols';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -10,10 +11,11 @@ import { Subject } from 'rxjs';
 export class TablesComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() infos: any[] = [];
-    @Input() tableCol!: object[];
+    @Input() tableCol!: TableColumn[];
+    @Input() dtTrigger:  Subject<any> = new Subject<any>();
 
     dtOptions: any// DataTables.Settings = {};
-    dtTrigger: Subject<ADTSettings> = new Subject();
+    // dtTrigger!: Subject<ADTSettings> = new Subject();
 
     constructor() { }
 
@@ -38,7 +40,7 @@ export class TablesComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.dtTrigger.next();
+        // this.dtTrigger.next();
     }
     
     ngOnDestroy(): void {

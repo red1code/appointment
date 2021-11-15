@@ -1,1 +1,13 @@
-<p>charts works!</p>
+<div class="chart-header-container">
+    <div>
+        <label for="backgroundColor">Change Background Color: </label><br>
+        <input type="color" name="backgroundColor" id="backgroundColor" 
+               style="width: 150px; cursor: pointer;"[(ngModel)]="backgroundColor">
+    </div>
+    <button class="btn btn-outline-success" (click)="chartToImg()">
+        Export To Image
+    </button>
+</div>
+<div id="divChart" [style.background-color]="backgroundColor">
+    <canvas id="myChart"></canvas>
+</div>
