@@ -42,8 +42,12 @@ export class HeaderComponent implements OnInit {
                         this.user = usrData;
                         this.userImgURL = usrData.imageURL;
                         let role = usrData.role;
-                        if (role === 'subscriber') this.displayDashbrd = false;
-                        else this.displayDashbrd = true;
+                        if ((role === 'admin') || (role === 'editor') ||
+                            (role === 'analyst')) {
+                            this.displayDashbrd = true
+                        } else {
+                            this.displayDashbrd = false
+                        }
                     })
             }
             else this.isAuth = false;

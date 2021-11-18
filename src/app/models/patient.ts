@@ -5,4 +5,5 @@ export interface Patient {
     created_at: Date;
     lastUpdate?: Date | 'Not updated';
     order?: number;
+    rdvID?: string;
 }

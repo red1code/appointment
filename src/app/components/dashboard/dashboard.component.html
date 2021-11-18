@@ -10,15 +10,17 @@
     <!-- a table for editing users roles & infos, (only admins can see this) -->
     <div *ngIf="adminPermission() && canEditUsrs" class="facebook-style" 
           id="adminTable">
-        <h2 style="text-align: center;">Only an admin can see this table</h2>
-        <br>
+        <h2 style="text-align: center;">Only an admin can see this table</h2><br>
         <table *ngIf="adminPermission()" class="table">
             <thead>
-                <tr><th>Display Name</th><th>Email</th><th>Role</th></tr>
+                <tr>
+                    <th>Order</th><th>Display Name</th><th>Email</th><th>Role</th>
+                </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users" (click)="goToUserProfile(user.uid)" 
                      class="selected-user" title="view Details & edit infos">
+                     <td>{{ user.order }}</td>
                     <td>{{ user.firstName }} {{ user.familyName }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
@@ -28,24 +30,51 @@
     </div>
 
     <!-- users list (admin & editor, can see this)-->
-    <div *ngIf="(users.length != 0) && (adminPermission() || editorPermission())" 
+    <!-- <div *ngIf="adminPermission() || editorPermission()" 
           class="facebook-style" id="users-list">
         <h2 style="text-align: center;">Users table</h2>
         <br>
-        <app-tables [infos]="users" [tableCol]="usersCols"></app-tables>
-    </div>
+        <app-tables *ngIf="users" [infos]="users" [tableCol]="usersCols"></app-tables>
+        <p *ngIf="usrsError !== ''" style="color: brown;">{{ usrsError }}</p>
+    </div> -->
 
     <!-- rendezvous list (admin & editor, can see this) -->
-    <div *ngIf="(patients.length != 0) && (adminPermission() || editorPermission())" 
-          class="facebook-style" id="rendezvous-list">
+    <div *ngIf="adminPermission() || editorPermission()" 
+          class="facebook-style" id="rdvs-list">
         <h2 style="text-align: center;">Rendezvous table</h2>
         <br>
-        <app-tables [infos]="patients" [tableCol]="rdvsCols"></app-tables>
+        <app-tables *ngIf="patients" [infos]="patients" [tableCol]="rdvsCols"></app-tables>
+        <p *ngIf="rdvsError !== ''" style="color: brown;">{{ rdvsError }}</p>
     </div>
+
+    <!-- test table for RDVs -->
+    <!-- <div class="facebook-style" style="padding: 11px; width: 75%; margin: 15px auto;">
+        <h2 style="text-align: center; color: darkred;">test table for RDVs</h2>
+        <br>
+        <table class="table hover">
+            <thead>
+                <tr>
+                    <th *ngFor="let hd of rdvsCols">{{ hd.title }}</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rdv of patients">
+                    <td>{{ rdv.order }}</td>
+                    <td>{{ rdv.displayName }}</td>
+                    <td>{{ rdv.phoneNumber }}</td>
+                    <td>{{ rdv.created_at }}</td>
+                    <td>{{ rdv.lastUpdate }}</td>
+                    <td><span (click)="onDeletePatient(rdv)"
+                               style="padding: 7px; cursor: pointer;">delete</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
 
     <!-- rdv chart (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="rdv-chart-container">
-        <app-charts 
+        <app-charts  *ngIf="patients"
             [xAxis]="months" [yAxis]="rdvPerMonth" 
             [title]="rdvChartTitle" [lbl]="rdvLabel">
         </app-charts>
@@ -53,7 +82,7 @@
 
     <!-- users chart (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="usrs-chart-container">
-        <app-charts 
+        <app-charts  *ngIf="users"
             [xAxis]="months" [yAxis]="usrsPerMonth" 
             [title]="usrsChartTitle" [lbl]="usrsLabel">
         </app-charts>

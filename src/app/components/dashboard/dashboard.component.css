@@ -3,17 +3,20 @@
     min-height: 100vh;
 }
 
-#adminTable, #users-list, #rendezvous-list, #rdv-chart-container, #usrs-chart-container {
+#adminTable {
+    width: fit-content;
+}
+
+#adminTable, #users-list, #rdvs-list, #rdv-chart-container, #usrs-chart-container {
     padding: 15px;
     margin: 15px auto;
-    max-width: 90%;
-    min-width: max-content;
+    width: 75%;
     min-height: 100px;
     font-family: 'ubuntu';
 }
 
-#users-list, #rendezvous-list, #adminTable {
-    width: fit-content;
+#users-list, #rdvs-list{
+    height: 400px;
 }
 
 .t-th-cel, .t-td-cel {

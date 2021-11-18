@@ -54,7 +54,7 @@ export class AuthService {
                 user.password = '';
                 user.role = 'subscriber';
                 user.uid = result.user.uid;
-                user.created_at = new Date();
+                user.created_at = Date.now();
                 user.imageURL = 'assets/unknown-profile-picture.png';
                 this.angularFirestore.doc('/users/' + user.uid).set(user)
             }).catch((error): any => {

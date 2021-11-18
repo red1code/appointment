@@ -11,7 +11,7 @@ export interface User {
     email: string;
     imageURL: string;
     password: string;
-    created_at: Date;
+    created_at: any;
     firstName: string;
     familyName: string;
     phoneNumber: number;

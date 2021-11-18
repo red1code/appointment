@@ -3,31 +3,39 @@ import { DatabaseService } from 'src/app/services/database.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { TableColumn } from 'src/app/models/tablesCols';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Patient } from 'src/app/models/patient';
 import { User } from 'src/app/models/user';
 import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 import { Chart } from 'chart.js';
+import { map } from 'rxjs/operators';
+import { ADTSettings } from 'angular-datatables/src/models/settings';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     currentUser!: User;
-    users: any[] = [];
-    patients: any[] = [];
+    
+    users!: any; //Observable<User[]>;
+    patients!: any; // Observable<Patient[]>;
+
     canEditUsrs: boolean = false;
 
-    usrsPerMonth!: number[];
-    usrsLabel: string = 'User';
-    usrsChartTitle: string = 'User per month'
+    rdvsError: string = '';
+    usrsError: string = '';
 
-    rdvMonths!: string[];
+    usrsPerMonth!: number[];
     rdvPerMonth!: number[];
+
+    usrsLabel: string = 'User';
     rdvLabel: string = 'Rendezvous';
+
+    usrsChartTitle: string = 'Users per month'
     rdvChartTitle: string = 'Rendezvous per month';
 
     months: string[] = Array.from({ length: 12 }, (item, i) => {
@@ -44,12 +52,16 @@ export class DashboardComponent implements OnInit {
         { title: 'Role', data: 'role' }
     ];
     rdvsCols: TableColumn[] = [
-        { title: 'Order', data: 'id' },
+        { title: 'Order', data: 'order' },
         { title: 'Display Name', data: 'displayName' },
         { title: 'Phone Number', data: 'phoneNumber' },
         { title: 'Created At', data: 'created_at' },
-        { title: 'Last Update', data: 'lastUpdate' }
+        { title: 'Last Update', data: 'lastUpdate' },
+        // { title: 'RDV ID', data: 'rdvID' }
     ];
+
+    dtOptions: any;
+    dtTrigger: Subject<ADTSettings> = new Subject();
 
     constructor(
         private router: Router,
@@ -62,59 +74,108 @@ export class DashboardComponent implements OnInit {
         this.getCurrentUser();
     }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.dtOptions = {
+            data: this.patients,
+            columns: this.rdvsCols,
+            pagingType: 'full_numbers',
+            pageLength: 5,
+            // lengthMenu: [3, 5, 10, 25, 50, 100],
+            dom: 'Bfrtip',
+            // Configure the buttons
+            buttons: [
+                // 'columnsToggle',
+                'colvis',
+                // 'copy',
+                // 'print',
+                'csv',
+                'excel',
+            ]
+        };
+    }
 
-    getUsers = () => this.angularFirestore.collection<User>('users', ref => {
-        return ref.orderBy('created_at')
-    }).snapshotChanges().subscribe(result => {
-        this.users = result;
-        this.users = this.users.map((usr: any) => {
-            return {
-                ...usr.payload.doc.data(),
-                id: usr.payload.doc.id,
-            }
-        })
-        let i = 1;
-        this.users.map(usr => {
-            usr.created_at = usr.created_at.toDate().toLocaleString()
-            usr.order = i;
-            i++;
-        });
-        let usrMonths = result.map((m: any) => {
-            return m.payload.doc.data().created_at.toDate()
-                .toLocaleString('en', { month: 'long' });
-        });
-        this.usrsPerMonth = this.months.map(
-            month => usrMonths.filter(val => val == month).length);
-    })
+    ngAfterViewInit(): void {
+        this.dtTrigger.next();
+        
+    }
+
+    ngOnDestroy(): void {
+        // this.dtTrigger.unsubscribe();
+    }
+
+    getUsers() {
+        this.databaseService.getUsersList().subscribe((results: any) => {
+            let i = 1;
+            this.users = results.map((user: any) => {
+                let load = user.payload.doc.data()
+                return {
+                    // id: user.payload.doc.id,
+                    ...load,
+                    created_at: load.created_at.toDate().toLocaleString(),
+                    order: i++,
+                }
+            });
+            let usrMonths = results.map((m: any) => {
+                return m.payload.doc.data().created_at.toDate()
+                    .toLocaleString('en', { month: 'long' });
+            });
+            this.usrsPerMonth = this.months.map(month => {
+                return usrMonths.filter((val: any) => val == month).length
+            });
+        }, error => { this.usrsError = error })
+    }
 
     // rendezvous methods.
     getPatients() {
-        this.databaseService.getPatientsList().subscribe(result => {
-            let results = result;
-            this.patients = results.map((patient: any) => {
-                return {
-                    rdvID: patient.payload.doc.id,
-                    ...patient.payload.doc.data()
-                }
-            });
+        this.databaseService.getPatientsList().subscribe((results: any) => {
             let i = 1;
-            this.patients.map(rdv => {
-                rdv.created_at = rdv.created_at.toDate().toLocaleString();
-                if (rdv.lastUpdate !== 'Not updated') {
-                    rdv.lastUpdate = rdv.lastUpdate.toDate().toLocaleString();
+            this.patients = results.map((rdv: any) => {
+                let load = rdv.payload.doc.data();
+                return {
+                    rdvID: rdv.payload.doc.id,
+                    ...load,
+                    created_at: load.created_at.toDate().toLocaleString(),
+                    lastUpdate: (load.lastUpdate !== 'Not updated') ?
+                        load.lastUpdate.toDate().toLocaleString() :
+                        load.lastUpdate,
+                    order: i++,
                 }
-                rdv.id = i;
-                i++;
             });
+            this.dtTrigger.next();
             // making an array of numbers of rendezvous in every month:
-            let rdvMonths = results.map((p: any) => {
-                return p.payload.doc.data().created_at.toDate()
+            let rdvMonths = results.map((rdv: any) => {
+                return rdv.payload.doc.data().created_at.toDate()
                     .toLocaleString('en', { month: 'long' });
             });
-            this.rdvPerMonth = this.months.map(
-                month => rdvMonths.filter(val => val == month).length);
-        })
+            this.rdvPerMonth = this.months.map(month => {
+                return rdvMonths.filter((val: any) => val == month).length
+            });
+            this.chart();
+        }, error => { this.rdvsError = error })
+    }
+    chart() {
+        var myChart: Chart = new Chart("myChart2", {
+            type: 'line',
+            data: {
+                labels: this.months,
+                datasets: [{
+                    label: 'rdvs',
+                    data: this.rdvPerMonth,
+                    backgroundColor: ['rgba(255, 145, 0, 0.9)'],
+                    borderColor: ['rgba(30, 0, 255, 0.9)'],
+                    borderWidth: 1.5
+                }]
+            },
+            options: {
+                scales: {},
+                title: {
+                    display: true,
+                    text: this.rdvChartTitle,
+                    fontSize: 25
+                }
+            }
+        });
+        // this.expChart = myChart;
     }
 
     deleteUserByID(id: string) { }
@@ -130,8 +191,6 @@ export class DashboardComponent implements OnInit {
             }
         });
     }
-
-    emptyRdvList = () => (this.patients.length === 0) ? true : false;
 
     onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
 
@@ -156,5 +215,20 @@ export class DashboardComponent implements OnInit {
 /*
 
 datePipe = 'MMMM d, y - hh:mm aa';
+
+.pipe(map(data => {
+    let i = 1;
+    return data.map((rdv: any) => {
+        return {
+            rdvID: rdv.payload.doc.id,
+            ...rdv.payload.doc.data(),
+            created_at: rdv.payload.doc.data().created_at.toDate().toLocaleString(),
+            lastUpdate: (rdv.payload.doc.data().lastUpdate !== 'Not updated') ?
+                rdv.payload.doc.data().lastUpdate.toDate().toLocaleString() :
+                rdv.payload.doc.data().lastUpdate,
+            order: i++,
+        }
+    })
+}))
 
 */

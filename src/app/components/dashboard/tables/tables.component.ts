@@ -1,23 +1,28 @@
-import { Component, OnInit, Input, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ADTSettings } from 'angular-datatables/src/models/settings';
 import { TableColumn } from 'src/app/models/tablesCols';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-tables',
     templateUrl: './tables.component.html',
     styleUrls: ['./tables.component.css']
 })
-export class TablesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TablesComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
-    @Input() infos: any[] = [];
+    @Input() infos!: Observable<any>;
     @Input() tableCol!: TableColumn[];
-    @Input() dtTrigger:  Subject<any> = new Subject<any>();
 
-    dtOptions: any// DataTables.Settings = {};
-    // dtTrigger!: Subject<ADTSettings> = new Subject();
+    dtOptions: any; //DataTables.Settings = {};
+    dtTrigger: Subject<ADTSettings> = new Subject();
 
     constructor() { }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['infos']) {
+            this.dtTrigger.next();
+        }
+    }
 
     ngOnInit(): void {
         this.dtOptions = {
@@ -29,7 +34,7 @@ export class TablesComponent implements OnInit, AfterViewInit, OnDestroy {
             dom: 'Bfrtip',
             // Configure the buttons
             buttons: [
-                'columnsToggle',
+                // 'columnsToggle',
                 'colvis',
                 // 'copy',
                 // 'print',
@@ -40,9 +45,9 @@ export class TablesComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        // this.dtTrigger.next();
+        this.dtTrigger.next();
     }
-    
+
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe()
     }

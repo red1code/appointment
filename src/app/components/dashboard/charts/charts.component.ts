@@ -1,13 +1,14 @@
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 // import * as Chart from 'chart.js';
 import { Chart } from 'chart.js';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-charts',
     templateUrl: './charts.component.html',
     styleUrls: ['./charts.component.css']
 })
-export class ChartsComponent implements OnInit, AfterViewInit {
+export class ChartsComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() xAxis!: string[];
     @Input() yAxis!: number[];
@@ -16,13 +17,22 @@ export class ChartsComponent implements OnInit, AfterViewInit {
 
     backgroundColor = '#ffffff';
     expChart: any;
+    changingDT!: Observable<number[]>;
 
     constructor() { }
 
-    ngOnInit(): void {
-        setTimeout(() => {
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['yAxis']) {
             this.chart();
-        }, 3000);
+        }
+    }
+
+    ngOnInit(): void {
+        this.chart();
+        // setInterval(() => {
+        //     this.chart();
+        // }, 5000);
+        // this.yAxis.subscribe()
     }
 
     ngAfterViewInit(): void { }
