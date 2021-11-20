@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     usrsLabel: string = 'User';
     rdvLabel: string = 'Rendezvous';
 
-    usrsChartTitle: string = 'Users per month'
+    usrsChartTitle: string = 'Users per month';
     rdvChartTitle: string = 'Rendezvous per month';
 
     months: string[] = Array.from({ length: 12 }, (item, i) => {
@@ -94,14 +94,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         };
     }
 
-    ngAfterViewInit(): void {
-        this.dtTrigger.next();
-        
-    }
+    ngAfterViewInit(): void { }
 
-    ngOnDestroy(): void {
-        // this.dtTrigger.unsubscribe();
-    }
+    ngOnDestroy(): void { }
 
     getUsers() {
         this.databaseService.getUsersList().subscribe((results: any) => {
@@ -141,7 +136,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                     order: i++,
                 }
             });
-            this.dtTrigger.next();
             // making an array of numbers of rendezvous in every month:
             let rdvMonths = results.map((rdv: any) => {
                 return rdv.payload.doc.data().created_at.toDate()
@@ -150,32 +144,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             this.rdvPerMonth = this.months.map(month => {
                 return rdvMonths.filter((val: any) => val == month).length
             });
-            this.chart();
         }, error => { this.rdvsError = error })
-    }
-    chart() {
-        var myChart: Chart = new Chart("myChart2", {
-            type: 'line',
-            data: {
-                labels: this.months,
-                datasets: [{
-                    label: 'rdvs',
-                    data: this.rdvPerMonth,
-                    backgroundColor: ['rgba(255, 145, 0, 0.9)'],
-                    borderColor: ['rgba(30, 0, 255, 0.9)'],
-                    borderWidth: 1.5
-                }]
-            },
-            options: {
-                scales: {},
-                title: {
-                    display: true,
-                    text: this.rdvChartTitle,
-                    fontSize: 25
-                }
-            }
-        });
-        // this.expChart = myChart;
     }
 
     deleteUserByID(id: string) { }
@@ -192,9 +161,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    onDeletePatient = (data: any) => this.databaseService.deletePatient(data);
+    onDeletePatient = (data: Patient) => this.databaseService.deletePatient(data);
 
-    onEditUsers() {
+    onEditUsersBtn() {
         (this.canEditUsrs === true) ? this.canEditUsrs = false : this.canEditUsrs = true;
     }
 

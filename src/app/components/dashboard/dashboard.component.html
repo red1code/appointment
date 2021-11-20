@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <!-- a button for editing users (only admins can see this) -->
     <div style="text-align: center;">
-        <button *ngIf="adminPermission()" (click)="onEditUsers()" 
+        <button *ngIf="adminPermission()" (click)="onEditUsersBtn()" 
                  style="margin-top: 15px;" class="btn btn-warning">
             <span *ngIf="!canEditUsrs">Edit Users Roles & infos</span>
             <span *ngIf="canEditUsrs">Close Edit Table</span>
@@ -75,16 +75,20 @@
     <!-- rdv chart (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="rdv-chart-container">
         <app-charts  *ngIf="patients"
-            [xAxis]="months" [yAxis]="rdvPerMonth" 
-            [title]="rdvChartTitle" [lbl]="rdvLabel">
+            [xAxis]="months" 
+            [yAxis]="rdvPerMonth" 
+            [title]="rdvChartTitle" 
+            [lbl]="rdvLabel">
         </app-charts>
     </div>
 
     <!-- users chart (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="usrs-chart-container">
         <app-charts  *ngIf="users"
-            [xAxis]="months" [yAxis]="usrsPerMonth" 
-            [title]="usrsChartTitle" [lbl]="usrsLabel">
+            [xAxis]="months" 
+            [yAxis]="usrsPerMonth" 
+            [title]="usrsChartTitle" 
+            [lbl]="usrsLabel">
         </app-charts>
     </div>
 </div>

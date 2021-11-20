@@ -20,7 +20,24 @@ export class TablesComponent implements OnInit, OnChanges, AfterViewInit, OnDest
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['infos']) {
-            this.dtTrigger.next();
+            this.dtOptions = {
+                data: this.infos,
+                columns: this.tableCol,
+                pagingType: 'full_numbers',
+                pageLength: 5,
+                // lengthMenu: [3, 5, 10, 25, 50, 100],
+                dom: 'Bfrtip',
+                // Configure the buttons
+                buttons: [
+                    // 'columnsToggle',
+                    'colvis',
+                    // 'copy',
+                    // 'print',
+                    'csv',
+                    'excel',
+                ]
+            };
+            // this.dtTrigger.next();
         }
     }
 
