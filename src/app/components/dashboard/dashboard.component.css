@@ -15,6 +15,10 @@
     font-family: 'ubuntu';
 }
 
+#rdv-chart-container, #usrs-chart-container {
+    width: 65%;
+}
+
 #users-list, #rdvs-list{
     height: 400px;
 }

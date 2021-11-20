@@ -11,6 +11,8 @@
 </div>
 
 <!-- chart canvas -->
-<div id="divChart" [style.background-color]="backgroundColor">
-    <canvas id="myChart"></canvas>
+<div id="chart-container">
+    <!-- <p>id = {{chartID}}</p> -->
+    <canvas style="border: 2px solid #000; border-radius: 25px; padding: 30px;"
+            [style.background-color]="backgroundColor" [id]="chartID"></canvas>
 </div>

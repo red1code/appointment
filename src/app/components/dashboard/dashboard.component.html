@@ -30,13 +30,13 @@
     </div>
 
     <!-- users list (admin & editor, can see this)-->
-    <!-- <div *ngIf="adminPermission() || editorPermission()" 
+    <div *ngIf="adminPermission() || editorPermission()" 
           class="facebook-style" id="users-list">
         <h2 style="text-align: center;">Users table</h2>
         <br>
         <app-tables *ngIf="users" [infos]="users" [tableCol]="usersCols"></app-tables>
         <p *ngIf="usrsError !== ''" style="color: brown;">{{ usrsError }}</p>
-    </div> -->
+    </div>
 
     <!-- rendezvous list (admin & editor, can see this) -->
     <div *ngIf="adminPermission() || editorPermission()" 
@@ -47,34 +47,11 @@
         <p *ngIf="rdvsError !== ''" style="color: brown;">{{ rdvsError }}</p>
     </div>
 
-    <!-- test table for RDVs -->
-    <!-- <div class="facebook-style" style="padding: 11px; width: 75%; margin: 15px auto;">
-        <h2 style="text-align: center; color: darkred;">test table for RDVs</h2>
-        <br>
-        <table class="table hover">
-            <thead>
-                <tr>
-                    <th *ngFor="let hd of rdvsCols">{{ hd.title }}</th><th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let rdv of patients">
-                    <td>{{ rdv.order }}</td>
-                    <td>{{ rdv.displayName }}</td>
-                    <td>{{ rdv.phoneNumber }}</td>
-                    <td>{{ rdv.created_at }}</td>
-                    <td>{{ rdv.lastUpdate }}</td>
-                    <td><span (click)="onDeletePatient(rdv)"
-                               style="padding: 7px; cursor: pointer;">delete</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div> -->
-
     <!-- rdv chart (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="rdv-chart-container">
-        <app-charts  *ngIf="patients"
+        <app-charts  *ngIf="rdvPerMonth"
+            [chartID]="rdvChartID"
+            [chartType]="rdvChartType"
             [xAxis]="months" 
             [yAxis]="rdvPerMonth" 
             [title]="rdvChartTitle" 
@@ -84,7 +61,9 @@
 
     <!-- users chart (admin, editor & analyst, can see this) -->
     <div class="col-md-8 facebook-style" id="usrs-chart-container">
-        <app-charts  *ngIf="users"
+        <app-charts  *ngIf="usrsPerMonth"
+            [chartID]="usrsChartID"
+            [chartType]="usrsChartType"
             [xAxis]="months" 
             [yAxis]="usrsPerMonth" 
             [title]="usrsChartTitle" 
@@ -114,4 +93,31 @@
     </div>
     <div id="divChart" [style.background-color]="backgroundColor">
         <canvas id="myChart"></canvas>
+</div> -->
+
+
+
+<!-- test table for RDVs -->
+<!-- <div class="facebook-style" style="padding: 11px; width: 75%; margin: 15px auto;">
+    <h2 style="text-align: center; color: darkred;">test table for RDVs</h2>
+    <br>
+    <table class="table hover">
+        <thead>
+            <tr>
+                <th *ngFor="let hd of rdvsCols">{{ hd.title }}</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let rdv of patients">
+                <td>{{ rdv.order }}</td>
+                <td>{{ rdv.displayName }}</td>
+                <td>{{ rdv.phoneNumber }}</td>
+                <td>{{ rdv.created_at }}</td>
+                <td>{{ rdv.lastUpdate }}</td>
+                <td><span (click)="onDeletePatient(rdv)"
+                            style="padding: 7px; cursor: pointer;">delete</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div> -->

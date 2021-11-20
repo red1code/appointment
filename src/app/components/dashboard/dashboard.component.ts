@@ -20,28 +20,19 @@ import { ADTSettings } from 'angular-datatables/src/models/settings';
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     currentUser!: User;
-    
-    users!: any; //Observable<User[]>;
-    patients!: any; // Observable<Patient[]>;
-
     canEditUsrs: boolean = false;
-
-    rdvsError: string = '';
-    usrsError: string = '';
-
-    usrsPerMonth!: number[];
-    rdvPerMonth!: number[];
-
-    usrsLabel: string = 'User';
-    rdvLabel: string = 'Rendezvous';
-
-    usrsChartTitle: string = 'Users per month';
-    rdvChartTitle: string = 'Rendezvous per month';
-
     months: string[] = Array.from({ length: 12 }, (item, i) => {
         return new Date(0, i).toLocaleString('en', { month: 'long' })
     });
 
+    // users properties    
+    users!: any; //Observable<User[]>;
+    usrsError: string = '';
+    usrsChartID: string = 'usr-chart';
+    usrsChartType: string = 'bar';
+    usrsPerMonth!: number[];
+    usrsLabel: string = 'User';
+    usrsChartTitle: string = 'Users per month';
     usersCols: TableColumn[] = [
         { title: 'Order', data: 'order' },
         { title: 'First name', data: 'firstName' },
@@ -51,17 +42,22 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         { title: 'Created At', data: 'created_at' },
         { title: 'Role', data: 'role' }
     ];
+
+    // RDVs properties
+    patients!: any; // Observable<Patient[]>;
+    rdvsError: string = '';
+    rdvChartID: string = 'rdv-chart';
+    rdvChartType: string = 'line';
+    rdvPerMonth!: number[];
+    rdvLabel: string = 'Rendezvous';
+    rdvChartTitle: string = 'Rendezvous per month';
     rdvsCols: TableColumn[] = [
         { title: 'Order', data: 'order' },
         { title: 'Display Name', data: 'displayName' },
         { title: 'Phone Number', data: 'phoneNumber' },
         { title: 'Created At', data: 'created_at' },
         { title: 'Last Update', data: 'lastUpdate' },
-        // { title: 'RDV ID', data: 'rdvID' }
     ];
-
-    dtOptions: any;
-    dtTrigger: Subject<ADTSettings> = new Subject();
 
     constructor(
         private router: Router,
@@ -74,25 +70,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getCurrentUser();
     }
 
-    ngOnInit(): void {
-        this.dtOptions = {
-            data: this.patients,
-            columns: this.rdvsCols,
-            pagingType: 'full_numbers',
-            pageLength: 5,
-            // lengthMenu: [3, 5, 10, 25, 50, 100],
-            dom: 'Bfrtip',
-            // Configure the buttons
-            buttons: [
-                // 'columnsToggle',
-                'colvis',
-                // 'copy',
-                // 'print',
-                'csv',
-                'excel',
-            ]
-        };
-    }
+    ngOnInit(): void { }
 
     ngAfterViewInit(): void { }
 
@@ -104,7 +82,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             this.users = results.map((user: any) => {
                 let load = user.payload.doc.data()
                 return {
-                    // id: user.payload.doc.id,
                     ...load,
                     created_at: load.created_at.toDate().toLocaleString(),
                     order: i++,
@@ -164,7 +141,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     onDeletePatient = (data: Patient) => this.databaseService.deletePatient(data);
 
     onEditUsersBtn() {
-        (this.canEditUsrs === true) ? this.canEditUsrs = false : this.canEditUsrs = true;
+        (this.canEditUsrs === true) ? this.canEditUsrs = false :
+            this.canEditUsrs = true;
     }
 
     goToUserProfile = (id: string) => this.router.navigate(['user-profile', id]);
