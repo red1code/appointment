@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, OnDestroy, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
-import { ADTSettings } from 'angular-datatables/src/models/settings';
+import { Component, OnInit, Input, OnDestroy, AfterViewInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { TableColumn } from 'src/app/models/tablesCols';
+import { DataTableDirective } from 'angular-datatables';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -12,38 +12,21 @@ export class TablesComponent implements OnInit, OnChanges, AfterViewInit, OnDest
 
     @Input() infos!: Observable<any>;
     @Input() tableCol!: TableColumn[];
-
-    dtOptions: any; //DataTables.Settings = {};
-    dtTrigger: Subject<ADTSettings> = new Subject();
+    @ViewChild(DataTableDirective, { static: false })
+    dtElement!: DataTableDirective;
+    dtOptions: any = {};
+    dtTrigger: Subject<any> = new Subject<any>();
 
     constructor() { }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['infos']) {
-            this.dtOptions = {
-                data: this.infos,
-                columns: this.tableCol,
-                pagingType: 'full_numbers',
-                pageLength: 5,
-                // lengthMenu: [3, 5, 10, 25, 50, 100],
-                dom: 'Bfrtip',
-                // Configure the buttons
-                buttons: [
-                    // 'columnsToggle',
-                    'colvis',
-                    // 'copy',
-                    // 'print',
-                    'csv',
-                    'excel',
-                ]
-            };
-            // this.dtTrigger.next();
-        }
+        if (changes['infos']) this.rerenderTable()
     }
 
     ngOnInit(): void {
         this.dtOptions = {
             data: this.infos,
+            multiple: true,
             columns: this.tableCol,
             pagingType: 'full_numbers',
             pageLength: 5,
@@ -58,7 +41,7 @@ export class TablesComponent implements OnInit, OnChanges, AfterViewInit, OnDest
                 'csv',
                 'excel',
             ]
-        };
+        }
     }
 
     ngAfterViewInit(): void {
@@ -69,4 +52,15 @@ export class TablesComponent implements OnInit, OnChanges, AfterViewInit, OnDest
         this.dtTrigger.unsubscribe()
     }
 
+    rerenderTable(): void {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Update table infos
+            this.dtOptions.data = this.infos;
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next();
+        });
+
+    }
 }

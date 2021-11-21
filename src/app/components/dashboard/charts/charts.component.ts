@@ -1,8 +1,5 @@
-import { Component, Input, OnInit, AfterViewInit, Output, OnChanges, SimpleChanges } from '@angular/core';
-// import * as Chart from 'chart.js';
+import { Component, Input, Output, OnInit, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Chart } from 'chart.js';
-import { ChartOptions } from 'chart.js';
-import { ChartsModule } from 'ng2-charts';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -21,7 +18,6 @@ export class ChartsComponent implements OnInit, OnChanges, AfterViewInit {
 
     backgroundColor = '#ffffff';
     expChart: any;
-    changingDT!: Observable<number[]>;
 
     constructor() { }
 

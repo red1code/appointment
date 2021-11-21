@@ -5,12 +5,7 @@ import { TableColumn } from 'src/app/models/tablesCols';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Patient } from 'src/app/models/patient';
 import { User } from 'src/app/models/user';
-import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import * as firebase from 'firebase';
-import { Chart } from 'chart.js';
-import { map } from 'rxjs/operators';
-import { ADTSettings } from 'angular-datatables/src/models/settings';
 
 @Component({
     selector: 'app-dashboard',
@@ -26,7 +21,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     // users properties    
-    users!: any; //Observable<User[]>;
+    users!: any;
     usrsError: string = '';
     usrsChartID: string = 'usr-chart';
     usrsChartType: string = 'bar';
@@ -44,7 +39,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
 
     // RDVs properties
-    patients!: any; // Observable<Patient[]>;
+    patients!: any;
     rdvsError: string = '';
     rdvChartID: string = 'rdv-chart';
     rdvChartType: string = 'line';
@@ -108,8 +103,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                     ...load,
                     created_at: load.created_at.toDate().toLocaleString(),
                     lastUpdate: (load.lastUpdate !== 'Not updated') ?
-                        load.lastUpdate.toDate().toLocaleString() :
-                        load.lastUpdate,
+                        load.lastUpdate.toDate().toLocaleString() : load.lastUpdate,
                     order: i++,
                 }
             });
@@ -124,8 +118,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         }, error => { this.rdvsError = error })
     }
 
-    deleteUserByID(id: string) { }
-
     getCurrentUser() {
         this.angularFireAuth.onAuthStateChanged((user) => {
             if (user) {
@@ -138,11 +130,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    deleteUserByID(id: string) { }
+
     onDeletePatient = (data: Patient) => this.databaseService.deletePatient(data);
 
     onEditUsersBtn() {
-        (this.canEditUsrs === true) ? this.canEditUsrs = false :
-            this.canEditUsrs = true;
+        (this.canEditUsrs === true) ? this.canEditUsrs = false : this.canEditUsrs = true;
     }
 
     goToUserProfile = (id: string) => this.router.navigate(['user-profile', id]);
