@@ -4,7 +4,6 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -93,7 +92,7 @@ export class AuthService {
             });
     }
 
-    // async resendVerificationEmail() {                         // verification email is sent in the Sign Up function, but if you need to resend, call this function
+    // async resendVerificationEmail() {   // verification email is sent in the Sign Up function, but if you need to resend, call this function
     //   return (await this.afAuth.currentUser).sendEmailVerification()
     //     .then(() => {
     //       // this.router.navigate(['/home']);
@@ -109,7 +108,7 @@ export class AuthService {
 
     async logoutUser(): Promise<void> {
         return await this.angularFireAuth.signOut()
-            .then(() => this.router.navigate(['/home']))                    // when we log the user out, navigate them to home
+            .then(() => this.router.navigate(['/home']))   // when we log the user out, navigate them to home
             .catch(error => {
                 console.log('Auth Service: logout error...');
                 console.log('error code', error.code);
@@ -172,3 +171,5 @@ export class AuthService {
     }
 
 }
+
+// THE END.

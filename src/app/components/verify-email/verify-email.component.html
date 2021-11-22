@@ -10,8 +10,8 @@
         <span>{{ firebaseErrorMessage }}</span>
     </div>
 
-    <button mat-raised-button color="primary" [disabled]="mailSent" (click)="resendVerificationEmail()">Resend
-        verification email
+    <button mat-raised-button color="primary" [disabled]="mailSent" (click)="resendVerificationEmail()">
+        Resend verification email
     </button>
     
     <div *ngIf="mailSent">

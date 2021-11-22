@@ -1,6 +1,5 @@
-import { Component, Input, Output, OnInit, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Chart } from 'chart.js';
-import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-charts',
@@ -105,3 +104,5 @@ export class ChartsComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
 }
+
+// THE END.

@@ -13,7 +13,7 @@
     </div>
     <!-- right navigation links (sign in, profile pic + user's name) -->
     <div class="auth" *ngIf="!isAuth">
-        <button id="signIn-btn" routerLink="/login">Sign in</button>
+        <button id="signIn-btn" routerLink="/auth/login">Sign in</button>
     </div>
     <!-- profile pic & user's name -->
     <button id="account-container" *ngIf="(isAuth)" 

@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
- 
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './components/signup/signup.component';
@@ -42,51 +42,51 @@ import { TablesComponent } from './components/dashboard/tables/tables.component'
 import { ChartsComponent } from './components/dashboard/charts/charts.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SignupComponent,
-    SigninComponent,
-    HeaderComponent,
-    ForgotPswComponent,
-    VerifyEmailComponent,
-    WaitingListComponent,
-    HomeComponent,
-    FooterComponent,
-    UserProfileComponent,
-    DashboardComponent,
-    TablesComponent,
-    ChartsComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatCardModule,
-    MatInputModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
-    AngularFireDatabaseModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule,
-    ChartsModule,
-    MatSliderModule,
-    DataTablesModule
-    // ChartsModule
-  ],
-  providers: [
-    AuthService,
-    AuthGuard,
-    ListService,
-    DatabaseService ,
-    DashboardGuard,
-    DatePipe
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        SignupComponent,
+        SigninComponent,
+        HeaderComponent,
+        ForgotPswComponent,
+        VerifyEmailComponent,
+        WaitingListComponent,
+        HomeComponent,
+        FooterComponent,
+        UserProfileComponent,
+        DashboardComponent,
+        TablesComponent,
+        ChartsComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatCardModule,
+        MatInputModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        AngularFireDatabaseModule,
+        HttpClientModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbModule,
+        ChartsModule,
+        MatSliderModule,
+        DataTablesModule
+        // ChartsModule
+    ],
+    providers: [
+        AuthService,
+        AuthGuard,
+        ListService,
+        DatabaseService,
+        DashboardGuard,
+        DatePipe
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

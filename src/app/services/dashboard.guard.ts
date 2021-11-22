@@ -1,8 +1,7 @@
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AuthGuard } from './auth.guard';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Router, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,7 +11,6 @@ export class DashboardGuard implements CanActivate {
 
     constructor(
         private router: Router,
-        private authGuard: AuthGuard,
         private angularFireAuth: AngularFireAuth,
         private angularFirestore: AngularFirestore
     ) { }
