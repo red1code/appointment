@@ -1,14 +1,14 @@
 <div class="container-fluid">
     <!-- a button for editing users (only admins can see this) -->
-    <div style="text-align: center;">
+    <!-- <div style="text-align: center;">
         <button *ngIf="adminPermission()" (click)="onEditUsersBtn()" 
                  style="margin-top: 15px;" class="btn btn-warning">
             <span *ngIf="!canEditUsrs">Edit Users Roles & infos</span>
             <span *ngIf="canEditUsrs">Close Edit Table</span>
         </button>
-    </div>
+    </div> -->
     <!-- a table for editing users roles & infos, (only admins can see this) -->
-    <div *ngIf="adminPermission() && canEditUsrs" class="facebook-style" 
+    <!-- <div *ngIf="adminPermission() && canEditUsrs" class="facebook-style" 
           id="adminTable">
         <h2 style="text-align: center;">Only an admin can see this table</h2><br>
         <table *ngIf="adminPermission()" class="table">
@@ -27,7 +27,7 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div> -->
 
     <!-- users list (admin & editor, can see this)-->
     <div *ngIf="adminPermission() || editorPermission()" 

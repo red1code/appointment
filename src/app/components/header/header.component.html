@@ -6,6 +6,8 @@
             routerLinkActive="active">Waiting List</a>
         <a *ngIf="isAuth && displayDashbrd"
             routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a *ngIf="isAuth && isAdmin()"
+            routerLink="/edit-users" routerLinkActive="active">Edit Users</a>
     </div>
     <!-- logo in the center -->
     <div class="title" title="LOGO: navigate to home">

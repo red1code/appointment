@@ -42,8 +42,7 @@ export class HeaderComponent implements OnInit {
                         this.user = usrData;
                         this.userImgURL = usrData.imageURL;
                         let role = usrData.role;
-                        if ((role === 'admin') || (role === 'editor') ||
-                            (role === 'analyst')) {
+                        if ((role === 'admin') || (role === 'editor') || (role === 'analyst')) {
                             this.displayDashbrd = true
                         } else {
                             this.displayDashbrd = false
@@ -56,9 +55,12 @@ export class HeaderComponent implements OnInit {
 
     logOut = () => this.authService.logoutUser();
 
+    isAdmin = () => (this.user.role === 'admin') ? true : false;
+
     goToUserProfile = () => this.router.navigate(['user-profile', this.id]);
 
-    toggleMenu = () => (this.accountMenu === false) ? this.accountMenu = true : this.accountMenu = false;
+    toggleMenu = () => (this.accountMenu === false) ? this.accountMenu = true :
+        this.accountMenu = false;
 
 }
 
