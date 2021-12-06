@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Patient } from './../models/patient';
+import { Patient } from '../models/patient';
 import { User } from '../models/user';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class DatabaseService {
     // rdvs data
     createNewPatient(data: any) {
         return new Promise<any>(() => {
-            this.angularFirestore.collection('patientsList').add(data);
+            this.angularFirestore.collection<Patient>('patientsList').add(data);
         });
     }
 
@@ -25,21 +25,19 @@ export class DatabaseService {
 
     updatePatient(id: string, patient: any) {
         return new Promise(() => {
-            this.angularFirestore.collection("patientsList").doc(id).update(patient);
+            this.angularFirestore.collection<Patient>("patientsList").doc(id).update(patient);
         })
     }
 
     deletePatient(data: any) {
-        if (confirm(`Are you sure You want to delete "${data.displayName}"?`)) {
-            this.angularFirestore.collection("patientsList").doc(data.rdvID).delete();
-        }
+        if (confirm(`Are you sure You want to delete ${data.displayName} ?`))
+            this.angularFirestore.collection<Patient>("patientsList").doc(data.rdvID).delete();
     }
 
     // users data
     getUsersList() {
-        return this.angularFirestore.collection<User>('users', ref => {
-            return ref.orderBy('created_at')
-        }).snapshotChanges()
+        return this.angularFirestore.collection<User>('users', ref => ref.orderBy('created_at'))
+            .snapshotChanges()
     }
 
     // exportToCsv(filename: string, rows: object[]) {
@@ -78,5 +76,4 @@ export class DatabaseService {
     //     }
 
     // }
-
 }
