@@ -102,8 +102,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                     rdvID: rdv.payload.doc.id,
                     ...load,
                     created_at: load.created_at.toDate().toLocaleString(),
-                    lastUpdate: (load.lastUpdate !== 'Not updated') ?
-                        load.lastUpdate.toDate().toLocaleString() : load.lastUpdate,
+                    lastUpdate: load.lastUpdate ? load.lastUpdate.toDate().toLocaleString() :
+                        'Not updated',
                     order: i++,
                 }
             });

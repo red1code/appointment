@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatabaseService } from 'src/app/services/database.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Patient } from 'src/app/models/patient';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-waiting-list',
@@ -14,7 +16,7 @@ export class WaitingListComponent implements OnInit {
     id: string = '';
     patient!: Patient;
     patientForm: FormGroup;
-    patientsList: any[] = [];
+    patientsList!: Observable<Patient[]>;
     firebaseErrorMessage: string = '';
     datePipe: string = 'MMMM d, y - hh:mm aa';
     tHead: string[] = ['Order', 'Full Name', 'Phone Number', 'Created At', 'Last update'];
@@ -34,12 +36,30 @@ export class WaitingListComponent implements OnInit {
         this.getPatientsList();
     }
 
+    getPatientsList() {
+        this.patientsList = this.databaseService.getPatientsList().pipe(
+            map(actions => {
+                let i = 1;
+                return actions.map(rdv => {
+                    let load = rdv.payload.doc.data()
+                    return {
+                        rdvID: rdv.payload.doc.id,
+                        ...load,
+                        created_at: load.created_at.toDate().toLocaleString(),
+                        lastUpdate: load.lastUpdate ? load.lastUpdate.toDate().toLocaleString() :
+                            'Not updated',
+                        order: i++
+                    }
+                })
+            })
+        )
+    }
+
     onSubmitForm() {
         if (this.patientForm.invalid) return;
         this.patient = this.patientForm.value;
         if (this.id === '') {
             this.patient.created_at = new Date();
-            this.patient.lastUpdate = 'Not updated';
             this.patient.created_by = this.authService.userEmail;
             this.databaseService.createNewPatient(this.patient);
             this.patientForm.reset();
@@ -57,27 +77,12 @@ export class WaitingListComponent implements OnInit {
             phoneNumber: [patient.phoneNumber, Validators.required]
         });
         this.id = patient.rdvID;
-    }
+    }    
 
-    getPatientsList() {
-        return this.databaseService.getPatientsList().subscribe((res: any) => {
-            // in order to get rid of "payload.doc.data()" I added these steps:
-            let results = res;
-            this.patientsList = results.map((rdv: any) => {
-                return {
-                    ...rdv.payload.doc.data(),
-                    rdvID: rdv.payload.doc.id
-                }
-            });
-            let i = 1;
-            this.patientsList.map(rdv => {
-                rdv.order = i;
-                i++;
-            })
-        })
+    emptyList() {
+        let list = this.patientsList as unknown as Array<any>;
+        (list.length === 0) ? true : false;
     }
-
-    emptyList = () => (this.patientsList.length === 0) ? true : false;
 
     onDelete = (data: any) => this.databaseService.deletePatient(data);
 
@@ -99,3 +104,23 @@ export class WaitingListComponent implements OnInit {
 }
 
 // THE END.
+
+
+
+/*
+return this.databaseService.getPatientsList().subscribe((res: any) => {
+    // in order to get rid of "payload.doc.data()" I added these steps:
+    let results = res;
+    this.patientsList = results.map((rdv: any) => {
+        return {
+            ...rdv.payload.doc.data(),
+            rdvID: rdv.payload.doc.id
+        }
+    });
+    let i = 1;
+    this.patientsList.map(rdv => {
+        rdv.order = i;
+        i++;
+    })
+})
+*/
