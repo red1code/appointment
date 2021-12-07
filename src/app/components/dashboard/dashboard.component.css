@@ -6,17 +6,13 @@
 #adminTable, #users-list, #rdvs-list, #rdv-chart-container, #usrs-chart-container {
     padding: 15px;
     margin: 15px auto;
-    width: 75%;
-    min-height: 100px;
+    width: 95%;
+    min-height: 350px;
     font-family: 'ubuntu';
 }
 
 #rdv-chart-container, #usrs-chart-container {
     width: 65%;
-}
-
-#users-list, #rdvs-list{
-    height: 400px;
 }
 
 .t-th-cel, .t-td-cel {

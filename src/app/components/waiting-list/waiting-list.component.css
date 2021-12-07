@@ -74,7 +74,8 @@
 }
 
 .fas {
-    padding: 5px;
+    padding: 7px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
@@ -82,9 +83,19 @@
     color: #0d6efd;
 }
 
+.fa-edit:hover {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
 .fa-trash-alt {
     color: #dc3545;
     margin-left: 15px;
+}
+
+.fa-trash-alt:hover {
+    background-color: #dc3545;
+    color: #fff;
 }
 
 @media only screen and (max-width: 752px) {
@@ -92,6 +103,7 @@
         width: 100%;
         padding: 11px;
     }
+
     #list-container, #form-container {
         width: 95%;
         margin: 11px auto;

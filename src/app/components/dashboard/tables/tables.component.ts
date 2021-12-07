@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnDestroy, AfterViewInit, OnChanges, SimpleCh
 import { TableColumn } from 'src/app/models/tablesCols';
 import { DataTableDirective } from 'angular-datatables';
 import { Observable, Subject } from 'rxjs';
+import { User } from 'src/app/models/user';
 
 @Component({
     selector: 'app-tables',
@@ -10,7 +11,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class TablesComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
-    @Input() infos!: Observable<any>;
+    @Input() infos!: any;
     @Input() tableCol!: TableColumn[];
     @ViewChild(DataTableDirective, { static: false })
     dtElement!: DataTableDirective;
